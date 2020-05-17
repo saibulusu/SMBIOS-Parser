@@ -10,10 +10,15 @@ struct RawSMBIOSData {
     BYTE    SMBIOSTableData[];
 };
 
-// Non-necessary structure
+// Generic structure
 struct SMBIOS_struct {
     BYTE    Type;
     BYTE    Length;
+};
+
+// Non-necessary structure
+struct SMBIOS_struct_non_required : SMBIOS_struct {
+
 };
 
 // Necessary structure of type 0
@@ -30,4 +35,17 @@ struct SMBIOS_struct_type_0 : SMBIOS_struct {
     BYTE    System_BIOS_Minor_Release;
     BYTE    EC_Firmware_Major_Release;
     BYTE    EC_Firmware_Minor_Release;
+};
+
+// Necessary structure of type 1
+struct SMBIOS_struct_type_1 : SMBIOS_struct {
+    DWORD   Handle;
+    BYTE    Manufacturer;
+    BYTE    ProductName;
+    BYTE    Version;
+    BYTE    SerialNumber;
+    BYTE    UUID[16];
+    BYTE    WakeUpType;
+    BYTE    SKUNumber;
+    BYTE    Family;
 };
