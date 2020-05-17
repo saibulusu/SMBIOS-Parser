@@ -26,6 +26,18 @@ RawSMBIOSData* get_raw_data() {
     return smBiosData;
 }
 
+// Display the entire SMBIOS table of data in hexadecimal by byte
+void display_hex_contents(RawSMBIOSData* raw_data) {
+    for (int i = 0; i < raw_data->Length; ++i) {
+        std::cout << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)raw_data->SMBIOSTableData[i] << " ";
+        if (i % 32 == 31) {
+            std::cout << std::endl;
+        }
+    }
+    std::cout << std::dec << std::endl;
+    std::cout << "--------------------------------------------------------" << std::endl;
+}
+
 // Get the next SMBIOS struct after the current one
 SMBIOS_struct* get_next_struct(SMBIOS_struct* cur_struct) {
     char* strings_begin = (char*)cur_struct + cur_struct->Length;
@@ -62,35 +74,42 @@ void displayInformation(SMBIOS_struct_non_required* cur_struct) {
     std::cout << "Cannot display more information" << std::endl;
 }
 
-// Display the System BIOS Information (Type 0)
+// Display System BIOS Information (Type 0)
 void displayInformation(SMBIOS_struct_type_0* cur_struct, RawSMBIOSData* raw_data) {
-    if ((int)raw_data->SMBIOSMajorVersion < 2) {
-        return;
-    }
     std::vector<std::string> strings = get_strings(cur_struct);
     std::cout << "SMBIOS Information (Type " << (int)cur_struct->Type << ")" << std::endl;
+    if ((int)raw_data->SMBIOSMajorVersion < 2) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
     if (cur_struct->Vendor == 0) {
         std::cout << "There is no vendor information" << std::endl;
     }
     else {
         std::cout << "Vendor: " << strings[cur_struct->Vendor] << std::endl;
     }
+
     if (cur_struct->BIOS_Version == 0) {
         std::cout << "There is no BIOS version information" << std::endl;
     }
     else {
         std::cout << "BIOS Version: " << strings[cur_struct->BIOS_Version] << std::endl;
     }
+
     std::cout << "BIOS Starting Address Segment: " << std::hex << cur_struct->BIOS_Starting_Address_Segment << std::dec << std::endl;
+
     if (cur_struct->Bios_Release_Date == 0) {
         std::cout << "There is no BIOS release date information" << std::endl;
     }
     else {
         std::cout << "BIOS release Date: " << strings[cur_struct->Bios_Release_Date] << std::endl;
     }
+
     std::cout << "BIOS Rom Size: " << 64 + 64 * (int)cur_struct->BIOS_ROM_Size << "K" << std::endl;
     displayBIOSCharacteristics(cur_struct);
     if ((int)raw_data->SMBIOSMajorVersion == 2 && (int)raw_data->SMBIOSMinorVersion < 4) {
+        std::cout << "--------------------------------------------------------" << std::endl;
         return;
     }
     displayBIOSExtendedCharacteristics(cur_struct);
@@ -320,3 +339,96 @@ void displayBIOSExtendedCharacteristics(SMBIOS_struct_type_0* cur_struct) {
         std::cout << "SMBIOS Table describes a virtual machine" << std::endl;
     }
 }
+
+// Display System Information (Type 1)
+void displayInformation(SMBIOS_struct_type_1* cur_struct, RawSMBIOSData* raw_data) {
+    std::vector<std::string> strings = get_strings(cur_struct);
+    std::cout << "System Information (Type " << (int)cur_struct->Type << ")" << std::endl;
+
+    if ((int)raw_data->SMBIOSMajorVersion < 2) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    if (cur_struct->Manufacturer == 0) {
+        std::cout << "There is no manufacturer information" << std::endl;
+    }
+    else {
+        std::cout << "Manufacturer: " << strings[cur_struct->Manufacturer] << std::endl;
+    }
+
+    if (cur_struct->ProductName == 0) {
+        std::cout << "There is no product name information" << std::endl;
+    }
+    else {
+        std::cout << "Product Name: " << strings[cur_struct->ProductName] << std::endl;
+    }
+
+    if (cur_struct->Version == 0) {
+        std::cout << "There is no version information" << std::endl;
+    }
+    else {
+        std::cout << "Version: " << strings[cur_struct->Version] << std::endl;
+    }
+
+    if (cur_struct->SerialNumber == 0) {
+        std::cout << "There is no serial number information" << std::endl;
+    }
+    else {
+        std::cout << "Serial Number: " << strings[cur_struct->SerialNumber] << std::endl;
+    }
+
+    if ((int)raw_data->SMBIOSMajorVersion == 2 && (int)raw_data->SMBIOSMinorVersion < 1) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    std::cout << "UUID: " << std::hex << (int)cur_struct->UUID << std::dec<< std::endl;
+    std::cout << "Wake-up Type: " << get_wakeUp_Type(cur_struct) << std::endl;
+    
+    if ((int)raw_data->SMBIOSMajorVersion == 2 && (int)raw_data->SMBIOSMinorVersion < 4) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    if (cur_struct->SKUNumber == 0) {
+        std::cout << "There is no SKU Number information" << std::endl;
+    }
+    else {
+        std::cout << "SKU Number: " << strings[cur_struct->SKUNumber] << std::endl;
+    }
+
+    if (cur_struct->Family == 0) {
+        std::cout << "Family: " << strings[cur_struct->Family] << std::endl;
+    }
+
+    std::cout << "--------------------------------------------------------" << std::endl;
+}
+
+// Get the wake-up type field associated with the structure
+std::string get_wakeUp_Type(SMBIOS_struct_type_1* cur_struct) {
+    switch (cur_struct->WakeUpType) {
+        case 0:
+            return "Reserved";
+        case 1:
+            return "Other";
+        case 2:
+            return "Unkown";
+        case 3:
+            return "APM Timer";
+        case 4:
+            return "Modem Ring";
+        case 5:
+            return "LAN Remote";
+        case 6:
+            return "Power Switch";
+        case 7:
+            return "PCI PME#";
+        case 8:
+            return "AC Power Restored";
+        default:
+            return "Other";
+    }
+}
+
+//void displayInformation(SMBIOS_struct_type_2*)

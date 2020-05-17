@@ -39,7 +39,7 @@ struct SMBIOS_struct_type_0 : SMBIOS_struct {
 
 // Necessary structure of type 1
 struct SMBIOS_struct_type_1 : SMBIOS_struct {
-    DWORD   Handle;
+    WORD    Handle;
     BYTE    Manufacturer;
     BYTE    ProductName;
     BYTE    Version;
@@ -48,4 +48,20 @@ struct SMBIOS_struct_type_1 : SMBIOS_struct {
     BYTE    WakeUpType;
     BYTE    SKUNumber;
     BYTE    Family;
+};
+
+// Necessary structure of type 2
+struct SMBIOS_struct_type_2 {
+    WORD    Handle;
+    BYTE    Manufacturer;
+    BYTE    Product;
+    BYTE    Version;
+    BYTE    SerialNumber;
+    BYTE    AssetTag;
+    BYTE    FeatureFlags;
+    BYTE    LocationInChasis;
+    WORD    ChassisHandle;
+    BYTE    BoardType;
+    BYTE    NumberOfContainedObjects;
+    BYTE    ContainedObjectHandles;
 };
