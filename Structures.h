@@ -51,7 +51,7 @@ struct SMBIOS_struct_type_1 : SMBIOS_struct {
 };
 
 // Necessary structure of type 2
-struct SMBIOS_struct_type_2 {
+struct SMBIOS_struct_type_2 : SMBIOS_struct {
     WORD    Handle;
     BYTE    Manufacturer;
     BYTE    Product;
@@ -63,5 +63,9 @@ struct SMBIOS_struct_type_2 {
     WORD    ChassisHandle;
     BYTE    BoardType;
     BYTE    NumberOfContainedObjects;
-    BYTE    ContainedObjectHandles;
+};
+
+// Necessary structure of type 3
+struct SMBIOS_struct_type_3 {
+
 };
