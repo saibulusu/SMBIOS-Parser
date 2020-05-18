@@ -2,7 +2,7 @@
 #include <iostream>
 
 // Get the raw SMBIOS table
-RawSMBIOSData* get_raw_data() {
+RawSMBIOSData* getRawData() {
     DWORD error = ERROR_SUCCESS;
     DWORD smBiosDataSize = 0;
     RawSMBIOSData* smBiosData = NULL;
@@ -27,7 +27,7 @@ RawSMBIOSData* get_raw_data() {
 }
 
 // Display the entire SMBIOS table of data in hexadecimal by byte
-void display_hex_contents(RawSMBIOSData* raw_data) {
+void displayHexContents(RawSMBIOSData* raw_data) {
     for (int i = 0; i < raw_data->Length; ++i) {
         std::cout << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)raw_data->SMBIOSTableData[i] << " ";
         if (i % 32 == 31) {
@@ -39,19 +39,19 @@ void display_hex_contents(RawSMBIOSData* raw_data) {
 }
 
 // Get a list of structures from the raw data
-std::vector<SMBIOS_struct*> get_structure_table(RawSMBIOSData* raw_data) {
+std::vector<SMBIOS_struct*> getStructureTable(RawSMBIOSData* raw_data) {
     std::vector<SMBIOS_struct*> structure_table;
     SMBIOS_struct* cur_struct = (SMBIOS_struct*)raw_data->SMBIOSTableData;
     while ((char*)cur_struct < (char*)raw_data + raw_data->Length) {
         structure_table.push_back(cur_struct);
-        cur_struct = get_next_struct(cur_struct);
+        cur_struct = getNextStruct(cur_struct);
     }
     return structure_table;
 }
 
 // Display each structure in a list
 void displayAllStructures(RawSMBIOSData* raw_data) {
-    std::vector<SMBIOS_struct*> structure_table = get_structure_table(raw_data);
+    std::vector<SMBIOS_struct*> structure_table = getStructureTable(raw_data);
     for (int i = 0; i < structure_table.size(); ++i) {
         if (structure_table[i]->Type == 0) {
             displayInformation((SMBIOS_struct_type_0*)structure_table[i], raw_data);
@@ -65,6 +65,9 @@ void displayAllStructures(RawSMBIOSData* raw_data) {
         else if (structure_table[i]->Type == 4) {
             displayInformation((SMBIOS_struct_type_4*)structure_table[i], raw_data);
         }
+        else if (structure_table[i]->Type == 7) {
+            displayInformation((SMBIOS_struct_type_7*)structure_table[i], raw_data);
+        }
         else {
             displayInformation((SMBIOS_struct_non_required*)structure_table[i]);
         }
@@ -72,7 +75,7 @@ void displayAllStructures(RawSMBIOSData* raw_data) {
 }
 
 // Get the next SMBIOS struct after the current one
-SMBIOS_struct* get_next_struct(SMBIOS_struct* cur_struct) {
+SMBIOS_struct* getNextStruct(SMBIOS_struct* cur_struct) {
     char* strings_begin = (char*)cur_struct + cur_struct->Length;
     char* next_strings = strings_begin + 1;
     while (*strings_begin != NULL || *next_strings != NULL) {
@@ -83,12 +86,12 @@ SMBIOS_struct* get_next_struct(SMBIOS_struct* cur_struct) {
 }
 
 // Gather the strings that belong to a structure
-std::vector<std::string> get_strings(SMBIOS_struct* cur_struct) {
+std::vector<std::string> getStrings(SMBIOS_struct* cur_struct) {
     std::vector<std::string> strings;
     std::string res = "";
     strings.push_back(res);
     char* cur_char = (char*)cur_struct + cur_struct->Length;
-    SMBIOS_struct* next_struct = get_next_struct(cur_struct);
+    SMBIOS_struct* next_struct = getNextStruct(cur_struct);
 
     while (cur_char < (char*)next_struct) {
         res.push_back(*cur_char);
@@ -108,9 +111,33 @@ void displayInformation(SMBIOS_struct_non_required* cur_struct) {
     std::cout << "--------------------------------------------------------" << std::endl;
 }
 
+// Get a specific bit from the characteristics bits
+int getBit(BYTE bytes[], int bit_num, int num_bytes) {
+    int whichBit = num_bytes - 1 - bit_num / 8;
+    bit_num %= 8;
+    return getBit(bytes[whichBit], bit_num);
+}
+
+int getBit(BYTE byte, int bit_num) {
+    return (byte >> bit_num) % 2;
+}
+
+int getBit(WORD word, int bit_num) {
+    return (word >> bit_num) % 2;
+}
+
+// Get consecutive bits
+int getBits(BYTE byte, int startBit, int endBit) {
+    return (byte >> endBit) % (1 << (startBit - endBit));
+}
+
+int getBits(WORD word, int startBit, int endBit) {
+    return (word >> endBit) % (1 << (startBit - endBit));
+}
+
 // Display System BIOS Information (Type 0)
 void displayInformation(SMBIOS_struct_type_0* cur_struct, RawSMBIOSData* raw_data) {
-    std::vector<std::string> strings = get_strings(cur_struct);
+    std::vector<std::string> strings = getStrings(cur_struct);
     std::cout << "SMBIOS Information (Type " << (int)cur_struct->Type << ")" << std::endl;
     if ((int)raw_data->SMBIOSMajorVersion < 2) {
         std::cout << "--------------------------------------------------------" << std::endl;
@@ -152,130 +179,121 @@ void displayInformation(SMBIOS_struct_type_0* cur_struct, RawSMBIOSData* raw_dat
     std::cout << "--------------------------------------------------------" << std::endl;
 }
 
-// Get a specific bit from the characteristics bits
-int get_bit(BYTE characteristics[], int bit_num, int num_bytes){
-    int index = 0;
-    index += (bit_num / 8);
-    bit_num %= 8;
-    bit_num = 7 - bit_num;
-    return characteristics[index] & (1 << bit_num);
-}
-
 // Display BIOS Characteristics
 void displayBIOSCharacteristics(SMBIOS_struct_type_0* cur_struct) {
-    if (get_bit(cur_struct->BIOS_Characteristics, 3, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 3, 8)) {
         std::cout << "BIOS Characteristics are not supported" << std::endl;
     }
     else {
         std::cout << "BIOS Characteristics are supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 4, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 4, 8)) {
         std::cout << "ISA is supported" << std::endl;
     }
     else {
         std::cout << "ISA is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 5, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 5, 8)) {
         std::cout << "MCA is supported" << std::endl;
     }
     else {
         std::cout << "MCA is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 6, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 6, 8)) {
         std::cout << "EISA is supported" << std::endl;
     }
     else {
         std::cout << "EISA is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 7, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 7, 8)) {
         std::cout << "PCI is supported" << std::endl;
     }
     else {
         std::cout << "PCI is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 8, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 8, 8)) {
         std::cout << "PC card (PCMCIA) is supported" << std::endl;
     }
     else {
         std::cout << "PC card (PCMCIA) is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 9, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 9, 8)) {
         std::cout << "Plug and Play is supported" << std::endl;
     }
     else {
         std::cout << "Plug and Play is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 10, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 10, 8)) {
         std::cout << "ACM is supported" << std::endl;
     }
     else {
         std::cout << "ACM is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 11, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 11, 8)) {
         std::cout << "BIOS is upgradeable" << std::endl;
     }
     else {
         std::cout << "BIOS is not upgradeable" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 12, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 12, 8)) {
         std::cout << "BIOS shadowing is allwoed" << std::endl;
     }
     else {
         std::cout << "BIOS shadowing is not allowed" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 13, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 13, 8)) {
         std::cout << "VL-VESA is supported" << std::endl;
     }
     else {
         std::cout << "VL-VESA is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 14, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 14, 8)) {
         std::cout << "ESCD support is available" << std::endl;
     }
     else {
         std::cout << "ESCD support is not available" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 15, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 15, 8)) {
         std::cout << "Boot from CD is supported" << std::endl;
     }
     else {
         std::cout << "Boot from CD is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 16, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 16, 8)) {
         std::cout << "Selectable boot is supported" << std::endl;
     }
     else {
         std::cout << "Selectable boot is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 17, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 17, 8)) {
         std::cout << "BIOS ROM is socketed" << std::endl;
     }
     else {
         std::cout << "BIOS ROM is not socketed" << std::endl;
     }
     
-    if (get_bit(cur_struct->BIOS_Characteristics, 18, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 18, 8)) {
         std::cout << "Boot from PC card (PCMCIA) is supported" << std::endl;
     }
     else {
         std::cout << "Boot from PC card (PCMCIA) is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics, 19, 8)) {
+    if (getBit(cur_struct->BIOS_Characteristics, 19, 8)) {
         std::cout << "EDD specification is supported" << std::endl;
     }
     else {
@@ -285,99 +303,98 @@ void displayBIOSCharacteristics(SMBIOS_struct_type_0* cur_struct) {
 
 // Display BIOS Extended characteristics
 void displayBIOSExtendedCharacteristics(SMBIOS_struct_type_0* cur_struct) {
-    //char* characteristics = (char*)cur_struct->BIOS_Characteristics_Extensions;
-    if (get_bit(cur_struct->BIOS_Characteristics_Extensions, 0, 2)) {
+    if (getBit(cur_struct->BIOS_Characteristics_Extensions[0], 7)) {
         std::cout << "ACPI is supported" << std::endl;
     }
     else {
         std::cout << "ACPI is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics_Extensions, 1, 2)) {
+    if (getBit(cur_struct->BIOS_Characteristics_Extensions[0], 6)) {
         std::cout << "USB Legacy is supported" << std::endl;
     }
     else {
         std::cout << "USB Legacy is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics_Extensions, 2, 2)) {
+    if (getBit(cur_struct->BIOS_Characteristics_Extensions[0], 5)) {
         std::cout << "AGP is supported" << std::endl;
     }
     else {
         std::cout << "AGP is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics_Extensions, 3, 2)) {
+    if (getBit(cur_struct->BIOS_Characteristics_Extensions[0], 4)) {
         std::cout << "I2O Boot is supported" << std::endl;
     }
     else {
         std::cout << "I2O Boot is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics_Extensions, 4, 2)) {
+    if (getBit(cur_struct->BIOS_Characteristics_Extensions[0], 3)) {
         std::cout << "LS-120 SuperDisk boot is supported" << std::endl;
     }
     else {
         std::cout << "LS-120 SuperDisk boot is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics_Extensions, 5, 2)) {
+    if (getBit(cur_struct->BIOS_Characteristics_Extensions[0], 2)) {
         std::cout << "ATAPI ZIP drive boot is supported" << std::endl;
     }
     else {
         std::cout << "ATAPI ZIP drive boot is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics_Extensions, 6, 2)) {
+    if (getBit(cur_struct->BIOS_Characteristics_Extensions[0], 1)) {
         std::cout << "1394 boot is supported" << std::endl;
     }
     else {
         std::cout << "1394 boot is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics_Extensions, 7, 2)) {
+    if (getBit(cur_struct->BIOS_Characteristics_Extensions[0], 0)) {
         std::cout << "Smart battery is supported" << std::endl;
     }
     else {
         std::cout << "Smart battery is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics_Extensions, 8, 2)) {
+    if (getBit(cur_struct->BIOS_Characteristics_Extensions[1], 0)) {
         std::cout << "BIOS Boot specification is supported" << std::endl;
     }
     else {
         std::cout << "BIOS Boot specification is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics_Extensions, 9, 2)) {
+    if (getBit(cur_struct->BIOS_Characteristics_Extensions[1], 1)) {
         std::cout << "Function key-initiated network service is supported" << std::endl;
     }
     else {
         std::cout << "Function key-initiated network service is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics_Extensions, 10, 2)) {
+    if (getBit(cur_struct->BIOS_Characteristics_Extensions[1], 2)) {
         std::cout << "Enabled targeted content distribution" << std::endl;
     }
     else {
         std::cout << "Disabled targeted content distribution" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics_Extensions, 11, 2)) {
+    if (getBit(cur_struct->BIOS_Characteristics_Extensions[1], 3)) {
         std::cout << "UEFI Specification is supported" << std::endl;
     }
     else {
         std::cout << "UEFI Specification is not supported" << std::endl;
     }
 
-    if (get_bit(cur_struct->BIOS_Characteristics_Extensions, 12, 2)) {
+    if (getBit(cur_struct->BIOS_Characteristics_Extensions[1], 4)) {
         std::cout << "SMBIOS Table describes a virtual machine" << std::endl;
     }
 }
 
 // Display System Information (Type 1)
 void displayInformation(SMBIOS_struct_type_1* cur_struct, RawSMBIOSData* raw_data) {
-    std::vector<std::string> strings = get_strings(cur_struct);
+    std::vector<std::string> strings = getStrings(cur_struct);
     std::cout << "System Information (Type " << (int)cur_struct->Type << ")" << std::endl;
 
     if ((int)raw_data->SMBIOSMajorVersion < 2) {
@@ -419,7 +436,7 @@ void displayInformation(SMBIOS_struct_type_1* cur_struct, RawSMBIOSData* raw_dat
     }
 
     std::cout << "UUID: " << std::hex << (int)cur_struct->UUID << std::dec<< std::endl;
-    std::cout << "Wake-up Type: " << get_wakeUp_Type(cur_struct) << std::endl;
+    std::cout << "Wake-up Type: " << getWakeUpType(cur_struct) << std::endl;
     
     if ((int)raw_data->SMBIOSMajorVersion == 2 && (int)raw_data->SMBIOSMinorVersion < 4) {
         std::cout << "--------------------------------------------------------" << std::endl;
@@ -441,7 +458,7 @@ void displayInformation(SMBIOS_struct_type_1* cur_struct, RawSMBIOSData* raw_dat
 }
 
 // Get the wake-up type field associated with the structure
-std::string get_wakeUp_Type(SMBIOS_struct_type_1* cur_struct) {
+std::string getWakeUpType(SMBIOS_struct_type_1* cur_struct) {
     switch (cur_struct->WakeUpType) {
         case 0:
             return "Reserved";
@@ -468,7 +485,7 @@ std::string get_wakeUp_Type(SMBIOS_struct_type_1* cur_struct) {
 
 // Display Chassis Information (Type 3)
 void displayInformation(SMBIOS_struct_type_3* cur_struct, RawSMBIOSData* raw_data) {
-    std::vector<std::string> strings = get_strings(cur_struct);
+    std::vector<std::string> strings = getStrings(cur_struct);
     std::cout << "Chassis Information (Type " << (int)cur_struct->Type << ")" << std::endl;
 
     if (raw_data->SMBIOSMajorVersion < 2) {
@@ -511,11 +528,11 @@ void displayInformation(SMBIOS_struct_type_3* cur_struct, RawSMBIOSData* raw_dat
         return;
     }
 
-    std::cout << "Boot-up State: " << get_Chassis_State(cur_struct->BootUpState) << std::endl;
-    std::cout << "Power Supply State: " << get_Chassis_State(cur_struct->PowerSupplyState) << std::endl;
-    std::cout << "Thermal State: " << get_Chassis_State(cur_struct->ThermalState) << std::endl;
+    std::cout << "Boot-up State: " << getChassisState(cur_struct->BootUpState) << std::endl;
+    std::cout << "Power Supply State: " << getChassisState(cur_struct->PowerSupplyState) << std::endl;
+    std::cout << "Thermal State: " << getChassisState(cur_struct->ThermalState) << std::endl;
 
-    std::cout << "Security State: " << get_Chassis_Security_State(cur_struct->SecurityStatus) << std::endl;
+    std::cout << "Security State: " << getChassisSecurityState(cur_struct->SecurityStatus) << std::endl;
 
     if (raw_data->SMBIOSMajorVersion == 2 && raw_data->SMBIOSMinorVersion < 3) {
         std::cout << "--------------------------------------------------------" << std::endl;
@@ -536,7 +553,7 @@ void displayInformation(SMBIOS_struct_type_3* cur_struct, RawSMBIOSData* raw_dat
 void displayChassisType(SMBIOS_struct_type_3* cur_struct) {
     BYTE characteristics[100];
     characteristics[0] = cur_struct->ChassisType;
-    if (get_bit(characteristics, 7, 1) == 1) {
+    if (getBit(characteristics, 7, 1) == 1) {
         std::cout << "Chassis locked" << std::endl;
         characteristics[0] %= 128;
     }
@@ -650,7 +667,7 @@ void displayChassisType(SMBIOS_struct_type_3* cur_struct) {
 }
 
 // Get the boot up state information
-std::string get_Chassis_State(BYTE field) {
+std::string getChassisState(BYTE field) {
     switch (field) {
     case 1:
         return "Other";
@@ -670,7 +687,7 @@ std::string get_Chassis_State(BYTE field) {
 }
 
 // Get the Chassis security state
-std::string get_Chassis_Security_State(BYTE field) {
+std::string getChassisSecurityState(BYTE field) {
     switch (field) {
     case 1:
         return "Other";
@@ -689,7 +706,7 @@ std::string get_Chassis_Security_State(BYTE field) {
 
 // Display Processor Information (Type 4)
 void displayInformation(SMBIOS_struct_type_4* cur_struct, RawSMBIOSData* raw_data) {
-    std::vector<std::string> strings = get_strings(cur_struct);
+    std::vector<std::string> strings = getStrings(cur_struct);
     std::cout << "Processor Information (Type " << (int)cur_struct->Type << ")" << std::endl;
 
     if (raw_data->SMBIOSMajorVersion < 2) {
@@ -900,13 +917,13 @@ std::string getVoltage(SMBIOS_struct_type_4* cur_struct) {
     BYTE volts[100];
     volts[0] = cur_struct->Voltage;
     
-    if (get_bit(volts, 0, 1) == 1) {
+    if (getBit(volts, 0, 1) == 1) {
         return "5V";
     }
-    else if (get_bit(volts, 1, 1) == 1) {
+    else if (getBit(volts, 1, 1) == 1) {
         return "3.3V";
     }
-    else if (get_bit(volts, 2, 1) == 1) {
+    else if (getBit(volts, 2, 1) == 1) {
         return "2.9V";
     }
     return "Other";
@@ -919,7 +936,7 @@ std::string getProcessorStatus(SMBIOS_struct_type_4* cur_struct) {
     
     std::string res = "";
 
-    if (get_bit(stats, 6, 1) == 1) {
+    if (getBit(stats, 6, 1) == 1) {
         res += "CPU Socket Population";
     }
     else {
@@ -1056,31 +1073,33 @@ std::string getProcessorUpgrade(SMBIOS_struct_type_4* cur_struct) {
     }
 }
 
+// Display what the processor is capable of
 void displayProcessorCharacteristics(SMBIOS_struct_type_4* cur_struct) {
     BYTE characteristics[100];
     characteristics[0] = cur_struct->ProcessorCharacteristics;
     std::cout << "Capabilities: ";
-    if (get_bit(characteristics, 2, 1) == 1) {
+    if (getBit(characteristics, 2, 1) == 1) {
         std::cout << "64-bit Capable ";
     }
-    if (get_bit(characteristics, 3, 1) == 1) {
+    if (getBit(characteristics, 3, 1) == 1) {
         std::cout << "Multi-Core ";
     }
-    if (get_bit(characteristics, 4, 1) == 1) {
+    if (getBit(characteristics, 4, 1) == 1) {
         std::cout << "Hardware Thread ";
     }
-    if (get_bit(characteristics, 5, 1) == 1) {
+    if (getBit(characteristics, 5, 1) == 1) {
         std::cout << "Execute Protection ";
     }
-    if (get_bit(characteristics, 6, 1) == 1) {
+    if (getBit(characteristics, 6, 1) == 1) {
         std::cout << "Enhanced Virtualization ";
     }
-    if (get_bit(characteristics, 7, 1) == 1) {
+    if (getBit(characteristics, 7, 1) == 1) {
         std::cout << "Power/Performance Control ";
     }
     std::cout << std::endl;
 }
 
+// Get the processor's second family
 std::string getProcessorFamily2(SMBIOS_struct_type_4* cur_struct) {
     switch (cur_struct->ProcessorFamily2) {
     case 1:
@@ -1494,26 +1513,218 @@ std::string getProcessorFamily2(SMBIOS_struct_type_4* cur_struct) {
     }
 }
 
-void displayInformation(SMBIOS_struct_type_7* cur_struct, RawSMBIOSData* raw_data) {
+// Display Cache Information (Type 7)
+void displayInformation(SMBIOS_struct_type_7* curStruct, RawSMBIOSData* rawData) {
+    std::vector<std::string> strings = getStrings(curStruct);
+    std::cout << "Cache Information (Type " << (int)curStruct->Type << ")" << std::endl;
+
+    if (rawData->SMBIOSMajorVersion < 2) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    std::cout << "Handle: " << (int)curStruct->Handle << std::endl;
+    
+    if (curStruct->SocketDesignation == 0) {
+        std::cout << "No socket designation information" << std::endl;
+    }
+    else {
+        std::cout << "Socket Designation: " << strings[curStruct->SocketDesignation] << std::endl;
+    }
+
+    displayCacheConfiguration(curStruct);
+    std::cout << "Maximum ";
+    displayCacheSize(curStruct->MaximumCacheSize);
+    std::cout << "Installed ";
+    displayCacheSize(curStruct->InstalledSize);
+    displaySRAMType(curStruct);
+
+    if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 1) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    if (curStruct->CacheSpeed == 0) {
+        std::cout << "Unknown Speed" << std::endl;
+    }
+    else {
+        std::cout << "Cache Module Speed: " << (int)curStruct->CacheSpeed << " ns" << std::endl;
+    }
+
+    std::cout << "Error Correction Type: " << getErrorCorrectionTypeField(curStruct) << std::endl;
+    std::cout << "System Cache Type: " << getSystemCachetypeField(curStruct) << std::endl;
+    std::cout << "Associativity: " << getAssociativity(curStruct) << std::endl;
+
+    std::cout << "--------------------------------------------------------" << std::endl;
+}
+
+// Get the error correction enumeration
+std::string getErrorCorrectionTypeField(SMBIOS_struct_type_7* curStruct) {
+    switch (curStruct->ErrorCorrectionType) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unknown";
+    case 3:
+        return "None";
+    case 4:
+        return "Parity";
+    case 5:
+        return "Single-bit ECC";
+    case 6:
+        return "Multi-bit ECC";
+    default:
+        return "Other";
+    }
+}
+
+// Get the cache type information
+std::string getSystemCachetypeField(SMBIOS_struct_type_7* curStruct) {
+    switch (curStruct->SystemCachetype) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unknown";
+    case 3:
+        return "Instruction";
+    case 4:
+        return "Data";
+    case 5:
+        return "Unified";
+    default:
+        return "Other";
+    }
+}
+
+// Get the associativity of the cache
+std::string getAssociativity(SMBIOS_struct_type_7* curStruct) {
+    switch (curStruct->Associativity) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unknown";
+    case 3:
+        return "Direct Mapped";
+    case 4:
+        return "2-Way Set-Associative";
+    case 5:
+        return "4-Way Set-Associative";
+    case 6:
+        return "Fully Associative";
+    case 7:
+        return "8-Way Set-Associative";
+    case 8:
+        return "16-Way Set-Associative";
+    case 9:
+        return "12-Way Set-Associative";
+    case 10:
+        return "24-Way Set-Associative";
+    case 11:
+        return "32-Way Set-Associative";
+    case 12:
+        return "48-Way Set-Associative";
+    case 13:
+        return "64-Way Set-Associative";
+    case 14:
+        return "20-Way Set-Associative";
+    default:
+        return "Other";
+    }
+}
+
+// Display the cache's configuration
+void displayCacheConfiguration(SMBIOS_struct_type_7* curStruct) {
+    int operationalMode = getBits(curStruct->CacheConfiguration, 9, 8);
+    switch (operationalMode) {
+    case 0:
+        std::cout << "Write Through" << std::endl;
+        break;
+    case 1:
+        std::cout << "Write Back" << std::endl;
+        break;
+    }
+
+    int enabledDisabled = getBit(curStruct->CacheConfiguration, 7);
+    switch (enabledDisabled) {
+    case 0:
+        std::cout << "Disabled at boot time" << std::endl;
+        break;
+    case 1:
+        std::cout << "Enabled at boot time" << std::endl;
+        break;
+    }
+
+    int location = getBits(curStruct->CacheConfiguration, 6, 5);
+    switch (location) {
+    case 0:
+        std::cout << "Internal to the CPU Module" << std::endl;
+        break;
+    case 1:
+        std::cout << "External to the CPU Module" << std::endl;
+        break;
+    default:
+        std::cout << "Location unknown" << std::endl;
+        break;
+    }
+
+    int socketed = getBit(curStruct->CacheConfiguration, 3);
+    switch (socketed) {
+    case 0:
+        std::cout << "Socketed" << std::endl;
+        break;
+    case 1:
+        std::cout << "Not Socketed" << std::endl;
+        break;
+    }
+
+    int level = getBits(curStruct->CacheConfiguration, 2, 0);
+    std::cout << "Level: " << level + 1 << std::endl;
+}
+
+// Display the maximum or installed cache size
+void displayCacheSize(WORD CacheSize) {
+    int size = (getBit(CacheSize, 15)) ? 64 : 1;
+    size *= getBits(CacheSize, 14, 0);
+    std::cout << "Size: " << size << "K" << std::endl;
+}
+
+// Display information about the SRAM
+void displaySRAMType(SMBIOS_struct_type_7* curStruct) {
+    std::cout << "SRAM: ";
+    if (getBit(curStruct->CurrentSRAMType, 13)) {
+        std::cout << "Non-Burst ";
+    }
+    if (getBit(curStruct->CurrentSRAMType, 12)) {
+        std::cout << "Burst ";
+    }
+    if (getBit(curStruct->CurrentSRAMType, 11)) {
+        std::cout << "Pipeline Burst ";
+    }
+    if (getBit(curStruct->CurrentSRAMType, 10)) {
+        std::cout << "Synchronous ";
+    }
+    if (getBit(curStruct->CurrentSRAMType, 9)) {
+        std::cout << "Asynchronous ";
+    }
+    std::cout << std::endl;
+}
+
+void displayInformation(SMBIOS_struct_type_9* curStruct, RawSMBIOSData* rawData) {
 
 }
 
-void displayInformation(SMBIOS_struct_type_9* cur_struct, RawSMBIOSData* raw_data) {
+void displayInformation(SMBIOS_struct_type_16* curStruct, RawSMBIOSData* rawData) {
 
 }
 
-void displayInformation(SMBIOS_struct_type_16* cur_struct, RawSMBIOSData* raw_data) {
+void displayInformation(SMBIOS_struct_type_17* curStruct, RawSMBIOSData* rawData) {
 
 }
 
-void displayInformation(SMBIOS_struct_type_17* cur_struct, RawSMBIOSData* raw_data) {
+void displayInformation(SMBIOS_struct_type_19* curStruct, RawSMBIOSData* rawData) {
 
 }
 
-void displayInformation(SMBIOS_struct_type_19* cur_struct, RawSMBIOSData* raw_data) {
-
-}
-
-void displayInformation(SMBIOS_struct_type_32* cur_struct, RawSMBIOSData* raw_data) {
+void displayInformation(SMBIOS_struct_type_32* curStruct, RawSMBIOSData* rawData) {
 
 }

@@ -4,7 +4,7 @@
 
 int main()
 {
-    RawSMBIOSData* smBiosData = get_raw_data();
+    RawSMBIOSData* smBiosData = getRawData();
 
     displayAllStructures(smBiosData);
 

@@ -111,7 +111,7 @@ struct SMBIOS_struct_type_7 : SMBIOS_struct {
     WORD    SupportedSRAMType;
     WORD    CurrentSRAMType;
     BYTE    CacheSpeed;
-    BYTE    ErrorConnectionType;
+    BYTE    ErrorCorrectionType;
     BYTE    SystemCachetype;
     BYTE    Associativity;
 };
