@@ -66,6 +66,25 @@ struct SMBIOS_struct_type_2 : SMBIOS_struct {
 };
 
 // Necessary structure of type 3
-struct SMBIOS_struct_type_3 {
+struct SMBIOS_struct_type_3 : SMBIOS_struct {
+    WORD    Handle;
+    BYTE    Manufacturer;
+    BYTE    ChassisType;
+    BYTE    Version;
+    BYTE    SerialNumber;
+    BYTE    AssetTagNumber;
+    BYTE    BootUpState;
+    BYTE    PowerSupplyState;
+    BYTE    ThermalState;
+    BYTE    SecurityStatus;
+    BYTE    OEMDefined[4];
+    BYTE    Height;
+    BYTE    NumberOfPowerCords;
+    BYTE    ContainedElementCount;
+    BYTE    ContainedElementRecordLength;
+};
+
+// Necessary structure of type 4
+struct SMBIOS_struct_type_4 : SMBIOS_struct {
 
 };

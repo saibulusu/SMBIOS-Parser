@@ -49,7 +49,8 @@ std::vector<SMBIOS_struct*> get_structure_table(RawSMBIOSData* raw_data) {
     return structure_table;
 }
 
-void displayStructureTable(RawSMBIOSData* raw_data) {
+// Display each structure in a list
+void displayAllStructures(RawSMBIOSData* raw_data) {
     std::vector<SMBIOS_struct*> structure_table = get_structure_table(raw_data);
     for (int i = 0; i < structure_table.size(); ++i) {
         if (structure_table[i]->Type == 0) {
@@ -60,6 +61,9 @@ void displayStructureTable(RawSMBIOSData* raw_data) {
         }
         else if (structure_table[i]->Type == 2) {
             displayInformation((SMBIOS_struct_type_2*)structure_table[i], raw_data);
+        }
+        else if (structure_table[i]->Type == 3) {
+            displayInformation((SMBIOS_struct_type_3*)structure_table[i], raw_data);
         }
         else {
             displayInformation((SMBIOS_struct_non_required*)structure_table[i]);
@@ -589,5 +593,216 @@ void displayFeatureFlags(SMBIOS_struct_type_2* cur_struct) {
 
     if (get_bit(flags, 0, 1)) {
         std::cout << "The board is a hosting baord" << std::endl;
+    }
+}
+
+// Display Chassis Information (Type 3)
+void displayInformation(SMBIOS_struct_type_3* cur_struct, RawSMBIOSData* raw_data) {
+    std::vector<std::string> strings = get_strings(cur_struct);
+    std::cout << "Chassis Information (Type " << (int)cur_struct->Type << ")" << std::endl;
+
+    if (raw_data->SMBIOSMajorVersion < 2) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    if (cur_struct->Manufacturer == NULL) {
+        std::cout << "There is no manufacturer information" << std::endl;
+    }
+    else {
+        std::cout << "Manufacturer: " << strings[cur_struct->Manufacturer] << std::endl;
+    }
+
+    displayChassisType(cur_struct);
+    
+    if (cur_struct->Version == 0) {
+        std::cout << "There is no version information" << std::endl;
+    }
+    else {
+        std::cout << "Version: " << strings[cur_struct->Version] << std::endl;
+    }
+
+    if (cur_struct->SerialNumber == 0) {
+        std::cout << "There is no serial number information" << std::endl;
+    }
+    else {
+        std::cout << "Serial Number: " << strings[cur_struct->SerialNumber] << std::endl;
+    }
+
+    if (cur_struct->AssetTagNumber == 0) {
+        std::cout << "There is no asset tag number information" << std::endl;
+    }
+    else {
+        std::cout << "Asset Tag Number: " << strings[cur_struct->AssetTagNumber] << std::endl;
+    }
+
+    if (raw_data->SMBIOSMajorVersion == 2 && raw_data->SMBIOSMinorVersion < 1) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    std::cout << "Boot-up State: " << get_Chassis_State(cur_struct->BootUpState) << std::endl;
+    std::cout << "Power Supply State: " << get_Chassis_State(cur_struct->PowerSupplyState) << std::endl;
+    std::cout << "Thermal State: " << get_Chassis_State(cur_struct->ThermalState) << std::endl;
+
+    std::cout << "Security State: " << get_Chassis_Security_State(cur_struct->SecurityStatus) << std::endl;
+    //BYTE* pSKU = (BYTE*)cur_struct->ContainedElementRecordLength + cur_struct->ContainedElementCount * cur_struct->ContainedElementRecordLength;
+    //std::cout << "SKU Number: " << (int)*pSKU << std::endl;
+
+    std::cout << "--------------------------------------------------------" << std::endl;
+}
+
+// Display the chassis type
+void displayChassisType(SMBIOS_struct_type_3* cur_struct) {
+    BYTE characteristics[100];
+    characteristics[0] = cur_struct->ChassisType;
+    if (get_bit(characteristics, 7, 1) == 1) {
+        std::cout << "Chassis locked" << std::endl;
+        characteristics[0] %= 128;
+    }
+    else {
+        std::cout << "Unsure whether chassis is locked" << std::endl;
+    }
+
+    std::cout << "Chassis Type: ";
+    switch (characteristics[0]) {
+    case 1:
+        std::cout << "Other";
+        break;
+    case 2:
+        std::cout << "Unknown";
+        break;
+    case 3:
+        std::cout << "Desktop";
+        break;
+    case 4:
+        std::cout << "Low Profile Desktop";
+        break;
+    case 5:
+        std::cout << "Pizza Box";
+        break;
+    case 6:
+        std::cout << "Mini Tower";
+        break;
+    case 7:
+        std::cout << "Tower";
+        break;
+    case 8:
+        std::cout << "Portable";
+        break;
+    case 9:
+        std::cout << "Laptop";
+        break;
+    case 10:
+        std::cout << "Notebook";
+        break;
+    case 11:
+        std::cout << "Hand Held";
+        break;
+    case 12:
+        std::cout << "Docking Station";
+        break;
+    case 13:
+        std::cout << "All in One";
+        break;
+    case 14:
+        std::cout << "Sub Notebook";
+        break;
+    case 15:
+        std::cout << "Space-saving";
+        break;
+    case 16:
+        std::cout << "Lunch Box";
+        break;
+    case 17:
+        std::cout << "Main Server Chassis";
+        break;
+    case 18:
+        std::cout << "Expansion Chassis";
+        break;
+    case 19:
+        std::cout << "SubChassis";
+        break;
+    case 20:
+        std::cout << "Bus Expansion Chassis";
+        break;
+    case 21:
+        std::cout << "Peripheral chassis";
+        break;
+    case 22:
+        std::cout << "RAID Chassis";
+        break;
+    case 23:
+        std::cout << "Rack Mount Chassis";
+        break;
+    case 24:
+        std::cout << "Sealed-case PC";
+        break;
+    case 25:
+        std::cout << "Multi-system Chassis";
+        break;
+    case 26:
+        std::cout << "Compact PCI";
+        break;
+    case 27:
+        std::cout << "Advanced TCA";
+        break;
+    case 28:
+        std::cout << "Blade";
+        break;
+    case 29:
+        std::cout << "Blade Enclosure";
+        break;
+    case 30:
+        std::cout << "Tablet";
+        break;
+    case 31:
+        std::cout << "Convertible";
+        break;
+    case 32:
+        std::cout << "Detachable";
+        break;
+    default:
+        std::cout << "Other";
+        break;
+    }
+    std::cout << std::endl;
+}
+
+// Get the boot up state information
+std::string get_Chassis_State(BYTE field) {
+    switch (field) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unkown";
+    case 3:
+        return "Safe";
+    case 4:
+        return "Warning";
+    case 5:
+        return "Critical";
+    case 6:
+        return "Non-recoverable";
+    default:
+        return "Other";
+    }
+}
+
+// Get the Chassis security state
+std::string get_Chassis_Security_State(BYTE field) {
+    switch (field) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unknown";
+    case 3:
+        return "None";
+    case 4:
+        return "External interface locked out";
+    case 5:
+        return "External interface enabled";
+    default:
+        return "Other";
     }
 }
