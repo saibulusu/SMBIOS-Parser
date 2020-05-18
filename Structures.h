@@ -115,3 +115,128 @@ struct SMBIOS_struct_type_4 : SMBIOS_struct {
     WORD    CoreEnabled2;
     WORD    ThreadCount2;
 };
+
+// Necessary structure of type 5
+struct SMBIOS_struct_type_5 : SMBIOS_struct {
+    WORD    Handle;
+    BYTE    ErrorDetectingMethod;
+    BYTE    ErrorCorrectingCapability;
+    BYTE    SupportedInterleave;
+    BYTE    CurrentInterleave;
+    BYTE    MaximumMemoryModuleSize;
+    WORD    SupportedSeeds;
+    WORD    SupportedMemoryTypes;
+    BYTE    MemoryModuleVoltage;
+    BYTE    NumberOfAssociatedMemorySlots;
+    BYTE    MemoryModuleConfigurationHandles[513];
+}
+
+// Necessary structure of type 6
+struct SMBIOS_struct_type_6 : SMBIOS_struct {
+    WORD    Handle;
+    BYTE    SocketDesignation;
+    BYTE    BankConnections;
+    BYTE    CurrentSpeed;
+    WORD    CurrentMemoryType;
+    BYTE    InstalledSize;
+    BYTE    EnabledSize;
+    BYTE    ErrorStatus;
+}
+
+// Necessary structure of type 7
+struct SMBIOS_struct_type_7 : SMBIOS_struct {
+    WORD    Handle;
+    BYTE    SocketDesignation;
+    WORD    CacheConfiguration;
+    WORD    MaximumCacheSize;
+    WORD    InstalledSize;
+    WORD    SupportedSRAMType;
+    WORD    CurrentSRAMType;
+    BYTE    CacheSpeed;
+    BYTE    ErrorConnectionType;
+    BYTE    SystemCachetype;
+    BYTE    Associativity;
+}
+
+// Necessary structure of type 8
+struct SMBIOS_struct_type_8 : SMBIOS_struct {
+    WORD    Handle;
+    BYTE    InternalReferenceDesignator;
+    BYTE    InternalConnectorType;
+    BYTE    ExternalReferenceDesignator;
+    BYTE    ExternalConnectorType;
+    BYTE    PortType;
+}
+
+// Necessary structure of type 9
+struct SMBIOS_struct_type_9 : SMBIOS_struct {
+    WORD    Handle;
+    BYTE    SlotDesignation;
+    BYTE    SlotType;
+    BYTE    SlotDataBusWidth;
+    BYTE    CurrentUsage;
+    BYTE    SlotLength;
+    WORD    SlotID;
+    BYTE    SlotCharacteristics1;
+    BYTE    SlotCharacteristics2;
+    WORD    SegmentGroupNumber;
+    BYTE    BusNumber;
+    BYTE    DeviceNumber;
+}
+
+// Necessary structure of type 16
+struct SMBIOS_struct_type_16 : SMBIOS_struct {
+    WORD    Handle;
+    BYTE    Location;
+    BYTE    Use;
+    BYTE    MemoryErrorCorrection;
+    BYTE    MaximumCapacity[4];
+    WORD    MemoryErrorInformationHandle;
+    WORD    NumberOfMemoryDevices;
+    BYTE    ExtendedMaximumCapacity[8];
+}
+
+// Necessary structure of type 17
+struct SMBIOS_struct_type_17 : SMBIOS_struct {
+    WORD    Handle;
+    WORD    PhysicalMemoryArrayHandle;
+    WORD    MemoryErrorInformationHandle;
+    WORD    TotalWidth;
+    WORD    DataWidth;
+    WORD    Size;
+    BYTE    FormFactor;
+    BYTE    DeviceSet;
+    BYTE    DeviceLocator;
+    BYTE    BankLocator;
+    BYTE    MemoryType;
+    WORD    TypeDetail;
+    WORD    Speed;
+    BYTE    Manufacturer;
+    BYTE    SerialNumber;
+    BYTE    AssetTag;
+    BYTE    PartNumber;
+    BYTE    Attributes;
+    BYTE    ExtendedSize[4];
+    WORD    ConfiguredMemoryClockSpeed;
+    WORD    MinimumVoltage;
+    WORD    MaximumVoltage;
+    WORD    ConfiguredVoltage;
+}
+
+// Necessary structure of type 19
+struct SMBIOS_struct_type_19 : SMBIOS_struct {
+    WORD    Handle;
+    BYTE    StartingAddress[4];
+    BYTE    EndingAddress[4];
+    WORD    MemoryArrayHandle;
+    BYTE    PartitionWidth;
+    BYTE    ExtendedStartingAddress[8];
+    BYTE    ExtendedEndingAddress[8];
+}
+
+// Necessary structure of type 32
+struct SMBIOS_struct_type_32 : SMBIOS_struct {
+    WORD    Handle;
+    BYTE    Reserved[6];
+    BYTE    BootStatus[10];
+}

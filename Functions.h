@@ -31,3 +31,9 @@ void displayInformation(SMBIOS_struct_type_1* cur_struct, RawSMBIOSData* raw_dat
 void displayInformation(SMBIOS_struct_type_2* cur_struct, RawSMBIOSData* raw_data);
 void displayInformation(SMBIOS_struct_type_3* cur_struct, RawSMBIOSData* raw_data);
 void displayInformation(SMBIOS_struct_type_4* cur_struct, RawSMBIOSData* raw_data);
+void displayInformation(SMBIOS_struct_type_7* cur_struct, RawSMBIOSData* raw_data);
+void displayInformation(SMBIOS_struct_type_9* cur_struct, RawSMBIOSData* raw_data);
+void displayInformation(SMBIOS_struct_type_16* cur_struct, RawSMBIOSData* raw_data);
+void displayInformation(SMBIOS_struct_type_17* cur_struct, RawSMBIOSData* raw_data);
+void displayInformation(SMBIOS_struct_type_19* cur_struct, RawSMBIOSData* raw_data);
+void displayInformation(SMBIOS_struct_type_32* cur_struct, RawSMBIOSData* raw_data);
