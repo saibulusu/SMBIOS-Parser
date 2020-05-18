@@ -65,6 +65,9 @@ void displayAllStructures(RawSMBIOSData* raw_data) {
         else if (structure_table[i]->Type == 3) {
             displayInformation((SMBIOS_struct_type_3*)structure_table[i], raw_data);
         }
+        else if (structure_table[i]->Type == 4) {
+            displayInformation((SMBIOS_struct_type_4*)structure_table[i], raw_data);
+        }
         else {
             displayInformation((SMBIOS_struct_non_required*)structure_table[i]);
         }
@@ -105,6 +108,7 @@ std::vector<std::string> get_strings(SMBIOS_struct* cur_struct) {
 void displayInformation(SMBIOS_struct_non_required* cur_struct) {
     std::cout << "Vendor-Specific SMBIOS structure (Type " << (int)cur_struct->Type << ")" << std::endl;
     std::cout << "Cannot display more information" << std::endl;
+    std::cout << "--------------------------------------------------------" << std::endl;
 }
 
 // Display System BIOS Information (Type 0)
@@ -646,8 +650,18 @@ void displayInformation(SMBIOS_struct_type_3* cur_struct, RawSMBIOSData* raw_dat
     std::cout << "Thermal State: " << get_Chassis_State(cur_struct->ThermalState) << std::endl;
 
     std::cout << "Security State: " << get_Chassis_Security_State(cur_struct->SecurityStatus) << std::endl;
-    //BYTE* pSKU = (BYTE*)cur_struct->ContainedElementRecordLength + cur_struct->ContainedElementCount * cur_struct->ContainedElementRecordLength;
-    //std::cout << "SKU Number: " << (int)*pSKU << std::endl;
+
+    if (raw_data->SMBIOSMajorVersion == 2 && raw_data->SMBIOSMinorVersion < 3) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    if (cur_struct->NumberOfPowerCords == 0) {
+        std::cout << "Unspecified number of power chords" << std::endl;
+    }
+    else {
+        std::cout << "Number of Power Chords: " << (int)cur_struct->NumberOfPowerCords << std::endl;
+    }
 
     std::cout << "--------------------------------------------------------" << std::endl;
 }
@@ -802,6 +816,313 @@ std::string get_Chassis_Security_State(BYTE field) {
         return "External interface locked out";
     case 5:
         return "External interface enabled";
+    default:
+        return "Other";
+    }
+}
+
+// Display Processor Information (Type 4)
+void displayInformation(SMBIOS_struct_type_4* cur_struct, RawSMBIOSData* raw_data) {
+    std::vector<std::string> strings = get_strings(cur_struct);
+    std::cout << "Processor Information (Type " << (int)cur_struct->Type << ")" << std::endl;
+
+    if (raw_data->SMBIOSMajorVersion < 2) {
+        return;
+    }
+
+    if (cur_struct->SocketDesignation == 0) {
+        std::cout << "There is no socket designation information" << std::endl;
+    }
+    else {
+        std::cout << "Socket Designation: " << strings[cur_struct->SocketDesignation] << std::endl;
+    }
+
+    std::cout << "Processor Type: " << getProcessorType(cur_struct) << std::endl;
+    std::cout << "Processor Family: " << getProcessorFamily(cur_struct) << std::endl;
+
+    if (cur_struct->ProcessorManufacturer == 0) {
+        std::cout << "There is no processor manufacturer information" << std::endl;
+    }
+    else {
+        std::cout << "Processor Manufacturer: " << strings[cur_struct->ProcessorManufacturer] << std::endl;
+    }
+
+    std::cout << "Processor ID: " << (int)cur_struct->ProcessorID << std::endl;
+    
+    if (cur_struct->ProcessorVersion == 0) {
+        std::cout << "There is no processor version information" << std::endl;
+    } 
+    else {
+        std::cout << "Processor Version: " << strings[cur_struct->ProcessorVersion] << std::endl;
+    }
+
+    std::cout << "Voltage: " << getVoltage(cur_struct) << std::endl;
+    std::cout << "External Clock: " << (int)cur_struct->ExternalClock << "MHz" << std::endl;
+    std::cout << "Max Processor Speed: " << (int)cur_struct->MaxSpeed << "MHz" << std::endl;
+    std::cout << "Current Processor Speed: " << (int)cur_struct->CurrentSpeed << "MHz" << std::endl;
+    std::cout << "Processor Status: " << getProcessorStatus(cur_struct) << std::endl;
+    std::cout << "Processor Upgrade: " << getProcessorUpgrade(cur_struct) << std::endl;
+
+    if (raw_data->SMBIOSMajorVersion == 2 && raw_data->SMBIOSMinorVersion < 1) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    std::cout << "--------------------------------------------------------" << std::endl;
+}
+
+// Parse the processor type
+std::string getProcessorType(SMBIOS_struct_type_4* cur_struct) {
+    switch (cur_struct->ProcessorType) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unknown";
+    case 3:
+        return "Central Processor";
+    case 4:
+        return "Math Processor";
+    case 5:
+        return "DSP Proceessor";
+    case 6:
+        return "Video Processor";
+    default:
+        return "Other";
+    }
+}
+
+// Parse the processor family
+std::string getProcessorFamily(SMBIOS_struct_type_4* cur_struct) {
+    switch (cur_struct->ProcessorFamily) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unknown";
+    case 3:
+        return "8086";
+    case 4:
+        return "80286";
+    case 5:
+        return "Intel386 Processor";
+    case 6:
+        return "Intel486 Processor";
+    case 7:
+        return "8087";
+    case 8:
+        return "80287";
+    case 9:
+        return "80387";
+    case 10:
+        return "80487";
+    case 11:
+        return "Intel Pentium Processor";
+    case 12:
+        return "Pentium Pro Processsor";
+    case 13:
+        return "Pentium II Processor";
+    case 14:
+        return "Pentium Processor with MMX Technology";
+    case 15:
+        return "Intel Celeron Processor";
+    case 16:
+        return "Pentium II Xeon Processor";
+    case 17:
+        return "Pentium III Processor";
+    case 18:
+        return "M1 Family";
+    case 19:
+        return "M2 Family";
+    case 20:
+        return "Intel Celeron M Processor";
+    case 21:
+        return "Intel Pentium 4 HT Processor";
+    case 24:
+        return "AMD Duron Processor Family";
+    case 25:
+        return "K5 Family";
+    case 26:
+        return "K6 Family";
+    case 27:
+        return "K6-2";
+    case 28:
+        return "K6-3";
+    case 29:
+        return "AMD Athlon Processor Family";
+    case 30:
+        return "AMD29000 Family";
+    case 31:
+        return "K6-2+";
+    case 32:
+        return "Power PC Family";
+    case 33:
+        return "Power PC 601";
+    case 34:
+        return "Power PC 603";
+    case 35:
+        return "Power PC 603+";
+    case 36:
+        return "Power PC 604";
+    default:
+        return "Other";
+    }
+}
+
+// Parse the voltage of the processor
+std::string getVoltage(SMBIOS_struct_type_4* cur_struct) {
+    BYTE volts[100];
+    volts[0] = cur_struct->Voltage;
+    
+    if (get_bit(volts, 0, 1) == 1) {
+        return "5V";
+    }
+    else if (get_bit(volts, 1, 1) == 1) {
+        return "3.3V";
+    }
+    else if (get_bit(volts, 2, 1) == 1) {
+        return "2.9V";
+    }
+    return "Other";
+}
+
+// Get the status of the processor
+std::string getProcessorStatus(SMBIOS_struct_type_4* cur_struct) {
+    BYTE stats[100];
+    stats[0] = cur_struct->Status;
+    
+    std::string res = "";
+
+    if (get_bit(stats, 6, 1) == 1) {
+        res += "CPU Socket Population";
+    }
+    else {
+        res += "CPU Socket Unpopulated";
+    }
+
+    res += ", ";
+
+    int lowerBits = cur_struct->Status >> 5;
+    switch (lowerBits) {
+    case 0:
+        res += "Unknown";
+        break;
+    case 1:
+        res += "CPU Enabled";
+        break;
+    case 2:
+        res += "CPU Disabled by User Through BIOS Setup";
+        break;
+    case 3:
+        res += "CPU Disabled by BIOS (POST Error)";
+        break;
+    case 4:
+        res += "CPU is Idle, Waiting to be Enabled";
+        break;
+    default:
+        res += "Other";
+        break;
+    }
+    return res;
+}
+
+// Get processor upgrade information
+std::string getProcessorUpgrade(SMBIOS_struct_type_4* cur_struct) {
+    switch (cur_struct->ProcessorUpgrade) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unknown";
+    case 3:
+        return "Daughter Board";
+    case 4:
+        return "ZIF Socket";
+    case 5:
+        return "Replaceable Piggy Back";
+    case 6:
+        return "None";
+    case 7:
+        return "LIF Socket";
+    case 8:
+        return "Slot 1";
+    case 9:
+        return "Slot 2";
+    case 10:
+        return "370-Pin Socket";
+    case 11:
+        return "Slot A";
+    case 12:
+        return "Slot M";
+    case 13:
+        return "Socket 423";
+    case 14:
+        return "Socket A (Socket 462)";
+    case 15:
+        return "478";
+    case 16:
+        return "754";
+    case 17:
+        return "940";
+    case 18:
+        return "939";
+    case 19:
+        return "Socket mPGA604";
+    case 20:
+        return "LGA771";
+    case 21:
+        return "LGA775";
+    case 22:
+        return "Socket S1";
+    case 23:
+        return "Socket AM2";
+    case 24:
+        return "Socket F (1207)";
+    case 25:
+        return "Socket LGA 1366";
+    case 26:
+        return "Socket G34";
+    case 27:
+        return "Socket AM3";
+    case 28:
+        return "Socket C32";
+    case 29:
+        return "Socket LGA1156";
+    case 30:
+        return "Socket LGA1567";
+    case 31:
+        return "Socket PGA988A";
+    case 32:
+        return "Sockt BGA1288";
+    case 33:
+        return "Socket rPGA988B";
+    case 34:
+        return "Socket BGA 1023";
+    case 35:
+        return "Socket BGA 1224";
+    case 36:
+        return "Socket LGA1155";
+    case 37:
+        return "Socket LGA1356";
+    case 38:
+        return "Socket LGA2011";
+    case 39:
+        return "Socket FS1";
+    case 40:
+        return "Socket FS2";
+    case 41:
+        return "Socket FM1";
+    case 42:
+        return "Socket FM2";
+    case 43:
+        return "Socket LGA2011-3";
+    case 44:
+        return "Socket LGA1356-3";
+    case 45:
+        return "Socket LGA1150";
+    case 46:
+        return "Socket BGA1168";
+    case 47:
+        return "Socket BGA1234";
+    case 48:
+        return "Socket BGA1364";
     default:
         return "Other";
     }

@@ -82,9 +82,36 @@ struct SMBIOS_struct_type_3 : SMBIOS_struct {
     BYTE    NumberOfPowerCords;
     BYTE    ContainedElementCount;
     BYTE    ContainedElementRecordLength;
+    BYTE    ContainedElements[65537];
 };
 
 // Necessary structure of type 4
 struct SMBIOS_struct_type_4 : SMBIOS_struct {
-
+    WORD    Handle;
+    BYTE    SocketDesignation;
+    BYTE    ProcessorType;
+    BYTE    ProcessorFamily;
+    BYTE    ProcessorManufacturer;
+    BYTE    ProcessorID;
+    BYTE    ProcessorVersion;
+    BYTE    Voltage;
+    WORD    ExternalClock;
+    WORD    MaxSpeed;
+    WORD    CurrentSpeed;
+    BYTE    Status;
+    BYTE    ProcessorUpgrade;
+    WORD    L1CacheHandle;
+    WORD    L2CacheHandle;
+    WORD    L3CacheHandle;
+    BYTE    SerialNumber;
+    BYTE    AssetTag;
+    BYTE    PartNumber;
+    BYTE    CoreCount;
+    BYTE    CoreEnabled;
+    BYTE    ThreadCount;
+    WORD    ProcessorCharacteristics;
+    WORD    ProcessorFamily2;
+    WORD    CoreCount2;
+    WORD    CoreEnabled2;
+    WORD    ThreadCount2;
 };
