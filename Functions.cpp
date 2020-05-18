@@ -59,9 +59,6 @@ void displayAllStructures(RawSMBIOSData* raw_data) {
         else if (structure_table[i]->Type == 1) {
             displayInformation((SMBIOS_struct_type_1*)structure_table[i], raw_data);
         }
-        else if (structure_table[i]->Type == 2) {
-            displayInformation((SMBIOS_struct_type_2*)structure_table[i], raw_data);
-        }
         else if (structure_table[i]->Type == 3) {
             displayInformation((SMBIOS_struct_type_3*)structure_table[i], raw_data);
         }
@@ -166,7 +163,6 @@ int get_bit(BYTE characteristics[], int bit_num, int num_bytes){
 
 // Display BIOS Characteristics
 void displayBIOSCharacteristics(SMBIOS_struct_type_0* cur_struct) {
-    //BYTE characteristics[8] = cur_struct->BIOS_Characteristics;
     if (get_bit(cur_struct->BIOS_Characteristics, 3, 8)) {
         std::cout << "BIOS Characteristics are not supported" << std::endl;
     }
@@ -470,136 +466,6 @@ std::string get_wakeUp_Type(SMBIOS_struct_type_1* cur_struct) {
     }
 }
 
-// Display Baseboard Information (Type 2)
-void displayInformation(SMBIOS_struct_type_2* cur_struct, RawSMBIOSData* raw_data) {
-    std::vector<std::string> strings = get_strings(cur_struct);
-    std::cout << "Baseboard (Type " << (int)cur_struct->Type << ")" << std::endl;
-
-    if (cur_struct->Manufacturer == 0) {
-        std::cout << "There is no manufacturer information" << std::endl;
-    }
-    else {
-        std::cout << "Manufacturer: " << strings[cur_struct->Manufacturer] << std::endl;
-    }
-
-    if (cur_struct->Product == 0) {
-        std::cout << "There is no product information" << std::endl;
-    }
-    else {
-        std::cout << "Product: " << strings[cur_struct->Product] << std::endl;
-    }
-
-    if (cur_struct->Version == 0) {
-        std::cout << "There is no version information" << std::endl;
-    }
-    else {
-        std::cout << "Version: " << strings[cur_struct->Version] << std::endl;
-    }
-
-    if (cur_struct->AssetTag == 0) {
-        std::cout << "There is no asset tag information" << std::endl;
-    }
-    else {
-        std::cout << "Asset Tag: " << strings[cur_struct->AssetTag] << std::endl;
-    }
-
-    displayFeatureFlags(cur_struct);
-    
-    if (cur_struct->LocationInChasis == 0) {
-        std::cout << "There is no location in chasis information" << std::endl;
-    }
-    else {
-        std::cout << "Location in chasis: " << strings[cur_struct->LocationInChasis] << std::endl;
-    }
-
-    std::cout << "Chasis Handle: " << (int)cur_struct->ChassisHandle << std::endl;
-    std::cout << "Board Type: " << get_board_type(cur_struct) << std::endl;
-
-    if ((int)cur_struct->NumberOfContainedObjects == 0) {
-        std::cout << "--------------------------------------------------------" << std::endl;
-        return;
-    }
-
-    std::cout << "Contained Objects: " << std::endl;
-    char* cur_char = (char*)cur_struct + 15;
-    for (int i = 0; i < (int)cur_struct->NumberOfContainedObjects * 4; ++i) {
-        std::cout << *cur_char;
-        if (i % 4 == 3) {
-            std::cout << " ";
-        }
-        ++cur_char;
-    }
-
-    std::cout << "--------------------------------------------------------" << std::endl;
-}
-
-// Get the board type value for the struct
-std::string get_board_type(SMBIOS_struct_type_2* cur_struct) {
-    switch (cur_struct->BoardType) {
-        case 1:
-            return "Unknown";
-        case 2:
-            return "Other";
-        case 3:
-            return "Server Blade";
-        case 4:
-            return "Connectivity Switch";
-        case 5:
-            return "System Management Module";
-        case 6:
-            return "Processor Module";
-        case 7:
-            return "I/O Module";
-        case 8:
-            return "Memory Module";
-        case 9:
-            return "Daughter Board";
-        case 10:
-            return "Motherboard";
-        case 11:
-            return "Processor/Memory Module";
-        case 12:
-            return "Processor/IO Module";
-        case 13:
-            return "Interconnect Board";
-    }
-    return "Other";
-}
-
-// Display information about the feature flags
-void displayFeatureFlags(SMBIOS_struct_type_2* cur_struct) {
-    BYTE flags[100];
-    flags[1] = cur_struct->FeatureFlags;
-    if (get_bit(flags, 4, 1)) {
-        std::cout << "The board is hot swappable" << std::endl;
-    }
-    else {
-        std::cout << "The board is not hot swappable" << std::endl;
-    }
-
-    if (get_bit(flags, 3, 1)) {
-        std::cout << "The board is replaceable" << std::endl;
-    }
-    else {
-        std::cout << "The board is not replaceable" << std::endl;
-    }
-
-    if (get_bit(flags, 2, 1)) {
-        std::cout << "The board is removeable" << std::endl;
-    }
-    else {
-        std::cout << "The board is not removeable" << std::endl;
-    }
-
-    if (get_bit(flags, 1, 1)) {
-        std::cout << "The board requires at least 1 daughter board to function properly" << std::endl;
-    }
-
-    if (get_bit(flags, 0, 1)) {
-        std::cout << "The board is a hosting baord" << std::endl;
-    }
-}
-
 // Display Chassis Information (Type 3)
 void displayInformation(SMBIOS_struct_type_3* cur_struct, RawSMBIOSData* raw_data) {
     std::vector<std::string> strings = get_strings(cur_struct);
@@ -868,6 +734,8 @@ void displayInformation(SMBIOS_struct_type_4* cur_struct, RawSMBIOSData* raw_dat
         return;
     }
 
+
+
     std::cout << "--------------------------------------------------------" << std::endl;
 }
 
@@ -1126,4 +994,28 @@ std::string getProcessorUpgrade(SMBIOS_struct_type_4* cur_struct) {
     default:
         return "Other";
     }
+}
+
+void displayInformation(SMBIOS_struct_type_7* cur_struct, RawSMBIOSData* raw_data) {
+
+}
+
+void displayInformation(SMBIOS_struct_type_9* cur_struct, RawSMBIOSData* raw_data) {
+
+}
+
+void displayInformation(SMBIOS_struct_type_16* cur_struct, RawSMBIOSData* raw_data) {
+
+}
+
+void displayInformation(SMBIOS_struct_type_17* cur_struct, RawSMBIOSData* raw_data) {
+
+}
+
+void displayInformation(SMBIOS_struct_type_19* cur_struct, RawSMBIOSData* raw_data) {
+
+}
+
+void displayInformation(SMBIOS_struct_type_32* cur_struct, RawSMBIOSData* raw_data) {
+
 }

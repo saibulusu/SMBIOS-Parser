@@ -50,21 +50,6 @@ struct SMBIOS_struct_type_1 : SMBIOS_struct {
     BYTE    Family;
 };
 
-// Necessary structure of type 2
-struct SMBIOS_struct_type_2 : SMBIOS_struct {
-    WORD    Handle;
-    BYTE    Manufacturer;
-    BYTE    Product;
-    BYTE    Version;
-    BYTE    SerialNumber;
-    BYTE    AssetTag;
-    BYTE    FeatureFlags;
-    BYTE    LocationInChasis;
-    WORD    ChassisHandle;
-    BYTE    BoardType;
-    BYTE    NumberOfContainedObjects;
-};
-
 // Necessary structure of type 3
 struct SMBIOS_struct_type_3 : SMBIOS_struct {
     WORD    Handle;
@@ -92,7 +77,7 @@ struct SMBIOS_struct_type_4 : SMBIOS_struct {
     BYTE    ProcessorType;
     BYTE    ProcessorFamily;
     BYTE    ProcessorManufacturer;
-    BYTE    ProcessorID;
+    BYTE    ProcessorID[8];
     BYTE    ProcessorVersion;
     BYTE    Voltage;
     WORD    ExternalClock;
@@ -116,33 +101,6 @@ struct SMBIOS_struct_type_4 : SMBIOS_struct {
     WORD    ThreadCount2;
 };
 
-// Necessary structure of type 5
-struct SMBIOS_struct_type_5 : SMBIOS_struct {
-    WORD    Handle;
-    BYTE    ErrorDetectingMethod;
-    BYTE    ErrorCorrectingCapability;
-    BYTE    SupportedInterleave;
-    BYTE    CurrentInterleave;
-    BYTE    MaximumMemoryModuleSize;
-    WORD    SupportedSeeds;
-    WORD    SupportedMemoryTypes;
-    BYTE    MemoryModuleVoltage;
-    BYTE    NumberOfAssociatedMemorySlots;
-    BYTE    MemoryModuleConfigurationHandles[513];
-}
-
-// Necessary structure of type 6
-struct SMBIOS_struct_type_6 : SMBIOS_struct {
-    WORD    Handle;
-    BYTE    SocketDesignation;
-    BYTE    BankConnections;
-    BYTE    CurrentSpeed;
-    WORD    CurrentMemoryType;
-    BYTE    InstalledSize;
-    BYTE    EnabledSize;
-    BYTE    ErrorStatus;
-}
-
 // Necessary structure of type 7
 struct SMBIOS_struct_type_7 : SMBIOS_struct {
     WORD    Handle;
@@ -156,17 +114,7 @@ struct SMBIOS_struct_type_7 : SMBIOS_struct {
     BYTE    ErrorConnectionType;
     BYTE    SystemCachetype;
     BYTE    Associativity;
-}
-
-// Necessary structure of type 8
-struct SMBIOS_struct_type_8 : SMBIOS_struct {
-    WORD    Handle;
-    BYTE    InternalReferenceDesignator;
-    BYTE    InternalConnectorType;
-    BYTE    ExternalReferenceDesignator;
-    BYTE    ExternalConnectorType;
-    BYTE    PortType;
-}
+};
 
 // Necessary structure of type 9
 struct SMBIOS_struct_type_9 : SMBIOS_struct {
@@ -182,7 +130,7 @@ struct SMBIOS_struct_type_9 : SMBIOS_struct {
     WORD    SegmentGroupNumber;
     BYTE    BusNumber;
     BYTE    DeviceNumber;
-}
+};
 
 // Necessary structure of type 16
 struct SMBIOS_struct_type_16 : SMBIOS_struct {
@@ -194,7 +142,7 @@ struct SMBIOS_struct_type_16 : SMBIOS_struct {
     WORD    MemoryErrorInformationHandle;
     WORD    NumberOfMemoryDevices;
     BYTE    ExtendedMaximumCapacity[8];
-}
+};
 
 // Necessary structure of type 17
 struct SMBIOS_struct_type_17 : SMBIOS_struct {
@@ -221,7 +169,7 @@ struct SMBIOS_struct_type_17 : SMBIOS_struct {
     WORD    MinimumVoltage;
     WORD    MaximumVoltage;
     WORD    ConfiguredVoltage;
-}
+};
 
 // Necessary structure of type 19
 struct SMBIOS_struct_type_19 : SMBIOS_struct {
@@ -232,11 +180,11 @@ struct SMBIOS_struct_type_19 : SMBIOS_struct {
     BYTE    PartitionWidth;
     BYTE    ExtendedStartingAddress[8];
     BYTE    ExtendedEndingAddress[8];
-}
+};
 
 // Necessary structure of type 32
 struct SMBIOS_struct_type_32 : SMBIOS_struct {
     WORD    Handle;
     BYTE    Reserved[6];
     BYTE    BootStatus[10];
-}
+};
