@@ -71,6 +71,9 @@ void displayAllStructures(RawSMBIOSData* raw_data) {
         else if (structure_table[i]->Type == 9) {
             displayInformation((SMBIOS_struct_type_9*)structure_table[i], raw_data);
         }
+        else if (structure_table[i]->Type == 16) {
+            displayInformation((SMBIOS_struct_type_16*)structure_table[i], raw_data);
+        }
         else {
             displayInformation((SMBIOS_struct_non_required*)structure_table[i]);
         }
@@ -1982,8 +1985,110 @@ void displaySlotCharacteristics2(SMBIOS_struct_type_9* curStruct) {
     std::cout << std::endl;
 }
 
+// Display Physical Memory Array (Type 16)
 void displayInformation(SMBIOS_struct_type_16* curStruct, RawSMBIOSData* rawData) {
+    std::vector<std::string> strings = getStrings(curStruct);
+    std::cout << "Physics Memory Array Information (Type " << (int)curStruct->Type << ")" << std::endl;
 
+    if (rawData->SMBIOSMajorVersion < 2 || (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 1)) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    std::cout << "Handle: " << curStruct->Handle << std::endl;
+    std::cout << "Location: " << getLocation(curStruct) << std::endl;
+    std::cout << "USe: " << getUse(curStruct) << std::endl;
+    std::cout << "Memory Error Correction Type: " << getErrorCorrectionType(curStruct) << std::endl;
+
+    std::cout << "Maximum Capacity: " << (int)curStruct->MaximumCapacity << "K" << std::endl;
+    std::cout << "Memory Error Information Handle: " << (int)curStruct->MemoryErrorInformationHandle << std::endl;
+    std::cout << "Number of Memory Devices: " << (int)curStruct->NumberOfMemoryDevices << std::endl;
+    
+    if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 7) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    std::cout << "Extended Maximum Capacity: " << (int)curStruct->ExtendedMaximumCapacity << std::endl;
+
+    std::cout << "--------------------------------------------------------" << std::endl;
+}
+
+std::string getLocation(SMBIOS_struct_type_16* curStruct) {
+    switch (curStruct->Location) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unknown";
+    case 3:
+        return "System Board or Motherboard";
+    case 4:
+        return "ISA add-on card";
+    case 5:
+        return "EISA add-on card";
+    case 6:
+        return "PCI add-on card";
+    case 7:
+        return "MCA add-on card";
+    case 8:
+        return "PCMCIA add-on card";
+    case 9:
+        return "Proprietary add-on card";
+    case 10:
+        return "NuBus";
+    case 160:
+        return "PC-98/C20 Add-on Card";
+    case 161:
+        return "PC-98/C24 Add-on Card";
+    case 162:
+        return "PC-98/E Add-on Card";
+    case 163:
+        return "PC-98/Local Bus Add-on Card";
+    default:
+        return "Other";
+    }
+}
+
+std::string getUse(SMBIOS_struct_type_16* curStruct) {
+    switch (curStruct->Use) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unknown";
+    case 3:
+        return "System Memory";
+    case 4:
+        return "Video Memory";
+    case 5:
+        return "Flash Memory";
+    case 6:
+        return "Non-volatile RAM";
+    case 7:
+        return "Cache Memory";
+    default:
+        return "Other";
+    }
+}
+
+std::string getErrorCorrectionType(SMBIOS_struct_type_16* curStruct) {
+    switch (curStruct->MemoryErrorCorrection) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unknown";
+    case 3:
+        return "None";
+    case 4:
+        return "Parity";
+    case 5:
+        return "Single-bit ECC";
+    case 6:
+        return "Multi-bit ECC";
+    case 7:
+        return "CRC";
+    default:
+        return "Other";
+    }
 }
 
 void displayInformation(SMBIOS_struct_type_17* curStruct, RawSMBIOSData* rawData) {

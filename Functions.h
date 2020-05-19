@@ -31,6 +31,9 @@ std::string getSlotTypeField(SMBIOS_struct_type_9* curStruct);
 std::string getSlotDataBusWidth(SMBIOS_struct_type_9* curStruct);
 std::string getCurrentUsage(SMBIOS_struct_type_9* curStruct);
 std::string getSlotLength(SMBIOS_struct_type_9* curStruct);
+std::string getLocation(SMBIOS_struct_type_16* curStruct);
+std::string getUse(SMBIOS_struct_type_16* curStruct);
+std::string getErrorCorrectionType(SMBIOS_struct_type_16* curStruct);
 
 // Display functions
 void displayAllStructures(RawSMBIOSData* rawData);
