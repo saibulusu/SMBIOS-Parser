@@ -20,12 +20,16 @@ int main() {
                 int index;
                 std::cin >> index;
                 std::vector<SMBIOS_struct*> structureTable = getStructureTable(smBiosData);
-                if (index > structureTable.size()) {
+                if (index >= structureTable.size()) {
+                    std::cout << "structure table size is " << structureTable.size() << std::endl;
                     error();
                 }
                 else {
                     displayStructure(smBiosData, index);
                 }
+            }
+            else if (input.compare("commands") == 0) {
+                displayCommands();
             }
             else {
                 error();
@@ -55,6 +59,7 @@ void error() {
 }
 
 void displayCommands() {
+    std::cout << "show commands - display all legal commands" << std::endl;
     std::cout << "show all - display all structures" << std::endl;
     std::cout << "show table - display the structure table" << std::endl;
     std::cout << "show structure <id> - display a specific structure" << std::endl;

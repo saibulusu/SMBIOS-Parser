@@ -2423,6 +2423,7 @@ void displayInformation(SMBIOS_struct_type_19* curStruct, RawSMBIOSData* rawData
 }
 
 void displayInformation(SMBIOS_struct_type_32* curStruct, RawSMBIOSData* rawData) {
+    std::cout << "System Boot Information (Type " << (int)curStruct->Type << ")" << std::endl;
     std::cout << "Handle: " << curStruct->Handle << std::endl;
     std::cout << "Boot Status: " << getBootStatus(curStruct) << std::endl;
     std::cout << "--------------------------------------------------------" << std::endl;
