@@ -27,6 +27,10 @@ std::string getProcessorFamily2(SMBIOS_struct_type_4* curStruct);
 std::string getErrorCorrectionTypeField(SMBIOS_struct_type_7* curStruct);
 std::string getSystemCachetypeField(SMBIOS_struct_type_7* curStruct);
 std::string getAssociativity(SMBIOS_struct_type_7* curStruct);
+std::string getSlotTypeField(SMBIOS_struct_type_9* curStruct);
+std::string getSlotDataBusWidth(SMBIOS_struct_type_9* curStruct);
+std::string getCurrentUsage(SMBIOS_struct_type_9* curStruct);
+std::string getSlotLength(SMBIOS_struct_type_9* curStruct);
 
 // Display functions
 void displayAllStructures(RawSMBIOSData* rawData);
@@ -38,6 +42,9 @@ void displayHexContents(RawSMBIOSData* rawData);
 void displayCacheConfiguration(SMBIOS_struct_type_7* curStruct);
 void displayCacheSize(WORD CacheSize);
 void displaySRAMType(SMBIOS_struct_type_7* curStruct);
+void displaySlotCharacteristics1(SMBIOS_struct_type_9* curStruct);
+void displaySlotCharacteristics2(SMBIOS_struct_type_9* curStruct);
+
 void displayInformation(SMBIOS_struct_non_required* curStruct);
 void displayInformation(SMBIOS_struct_type_0* curStruct, RawSMBIOSData* rawData);
 void displayInformation(SMBIOS_struct_type_1* curStruct, RawSMBIOSData* rawData);
