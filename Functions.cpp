@@ -1,7 +1,6 @@
 #include "Functions.h"
 #include <iostream>
 
-// Get the raw SMBIOS table
 RawSMBIOSData* getRawData() {
     DWORD error = ERROR_SUCCESS;
     DWORD smBiosDataSize = 0;
@@ -26,7 +25,6 @@ RawSMBIOSData* getRawData() {
     return smBiosData;
 }
 
-// Display the entire SMBIOS table of data in hexadecimal by byte
 void displayHexContents(RawSMBIOSData* raw_data) {
     for (int i = 0; i < raw_data->Length; ++i) {
         std::cout << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)raw_data->SMBIOSTableData[i] << " ";
@@ -38,7 +36,6 @@ void displayHexContents(RawSMBIOSData* raw_data) {
     std::cout << "--------------------------------------------------------" << std::endl;
 }
 
-// Get a list of structures from the raw data
 std::vector<SMBIOS_struct*> getStructureTable(RawSMBIOSData* raw_data) {
     std::vector<SMBIOS_struct*> structure_table;
     SMBIOS_struct* cur_struct = (SMBIOS_struct*)raw_data->SMBIOSTableData;
@@ -49,7 +46,6 @@ std::vector<SMBIOS_struct*> getStructureTable(RawSMBIOSData* raw_data) {
     return structure_table;
 }
 
-// Display each structure in a list
 void displayAllStructures(RawSMBIOSData* raw_data) {
     std::vector<SMBIOS_struct*> structure_table = getStructureTable(raw_data);
     for (int i = 0; i < structure_table.size(); ++i) {
@@ -74,13 +70,15 @@ void displayAllStructures(RawSMBIOSData* raw_data) {
         else if (structure_table[i]->Type == 16) {
             displayInformation((SMBIOS_struct_type_16*)structure_table[i], raw_data);
         }
+        else if (structure_table[i]->Type == 17) {
+            displayInformation((SMBIOS_struct_type_17*)structure_table[i], raw_data);
+        }
         else {
             displayInformation((SMBIOS_struct_non_required*)structure_table[i]);
         }
     }
 }
 
-// Get the next SMBIOS struct after the current one
 SMBIOS_struct* getNextStruct(SMBIOS_struct* cur_struct) {
     char* strings_begin = (char*)cur_struct + cur_struct->Length;
     char* next_strings = strings_begin + 1;
@@ -91,7 +89,6 @@ SMBIOS_struct* getNextStruct(SMBIOS_struct* cur_struct) {
     return (SMBIOS_struct*)(next_strings + 1);
 }
 
-// Gather the strings that belong to a structure
 std::vector<std::string> getStrings(SMBIOS_struct* cur_struct) {
     std::vector<std::string> strings;
     std::string res = "";
@@ -110,14 +107,12 @@ std::vector<std::string> getStrings(SMBIOS_struct* cur_struct) {
     return strings;
 }
 
-// Display the information of a non-required structure
 void displayInformation(SMBIOS_struct_non_required* cur_struct) {
     std::cout << "Vendor-Specific SMBIOS structure (Type " << (int)cur_struct->Type << ")" << std::endl;
     std::cout << "Cannot display more information" << std::endl;
     std::cout << "--------------------------------------------------------" << std::endl;
 }
 
-// Get a specific bit from the characteristics bits
 int getBit(BYTE bytes[], int bit_num, int num_bytes) {
     int whichBit = num_bytes - 1 - bit_num / 8;
     bit_num %= 8;
@@ -132,7 +127,6 @@ int getBit(WORD word, int bit_num) {
     return (word >> bit_num) % 2;
 }
 
-// Get consecutive bits
 int getBits(BYTE byte, int startBit, int endBit) {
     return (byte >> endBit) % (1 << (startBit - endBit));
 }
@@ -141,7 +135,6 @@ int getBits(WORD word, int startBit, int endBit) {
     return (word >> endBit) % (1 << (startBit - endBit));
 }
 
-// Display System BIOS Information (Type 0)
 void displayInformation(SMBIOS_struct_type_0* cur_struct, RawSMBIOSData* raw_data) {
     std::vector<std::string> strings = getStrings(cur_struct);
     std::cout << "SMBIOS Information (Type " << (int)cur_struct->Type << ")" << std::endl;
@@ -185,7 +178,6 @@ void displayInformation(SMBIOS_struct_type_0* cur_struct, RawSMBIOSData* raw_dat
     std::cout << "--------------------------------------------------------" << std::endl;
 }
 
-// Display BIOS Characteristics
 void displayBIOSCharacteristics(SMBIOS_struct_type_0* cur_struct) {
     if (getBit(cur_struct->BIOS_Characteristics, 3, 8)) {
         std::cout << "BIOS Characteristics are not supported" << std::endl;
@@ -307,7 +299,6 @@ void displayBIOSCharacteristics(SMBIOS_struct_type_0* cur_struct) {
     }
 }
 
-// Display BIOS Extended characteristics
 void displayBIOSExtendedCharacteristics(SMBIOS_struct_type_0* cur_struct) {
     if (getBit(cur_struct->BIOS_Characteristics_Extensions[0], 7)) {
         std::cout << "ACPI is supported" << std::endl;
@@ -398,7 +389,6 @@ void displayBIOSExtendedCharacteristics(SMBIOS_struct_type_0* cur_struct) {
     }
 }
 
-// Display System Information (Type 1)
 void displayInformation(SMBIOS_struct_type_1* cur_struct, RawSMBIOSData* raw_data) {
     std::vector<std::string> strings = getStrings(cur_struct);
     std::cout << "System Information (Type " << (int)cur_struct->Type << ")" << std::endl;
@@ -463,7 +453,6 @@ void displayInformation(SMBIOS_struct_type_1* cur_struct, RawSMBIOSData* raw_dat
     std::cout << "--------------------------------------------------------" << std::endl;
 }
 
-// Get the wake-up type field associated with the structure
 std::string getWakeUpType(SMBIOS_struct_type_1* cur_struct) {
     switch (cur_struct->WakeUpType) {
         case 0:
@@ -489,7 +478,6 @@ std::string getWakeUpType(SMBIOS_struct_type_1* cur_struct) {
     }
 }
 
-// Display Chassis Information (Type 3)
 void displayInformation(SMBIOS_struct_type_3* cur_struct, RawSMBIOSData* raw_data) {
     std::vector<std::string> strings = getStrings(cur_struct);
     std::cout << "Chassis Information (Type " << (int)cur_struct->Type << ")" << std::endl;
@@ -555,20 +543,18 @@ void displayInformation(SMBIOS_struct_type_3* cur_struct, RawSMBIOSData* raw_dat
     std::cout << "--------------------------------------------------------" << std::endl;
 }
 
-// Display the chassis type
 void displayChassisType(SMBIOS_struct_type_3* cur_struct) {
-    BYTE characteristics[100];
-    characteristics[0] = cur_struct->ChassisType;
-    if (getBit(characteristics, 7, 1) == 1) {
+    BYTE characteristics = cur_struct->ChassisType;
+    if (getBit(characteristics, 1)) {
         std::cout << "Chassis locked" << std::endl;
-        characteristics[0] %= 128;
+        characteristics %= 128;
     }
     else {
         std::cout << "Unsure whether chassis is locked" << std::endl;
     }
 
     std::cout << "Chassis Type: ";
-    switch (characteristics[0]) {
+    switch (characteristics) {
     case 1:
         std::cout << "Other";
         break;
@@ -672,7 +658,6 @@ void displayChassisType(SMBIOS_struct_type_3* cur_struct) {
     std::cout << std::endl;
 }
 
-// Get the boot up state information
 std::string getChassisState(BYTE field) {
     switch (field) {
     case 1:
@@ -692,7 +677,6 @@ std::string getChassisState(BYTE field) {
     }
 }
 
-// Get the Chassis security state
 std::string getChassisSecurityState(BYTE field) {
     switch (field) {
     case 1:
@@ -710,7 +694,6 @@ std::string getChassisSecurityState(BYTE field) {
     }
 }
 
-// Display Processor Information (Type 4)
 void displayInformation(SMBIOS_struct_type_4* cur_struct, RawSMBIOSData* raw_data) {
     std::vector<std::string> strings = getStrings(cur_struct);
     std::cout << "Processor Information (Type " << (int)cur_struct->Type << ")" << std::endl;
@@ -822,7 +805,6 @@ void displayInformation(SMBIOS_struct_type_4* cur_struct, RawSMBIOSData* raw_dat
     std::cout << "--------------------------------------------------------" << std::endl;
 }
 
-// Parse the processor type
 std::string getProcessorType(SMBIOS_struct_type_4* cur_struct) {
     switch (cur_struct->ProcessorType) {
     case 1:
@@ -842,7 +824,6 @@ std::string getProcessorType(SMBIOS_struct_type_4* cur_struct) {
     }
 }
 
-// Parse the processor family
 std::string getProcessorFamily(SMBIOS_struct_type_4* cur_struct) {
     switch (cur_struct->ProcessorFamily) {
     case 1:
@@ -918,7 +899,6 @@ std::string getProcessorFamily(SMBIOS_struct_type_4* cur_struct) {
     }
 }
 
-// Parse the voltage of the processor
 std::string getVoltage(SMBIOS_struct_type_4* cur_struct) {
     BYTE volts[100];
     volts[0] = cur_struct->Voltage;
@@ -935,7 +915,6 @@ std::string getVoltage(SMBIOS_struct_type_4* cur_struct) {
     return "Other";
 }
 
-// Get the status of the processor
 std::string getProcessorStatus(SMBIOS_struct_type_4* cur_struct) {
     BYTE stats[100];
     stats[0] = cur_struct->Status;
@@ -975,7 +954,6 @@ std::string getProcessorStatus(SMBIOS_struct_type_4* cur_struct) {
     return res;
 }
 
-// Get processor upgrade information
 std::string getProcessorUpgrade(SMBIOS_struct_type_4* cur_struct) {
     switch (cur_struct->ProcessorUpgrade) {
     case 1:
@@ -1079,7 +1057,6 @@ std::string getProcessorUpgrade(SMBIOS_struct_type_4* cur_struct) {
     }
 }
 
-// Display what the processor is capable of
 void displayProcessorCharacteristics(SMBIOS_struct_type_4* cur_struct) {
     BYTE characteristics[100];
     characteristics[0] = cur_struct->ProcessorCharacteristics;
@@ -1105,7 +1082,6 @@ void displayProcessorCharacteristics(SMBIOS_struct_type_4* cur_struct) {
     std::cout << std::endl;
 }
 
-// Get the processor's second family
 std::string getProcessorFamily2(SMBIOS_struct_type_4* cur_struct) {
     switch (cur_struct->ProcessorFamily2) {
     case 1:
@@ -1519,7 +1495,6 @@ std::string getProcessorFamily2(SMBIOS_struct_type_4* cur_struct) {
     }
 }
 
-// Display Cache Information (Type 7)
 void displayInformation(SMBIOS_struct_type_7* curStruct, RawSMBIOSData* rawData) {
     std::vector<std::string> strings = getStrings(curStruct);
     std::cout << "Cache Information (Type " << (int)curStruct->Type << ")" << std::endl;
@@ -1564,7 +1539,6 @@ void displayInformation(SMBIOS_struct_type_7* curStruct, RawSMBIOSData* rawData)
     std::cout << "--------------------------------------------------------" << std::endl;
 }
 
-// Get the error correction enumeration
 std::string getErrorCorrectionTypeField(SMBIOS_struct_type_7* curStruct) {
     switch (curStruct->ErrorCorrectionType) {
     case 1:
@@ -1584,7 +1558,6 @@ std::string getErrorCorrectionTypeField(SMBIOS_struct_type_7* curStruct) {
     }
 }
 
-// Get the cache type information
 std::string getSystemCachetypeField(SMBIOS_struct_type_7* curStruct) {
     switch (curStruct->SystemCachetype) {
     case 1:
@@ -1602,7 +1575,6 @@ std::string getSystemCachetypeField(SMBIOS_struct_type_7* curStruct) {
     }
 }
 
-// Get the associativity of the cache
 std::string getAssociativity(SMBIOS_struct_type_7* curStruct) {
     switch (curStruct->Associativity) {
     case 1:
@@ -1638,7 +1610,6 @@ std::string getAssociativity(SMBIOS_struct_type_7* curStruct) {
     }
 }
 
-// Display the cache's configuration
 void displayCacheConfiguration(SMBIOS_struct_type_7* curStruct) {
     int operationalMode = getBits(curStruct->CacheConfiguration, 9, 8);
     switch (operationalMode) {
@@ -1687,14 +1658,12 @@ void displayCacheConfiguration(SMBIOS_struct_type_7* curStruct) {
     std::cout << "Level: " << level + 1 << std::endl;
 }
 
-// Display the maximum or installed cache size
 void displayCacheSize(WORD CacheSize) {
     int size = (getBit(CacheSize, 15)) ? 64 : 1;
     size *= getBits(CacheSize, 14, 0);
     std::cout << "Size: " << size << "K" << std::endl;
 }
 
-// Display information about the SRAM
 void displaySRAMType(SMBIOS_struct_type_7* curStruct) {
     std::cout << "SRAM: ";
     if (getBit(curStruct->CurrentSRAMType, 13)) {
@@ -1715,7 +1684,6 @@ void displaySRAMType(SMBIOS_struct_type_7* curStruct) {
     std::cout << std::endl;
 }
 
-// Display Sytem Slots Information (Type 9)
 void displayInformation(SMBIOS_struct_type_9* curStruct, RawSMBIOSData* rawData) {
     std::vector<std::string> strings = getStrings(curStruct);
     std::cout << "System Slots Information (Type " << (int)curStruct->Type << ")" << std::endl;
@@ -1985,7 +1953,6 @@ void displaySlotCharacteristics2(SMBIOS_struct_type_9* curStruct) {
     std::cout << std::endl;
 }
 
-// Display Physical Memory Array (Type 16)
 void displayInformation(SMBIOS_struct_type_16* curStruct, RawSMBIOSData* rawData) {
     std::vector<std::string> strings = getStrings(curStruct);
     std::cout << "Physics Memory Array Information (Type " << (int)curStruct->Type << ")" << std::endl;
@@ -2091,8 +2058,255 @@ std::string getErrorCorrectionType(SMBIOS_struct_type_16* curStruct) {
     }
 }
 
+// Display Memory Device Information (Type 17)
 void displayInformation(SMBIOS_struct_type_17* curStruct, RawSMBIOSData* rawData) {
+    std::vector<std::string> strings = getStrings(curStruct);
+    std::cout << "Physics Memory Array Information (Type " << (int)curStruct->Type << ")" << std::endl;
 
+    if (rawData->SMBIOSMajorVersion < 2 || (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 1)) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    std::cout << "Handle: " << curStruct->Handle << std::endl;
+    std::cout << "Physical Memory Array Handle: " << curStruct->PhysicalMemoryArrayHandle << std::endl;
+    
+    if (curStruct->MemoryErrorInformationHandle == 0xFFFE) {
+        std::cout << "There is no memory error information handle" << std::endl;
+    }
+    else if (curStruct->MemoryErrorInformationHandle == 0xFFFF) {
+        std::cout << "There is no memory error found" << std::endl;
+    }
+    else {
+        std::cout << "Memory Error Information Handle: " << curStruct->MemoryErrorInformationHandle;
+    }
+
+    std::cout << "Total Width: " << (int)curStruct->TotalWidth << std::endl;
+    std::cout << "Data Width: " << (int)curStruct->DataWidth << std::endl;
+    std::cout << "Size: " << (int)curStruct->Size << std::endl;
+    std::cout << "Form Factor: " << getFormFactor(curStruct) << std::endl;
+    std::cout << "Device Set: " << (int)curStruct->DeviceSet << std::endl;
+    
+    if (curStruct->DeviceLocator == 0) {
+        std::cout << "There is no device locator information" << std::endl;
+    }
+    else {
+        std::cout << "Device Locator: " << strings[curStruct->DeviceLocator] << std::endl;
+    }
+
+    if (curStruct->BankLocator == 0) {
+        std::cout << "There is no bank locator information" << std::endl;
+    }
+    else {
+        std::cout << "Bank Locator: " << strings[curStruct->BankLocator] << std::endl;
+    }
+
+    std::cout << "Memory Device Type: " << getMemoryDeviceType(curStruct) << std::endl;
+
+    displayTypeDetail(curStruct);
+
+    if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 3) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    std::cout << "Maximum Capable Speed: " << (int)curStruct->Speed << "MHz" << std::endl;
+    
+    if (curStruct->Manufacturer == 0) {
+        std::cout << "There is no manufacturer information" << std::endl;
+    }
+    else {
+        std::cout << "Manufacturer: " << strings[curStruct->Manufacturer] << std::endl;
+    }
+
+    if (curStruct->SerialNumber == 0) {
+        std::cout << "There is no serial number information" << std::endl;
+    }
+    else {
+        std::cout << "Serial Number: " << strings[curStruct->SerialNumber] << std::endl;
+    }
+
+    if (curStruct->AssetTag == 0) {
+        std::cout << "There is no asset tag information" << std::endl;
+    }
+    else {
+        std::cout << "Asset Tag: " << strings[curStruct->AssetTag] << std::endl;
+    }
+
+    if (curStruct->PartNumber == 0) {
+        std::cout << "There is no part number information" << std::endl;
+    }
+    else {
+        std::cout << "Part Number: " << strings[curStruct->PartNumber] << std::endl;
+    }
+
+    if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 6) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    std::cout << "Attributes: " << curStruct->Attributes % 16 << std::endl;
+
+    if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 7) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    std::cout << "Extended Size: " << (int)curStruct->ExtendedSize << std::endl;
+    std::cout << "Configured Memory Clock Speed: " << (int)curStruct->ConfiguredMemoryClockSpeed << std::endl;
+
+    if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 8) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    std::cout << "Minimum Voltage: " << (int)curStruct->MinimumVoltage << " milliVolts" << std::endl;
+    std::cout << "MaximumVoltage: " << (int)curStruct->MaximumVoltage << " milliVolts" << std::endl;
+    std::cout << "Configured Voltage: " << (int)curStruct->ConfiguredVoltage << " milliVolts" << std::endl;
+
+    std::cout << "--------------------------------------------------------" << std::endl;
+}
+
+std::string getFormFactor(SMBIOS_struct_type_17* curStruct) {
+    switch (curStruct->FormFactor) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unknown";
+    case 3:
+        return "SIMM";
+    case 4:
+        return "SIP";
+    case 5:
+        return "Chip";
+    case 6:
+        return "DIP";
+    case 7:
+        return "ZIP";
+    case 8:
+        return "Proprietary Card";
+    case 9:
+        return "DIMM";
+    case 10:
+        return "TSOP";
+    case 11:
+        return "Row of chips";
+    case 12:
+        return "RIMM";
+    case 13:
+        return "SODIMM";
+    case 14:
+        return "SRIMM";
+    case 15:
+        return "FB-DIMM";
+    default:
+        return "Other";
+    }
+}
+
+std::string getMemoryDeviceType(SMBIOS_struct_type_17* curStruct) {
+    switch (curStruct->MemoryType) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unknown";
+    case 3:
+        return "DRAM";
+    case 4:
+        return "EDRAM";
+    case 5:
+        return "VRAM";
+    case 6:
+        return "SRAM";
+    case 7:
+        return "RAM";
+    case 8:
+        return "ROM";
+    case 9:
+        return "FLASH";
+    case 10:
+        return "EEPROM";
+    case 11:
+        return "FEPROM";
+    case 12:
+        return "EPROM";
+    case 13:
+        return "CDRAM";
+    case 14:
+        return "3DRAM";
+    case 15:
+        return "SDRAM";
+    case 16:
+        return "SGRAM";
+    case 17:
+        return "RDRAM";
+    case 18:
+        return "DDR";
+    case 19:
+        return "DDR2";
+    case 20:
+        return "DDR2 FB-DIMM";
+    case 24:
+        return "DDR3";
+    case 25:
+        return "FBD2";
+    case 26:
+        return "DDR4";
+    case 27:
+        return "LPDDR";
+    case 28:
+        return "LPDDR2";
+    case 29:
+        return "LPDDR3";
+    case 30:
+        return "LPDDR4";
+    default:
+        return "Other";
+    }
+}
+
+void displayTypeDetail(SMBIOS_struct_type_17* curStruct) {
+    std::cout << "Type Details: ";
+    if (getBit(curStruct->TypeDetail, 12)) {
+        std::cout << "Fast-paged ";
+    }
+    if (getBit(curStruct->TypeDetail, 11)) {
+        std::cout << "Static column ";
+    }
+    if (getBit(curStruct->TypeDetail, 10)) {
+        std::cout << "Pseudo-static ";
+    }
+    if (getBit(curStruct->TypeDetail, 9)) {
+        std::cout << "RAMBUS ";
+    }
+    if (getBit(curStruct->TypeDetail, 8)) {
+        std::cout << "Synchronous ";
+    }
+    if (getBit(curStruct->TypeDetail, 7)) {
+        std::cout << "CMOS ";
+    }
+    if (getBit(curStruct->TypeDetail, 6)) {
+        std::cout << "EDO ";
+    }
+    if (getBit(curStruct->TypeDetail, 5)) {
+        std::cout << "Window DRAM ";
+    }
+    if (getBit(curStruct->TypeDetail, 4)) {
+        std::cout << "Cache DRAM ";
+    }
+    if (getBit(curStruct->TypeDetail, 3)) {
+        std::cout << "Non-volatile ";
+    }
+    if (getBit(curStruct->TypeDetail, 2)) {
+        std::cout << "Registered (buffered) ";
+    }
+    if (getBit(curStruct->TypeDetail, 1)) {
+        std::cout << "Unbuffered (unregistered) ";
+    }
+    if (getBit(curStruct->TypeDetail, 0)) {
+        std::cout << "LRDIMM ";
+    }
+    std::cout << std::endl;
 }
 
 void displayInformation(SMBIOS_struct_type_19* curStruct, RawSMBIOSData* rawData) {
