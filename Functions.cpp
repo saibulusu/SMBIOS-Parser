@@ -73,6 +73,9 @@ void displayAllStructures(RawSMBIOSData* raw_data) {
         else if (structure_table[i]->Type == 17) {
             displayInformation((SMBIOS_struct_type_17*)structure_table[i], raw_data);
         }
+        else if (structure_table[i]->Type == 19) {
+            displayInformation((SMBIOS_struct_type_19*)structure_table[i], raw_data);
+        }
         else {
             displayInformation((SMBIOS_struct_non_required*)structure_table[i]);
         }
@@ -2058,7 +2061,6 @@ std::string getErrorCorrectionType(SMBIOS_struct_type_16* curStruct) {
     }
 }
 
-// Display Memory Device Information (Type 17)
 void displayInformation(SMBIOS_struct_type_17* curStruct, RawSMBIOSData* rawData) {
     std::vector<std::string> strings = getStrings(curStruct);
     std::cout << "Physics Memory Array Information (Type " << (int)curStruct->Type << ")" << std::endl;
@@ -2310,7 +2312,29 @@ void displayTypeDetail(SMBIOS_struct_type_17* curStruct) {
 }
 
 void displayInformation(SMBIOS_struct_type_19* curStruct, RawSMBIOSData* rawData) {
+    std::vector<std::string> strings = getStrings(curStruct);
+    std::cout << "Memory Array Mapped Information (Type " << (int)curStruct->Type << ")" << std::endl;
 
+    if (rawData->SMBIOSMajorVersion < 2 || (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 1)) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    std::cout << "Handle: " << (int)curStruct->Handle << std::endl;
+    std::cout << "Starting Address: " << (int)curStruct->StartingAddress << std::endl;
+    std::cout << "Ending Address: " << (int)curStruct->EndingAddress << std::endl;
+    std::cout << "Memory Array Handle: " << (int)curStruct->MemoryArrayHandle << std::endl;
+    std::cout << "Partition Width: " << (int)curStruct->PartitionWidth << std::endl;
+
+    if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 7) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+        return;
+    }
+
+    std::cout << "Extended Starting Address: " << (int)curStruct->ExtendedStartingAddress << std::endl;
+    std::cout << "Extended Ending Address: " << (int)curStruct->ExtendedEndingAddress << std::endl;
+
+    std::cout << "--------------------------------------------------------" << std::endl;
 }
 
 void displayInformation(SMBIOS_struct_type_32* curStruct, RawSMBIOSData* rawData) {
