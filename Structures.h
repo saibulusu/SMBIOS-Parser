@@ -1,6 +1,6 @@
 #include <Windows.h>
 
-// The entire SMBIOS table
+/** The entire SMBIOS table with metadata */
 struct RawSMBIOSData {
     BYTE    Used20CallingMethod;
     BYTE    SMBIOSMajorVersion;
@@ -10,18 +10,18 @@ struct RawSMBIOSData {
     BYTE    SMBIOSTableData[];
 };
 
-// Generic structure
+/** Generic structure */
 struct SMBIOS_struct {
     BYTE    Type;
     BYTE    Length;
 };
 
-// Non-necessary structure
+/** Non-necessary structure */
 struct SMBIOS_struct_non_required : SMBIOS_struct {
 
 };
 
-// Necessary structure of type 0
+/** Necessary structure of type 0 */
 struct SMBIOS_struct_type_0 : SMBIOS_struct {
     WORD    Handle;
     BYTE    Vendor;
@@ -37,7 +37,7 @@ struct SMBIOS_struct_type_0 : SMBIOS_struct {
     BYTE    EC_Firmware_Minor_Release;
 };
 
-// Necessary structure of type 1
+/** Necessary structure of type 1 */
 struct SMBIOS_struct_type_1 : SMBIOS_struct {
     WORD    Handle;
     BYTE    Manufacturer;
@@ -50,7 +50,7 @@ struct SMBIOS_struct_type_1 : SMBIOS_struct {
     BYTE    Family;
 };
 
-// Necessary structure of type 3
+/** Necessary structure of type 3 */
 struct SMBIOS_struct_type_3 : SMBIOS_struct {
     WORD    Handle;
     BYTE    Manufacturer;
@@ -70,7 +70,7 @@ struct SMBIOS_struct_type_3 : SMBIOS_struct {
     BYTE    ContainedElements[65537];
 };
 
-// Necessary structure of type 4
+/** Necessary structure of type 4 */
 struct SMBIOS_struct_type_4 : SMBIOS_struct {
     WORD    Handle;
     BYTE    SocketDesignation;
@@ -101,7 +101,7 @@ struct SMBIOS_struct_type_4 : SMBIOS_struct {
     WORD    ThreadCount2;
 };
 
-// Necessary structure of type 7
+/** Necessary structure of type 7 */
 struct SMBIOS_struct_type_7 : SMBIOS_struct {
     WORD    Handle;
     BYTE    SocketDesignation;
@@ -116,7 +116,7 @@ struct SMBIOS_struct_type_7 : SMBIOS_struct {
     BYTE    Associativity;
 };
 
-// Necessary structure of type 9
+/** Necessary structure of type 9 */
 struct SMBIOS_struct_type_9 : SMBIOS_struct {
     WORD    Handle;
     BYTE    SlotDesignation;
@@ -132,7 +132,7 @@ struct SMBIOS_struct_type_9 : SMBIOS_struct {
     BYTE    DeviceNumber;
 };
 
-// Necessary structure of type 16
+/** Necessary structure of type 16 */
 struct SMBIOS_struct_type_16 : SMBIOS_struct {
     WORD    Handle;
     BYTE    Location;
@@ -144,7 +144,7 @@ struct SMBIOS_struct_type_16 : SMBIOS_struct {
     BYTE    ExtendedMaximumCapacity[8];
 };
 
-// Necessary structure of type 17
+/** Necessary structure of type 17 */
 struct SMBIOS_struct_type_17 : SMBIOS_struct {
     WORD    Handle;
     WORD    PhysicalMemoryArrayHandle;
@@ -171,7 +171,7 @@ struct SMBIOS_struct_type_17 : SMBIOS_struct {
     WORD    ConfiguredVoltage;
 };
 
-// Necessary structure of type 19
+/** Necessary structure of type 19 */
 struct SMBIOS_struct_type_19 : SMBIOS_struct {
     WORD    Handle;
     BYTE    StartingAddress[4];
@@ -182,7 +182,7 @@ struct SMBIOS_struct_type_19 : SMBIOS_struct {
     BYTE    ExtendedEndingAddress[8];
 };
 
-// Necessary structure of type 32
+/** Necessary structure of type 32 */
 struct SMBIOS_struct_type_32 : SMBIOS_struct {
     WORD    Handle;
     BYTE    Reserved[6];

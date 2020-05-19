@@ -23,7 +23,8 @@ SMBIOS_struct* getNextStruct(SMBIOS_struct* curStruct);
 /** Get the strings that are associated with the current structure */
 std::vector<std::string> getStrings(SMBIOS_struct* curStruct);
 
-
+/** Display the structure table alone */
+void displayStructureTable(RawSMBIOSData* rawData);
 
 /** Get a specific bit from an array of bytes */
 int getBit(BYTE bytes[], int bitNum, int numBits);
@@ -187,3 +188,6 @@ void displayInformation(SMBIOS_struct_type_19* curStruct, RawSMBIOSData* rawData
 
 /** Display System Boot Information (Type 32) */
 void displayInformation(SMBIOS_struct_type_32* curStruct, RawSMBIOSData* rawData);
+
+/** Get the boot status enumeration for the type structure */
+std::string getBootStatus(SMBIOS_struct_type_32* curStruct);
