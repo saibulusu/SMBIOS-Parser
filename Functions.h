@@ -26,6 +26,9 @@ std::vector<std::string> getStrings(SMBIOS_struct* curStruct);
 /** Display the structure table alone */
 void displayStructureTable(RawSMBIOSData* rawData);
 
+/** Display a specific SMBIOS structure from the table */
+void displayStructure(RawSMBIOSData* rawData, int id);
+
 /** Get a specific bit from an array of bytes */
 int getBit(BYTE bytes[], int bitNum, int numBits);
 
@@ -40,6 +43,12 @@ int getBits(BYTE byte, int startBit, int endBit);
 
 /** Get consecutive bits from a word */
 int getBits(WORD word, int startBit, int endBit);
+
+/** Display the possible user commands */
+void displayCommands();
+
+/** Error enterting a command */
+void error();
 
 
 

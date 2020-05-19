@@ -85,6 +85,88 @@ void displayAllStructures(RawSMBIOSData* rawData) {
     }
 }
 
+void displayStructureTable(RawSMBIOSData* rawData) {
+    std::vector<SMBIOS_struct*> structureTable = getStructureTable(rawData);
+    std::cout << "ID\t" << "Type\t" << "Description" << std::endl;
+    for (int i = 0; i < structureTable.size(); ++i) {
+        std::cout << i << "\t" << (int)structureTable[i]->Type << "\t";
+        switch (structureTable[i]->Type) {
+        case 0:
+            std::cout << "BIOS" << std::endl;
+            break;
+        case 1:
+            std::cout << "System" << std::endl;
+            break;
+        case 3:
+            std::cout << "System Enclosure/Chassis" << std::endl;
+            break;
+        case 4:
+            std::cout << "Processor" << std::endl;
+            break;
+        case 7:
+            std::cout << "Cache" << std::endl;
+            break;
+        case 9:
+            std::cout << "System Slots" << std::endl;
+            break;
+        case 16:
+            std::cout << "Physical Memory Array" << std::endl;
+            break;
+        case 17:
+            std::cout << "Memory Device" << std::endl;
+            break;
+        case 19:
+            std::cout << "Memory Array Mapped Address" << std::endl;
+            break;
+        case 32:
+            std::cout << "System Boot" << std::endl;
+            break;
+        default:
+            std::cout << "Vendor-Specific Structure" << std::endl;
+            break;
+        }
+    }
+}
+
+void displayStructure(RawSMBIOSData* rawData, int id) {
+    std::vector<SMBIOS_struct*> structureTable = getStructureTable(rawData);
+    switch (structureTable[id]->Type) {
+    case 0:
+        displayInformation((SMBIOS_struct_type_0*)structureTable[id], rawData);
+        break;
+    case 1:
+        displayInformation((SMBIOS_struct_type_1*)structureTable[id], rawData);
+        break;
+    case 3:
+        displayInformation((SMBIOS_struct_type_3*)structureTable[id], rawData);
+        break;
+    case 4:
+        displayInformation((SMBIOS_struct_type_4*)structureTable[id], rawData);
+        break;
+    case 7:
+        displayInformation((SMBIOS_struct_type_7*)structureTable[id], rawData);
+        break;
+    case 9:
+        displayInformation((SMBIOS_struct_type_9*)structureTable[id], rawData);
+        break;
+    case 16:
+        displayInformation((SMBIOS_struct_type_16*)structureTable[id], rawData);
+        break;
+    case 17:
+        displayInformation((SMBIOS_struct_type_17*)structureTable[id], rawData);
+        break;
+    case 19:
+        displayInformation((SMBIOS_struct_type_19*)structureTable[id], rawData);
+        break;
+    case 32:
+        displayInformation((SMBIOS_struct_type_19*)structureTable[id], rawData);
+        break;
+    default:
+        displayInformation((SMBIOS_struct_non_required*)structureTable[id]);
+        break;
+    }
+}
+
 SMBIOS_struct* getNextStruct(SMBIOS_struct* curStruct) {
     char* strings_begin = (char*)curStruct + curStruct->Length;
     char* next_strings = strings_begin + 1;
