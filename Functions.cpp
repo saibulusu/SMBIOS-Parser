@@ -33,7 +33,6 @@ void displayHexContents(RawSMBIOSData* rawData) {
         }
     }
     std::cout << std::dec << std::endl;
-    std::cout << "--------------------------------------------------------" << std::endl;
 }
 
 std::vector<SMBIOS_struct*> getStructureTable(RawSMBIOSData* rawData) {
@@ -988,28 +987,32 @@ std::string getProcessorFamily(SMBIOS_struct_type_4* curStruct) {
 }
 
 std::string getVoltage(SMBIOS_struct_type_4* curStruct) {
-    BYTE volts[100];
-    volts[0] = curStruct->Voltage;
-    
-    if (getBit(volts, 0, 1) == 1) {
+    BYTE volts;
+    volts = curStruct->Voltage;
+
+    bool five = getBit(volts, 0);
+    bool three = getBit(volts, 1);
+    bool two = getBit(volts, 2);
+
+    if (five && !three && !two) {
         return "5V";
     }
-    else if (getBit(volts, 1, 1) == 1) {
+    else if (three && !five && !two) {
         return "3.3V";
     }
-    else if (getBit(volts, 2, 1) == 1) {
+    else if (two && !five && !three) {
         return "2.9V";
     }
-    return "Other";
+    return "Configurable";
 }
 
 std::string getProcessorStatus(SMBIOS_struct_type_4* curStruct) {
-    BYTE stats[100];
-    stats[0] = curStruct->Status;
+    BYTE stats;
+    stats = curStruct->Status;
     
     std::string res = "";
 
-    if (getBit(stats, 6, 1) == 1) {
+    if (getBit(stats, 6) == 1) {
         res += "CPU Socket Population";
     }
     else {

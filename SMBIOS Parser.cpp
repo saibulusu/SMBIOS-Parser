@@ -7,13 +7,16 @@ int main() {
 
     std::string input;
     displayCommands();
+    std::cout << "> ";
     while (std::cin >> input) {
         if (input.compare("show") == 0) {
             std::cin >> input;
             if (input.compare("all") == 0) {
+                std::cout << std::endl;
                 displayAllStructures(smBiosData);
             }
             else if (input.compare("table") == 0) {
+                std::cout << std::endl;
                 displayStructureTable(smBiosData);
             }
             else if (input.compare("structure") == 0) {
@@ -25,10 +28,12 @@ int main() {
                     error();
                 }
                 else {
+                    std::cout << std::endl;
                     displayStructure(smBiosData, index);
                 }
             }
             else if (input.compare("commands") == 0) {
+                std::cout << std::endl;
                 displayCommands();
             }
             else {
@@ -38,6 +43,7 @@ int main() {
         else if (input.compare("hex") == 0) {
             std::cin >> input;
             if (input.compare("contents") == 0) {
+                std::cout << std::endl;
                 displayHexContents(smBiosData);
             }
             else {
@@ -50,6 +56,7 @@ int main() {
         else {
             error();
         }
+        std::cout << std::endl << "> ";
     }
     return 0;
 }
