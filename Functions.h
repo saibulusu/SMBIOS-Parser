@@ -8,6 +8,9 @@
 /** Get the Raw SMBIOS table */
 RawSMBIOSData* getRawData();
 
+/** Display available user commands */
+void displayCommands();
+
 /** Display the entire SMBIOS table of data in hexadecimal by byte */
 void displayHexContents(RawSMBIOSData* rawData);
 
