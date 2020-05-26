@@ -44,14 +44,6 @@ int getBits(BYTE byte, int startBit, int endBit);
 /** Get consecutive bits from a word */
 int getBits(WORD word, int startBit, int endBit);
 
-/** Display the possible user commands */
-void displayCommands();
-
-/** Error enterting a command */
-void error();
-
-
-
 /** Display minimal information about the vendor-specific, non-required structures */
 void displayInformation(SMBIOS_struct_non_required* curStruct);
 
@@ -106,7 +98,7 @@ std::string getProcessorFamily(SMBIOS_struct_type_4* curStruct);
 std::string getVoltage(SMBIOS_struct_type_4* curStruct);
 
 /** Get the status of the processor for the type 4 structure*/
-std::string getProcessorStatus(SMBIOS_struct_type_4* curStruct);
+void getProcessorStatus(SMBIOS_struct_type_4* curStruct);
 
 /** Get the processor upgrade information for the type 4 structure */
 std::string getProcessorUpgrade(SMBIOS_struct_type_4* curStruct);

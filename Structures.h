@@ -14,6 +14,7 @@ struct RawSMBIOSData {
 struct SMBIOS_struct {
     BYTE    Type;
     BYTE    Length;
+    WORD    Handle;
 };
 
 /** Non-necessary structure */
@@ -23,7 +24,6 @@ struct SMBIOS_struct_non_required : SMBIOS_struct {
 
 /** Necessary structure of type 0 */
 struct SMBIOS_struct_type_0 : SMBIOS_struct {
-    WORD    Handle;
     BYTE    Vendor;
     BYTE    BIOS_Version;
     WORD    BIOS_Starting_Address_Segment;
@@ -39,7 +39,6 @@ struct SMBIOS_struct_type_0 : SMBIOS_struct {
 
 /** Necessary structure of type 1 */
 struct SMBIOS_struct_type_1 : SMBIOS_struct {
-    WORD    Handle;
     BYTE    Manufacturer;
     BYTE    ProductName;
     BYTE    Version;
@@ -52,7 +51,6 @@ struct SMBIOS_struct_type_1 : SMBIOS_struct {
 
 /** Necessary structure of type 3 */
 struct SMBIOS_struct_type_3 : SMBIOS_struct {
-    WORD    Handle;
     BYTE    Manufacturer;
     BYTE    ChassisType;
     BYTE    Version;
@@ -72,7 +70,6 @@ struct SMBIOS_struct_type_3 : SMBIOS_struct {
 
 /** Necessary structure of type 4 */
 struct SMBIOS_struct_type_4 : SMBIOS_struct {
-    WORD    Handle;
     BYTE    SocketDesignation;
     BYTE    ProcessorType;
     BYTE    ProcessorFamily;
@@ -103,7 +100,6 @@ struct SMBIOS_struct_type_4 : SMBIOS_struct {
 
 /** Necessary structure of type 7 */
 struct SMBIOS_struct_type_7 : SMBIOS_struct {
-    WORD    Handle;
     BYTE    SocketDesignation;
     WORD    CacheConfiguration;
     WORD    MaximumCacheSize;
@@ -118,7 +114,6 @@ struct SMBIOS_struct_type_7 : SMBIOS_struct {
 
 /** Necessary structure of type 9 */
 struct SMBIOS_struct_type_9 : SMBIOS_struct {
-    WORD    Handle;
     BYTE    SlotDesignation;
     BYTE    SlotType;
     BYTE    SlotDataBusWidth;
@@ -134,7 +129,6 @@ struct SMBIOS_struct_type_9 : SMBIOS_struct {
 
 /** Necessary structure of type 16 */
 struct SMBIOS_struct_type_16 : SMBIOS_struct {
-    WORD    Handle;
     BYTE    Location;
     BYTE    Use;
     BYTE    MemoryErrorCorrection;
@@ -146,7 +140,6 @@ struct SMBIOS_struct_type_16 : SMBIOS_struct {
 
 /** Necessary structure of type 17 */
 struct SMBIOS_struct_type_17 : SMBIOS_struct {
-    WORD    Handle;
     WORD    PhysicalMemoryArrayHandle;
     WORD    MemoryErrorInformationHandle;
     WORD    TotalWidth;
@@ -173,7 +166,6 @@ struct SMBIOS_struct_type_17 : SMBIOS_struct {
 
 /** Necessary structure of type 19 */
 struct SMBIOS_struct_type_19 : SMBIOS_struct {
-    WORD    Handle;
     BYTE    StartingAddress[4];
     BYTE    EndingAddress[4];
     WORD    MemoryArrayHandle;
@@ -184,7 +176,6 @@ struct SMBIOS_struct_type_19 : SMBIOS_struct {
 
 /** Necessary structure of type 32 */
 struct SMBIOS_struct_type_32 : SMBIOS_struct {
-    WORD    Handle;
     BYTE    Reserved[6];
     BYTE    BootStatus[10];
 };

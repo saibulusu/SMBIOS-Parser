@@ -196,8 +196,8 @@ std::vector<std::string> getStrings(SMBIOS_struct* curStruct) {
 
 void displayInformation(SMBIOS_struct_non_required* curStruct) {
     std::cout << "Vendor-Specific SMBIOS structure (Type " << (int)curStruct->Type << ")" << std::endl;
-    std::cout << "Cannot display more information" << std::endl;
-    std::cout << "--------------------------------------------------------" << std::endl;
+    std::cout << "\tCannot display more information" << std::endl;
+    std::cout << std::endl;
 }
 
 int getBit(BYTE bytes[], int bitNum, int numBytes) {
@@ -226,253 +226,152 @@ void displayInformation(SMBIOS_struct_type_0* curStruct, RawSMBIOSData* rawData)
     std::vector<std::string> strings = getStrings(curStruct);
     std::cout << "SMBIOS Information (Type " << (int)curStruct->Type << ")" << std::endl;
     if ((int)rawData->SMBIOSMajorVersion < 2) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    if (curStruct->Vendor == 0) {
-        std::cout << "There is no vendor information" << std::endl;
-    }
-    else {
-        std::cout << "Vendor: " << strings[curStruct->Vendor] << std::endl;
-    }
+    std::cout << "\tHandle: " << curStruct->Handle << std::endl;
+    std::cout << "\tVendor: " << strings[curStruct->Vendor] << std::endl;
+    std::cout << "\tBIOS Version: " << strings[curStruct->BIOS_Version] << std::endl;
+    std::cout << "\tBIOS release Date: " << strings[curStruct->Bios_Release_Date] << std::endl;
 
-    if (curStruct->BIOS_Version == 0) {
-        std::cout << "There is no BIOS version information" << std::endl;
-    }
-    else {
-        std::cout << "BIOS Version: " << strings[curStruct->BIOS_Version] << std::endl;
-    }
-
-    std::cout << "BIOS Starting Address Segment: " << std::hex << curStruct->BIOS_Starting_Address_Segment << std::dec << std::endl;
-
-    if (curStruct->Bios_Release_Date == 0) {
-        std::cout << "There is no BIOS release date information" << std::endl;
-    }
-    else {
-        std::cout << "BIOS release Date: " << strings[curStruct->Bios_Release_Date] << std::endl;
-    }
-
-    std::cout << "BIOS Rom Size: " << 64 + 64 * (int)curStruct->BIOS_ROM_Size << "K" << std::endl;
+    std::cout << "\tBIOS Rom Size: " << 64 + 64 * (int)curStruct->BIOS_ROM_Size << "K" << std::endl;
     displayBIOSCharacteristics(curStruct);
     if ((int)rawData->SMBIOSMajorVersion == 2 && (int)rawData->SMBIOSMinorVersion < 4) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
     displayBIOSExtendedCharacteristics(curStruct);
-    std::cout << "Embedded Controller Firmware Major Release: " << (int)curStruct->EC_Firmware_Major_Release << std::endl;
-    std::cout << "Embedded Controller Firmware Minor Release: " << (int)curStruct->EC_Firmware_Minor_Release << std::endl;
-    std::cout << "--------------------------------------------------------" << std::endl;
+    std::cout << "\tEmbedded Controller Firmware Major Release: " << (int)curStruct->EC_Firmware_Major_Release << std::endl;
+    std::cout << "\tEmbedded Controller Firmware Minor Release: " << (int)curStruct->EC_Firmware_Minor_Release << std::endl;
+    std::cout << std::endl;
 }
 
 void displayBIOSCharacteristics(SMBIOS_struct_type_0* curStruct) {
-    if (getBit(curStruct->BIOS_Characteristics, 3, 8)) {
-        std::cout << "BIOS Characteristics are not supported" << std::endl;
-    }
-    else {
-        std::cout << "BIOS Characteristics are supported" << std::endl;
+    std::vector<std::string> supported;
+    std::vector<std::string> nonsupported;
+    std::cout << "\tSupported Features: " << std::endl;
+    if (!getBit(curStruct->BIOS_Characteristics, 3, 8)) {
+        std::cout << "\t\tBIOS" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics, 4, 8)) {
-        std::cout << "ISA is supported" << std::endl;
-    }
-    else {
-        std::cout << "ISA is not supported" << std::endl;
+        std::cout << "\t\tISA" << std::endl;
     }
 
+
     if (getBit(curStruct->BIOS_Characteristics, 5, 8)) {
-        std::cout << "MCA is supported" << std::endl;
-    }
-    else {
-        std::cout << "MCA is not supported" << std::endl;
+        std::cout << "\t\tMCA" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics, 6, 8)) {
-        std::cout << "EISA is supported" << std::endl;
-    }
-    else {
-        std::cout << "EISA is not supported" << std::endl;
+        std::cout << "\t\tEISA" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics, 7, 8)) {
-        std::cout << "PCI is supported" << std::endl;
-    }
-    else {
-        std::cout << "PCI is not supported" << std::endl;
+        std::cout << "\t\tPCI" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics, 8, 8)) {
-        std::cout << "PC card (PCMCIA) is supported" << std::endl;
-    }
-    else {
-        std::cout << "PC card (PCMCIA) is not supported" << std::endl;
+        std::cout << "\t\tPC card (PCMCIA)" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics, 9, 8)) {
-        std::cout << "Plug and Play is supported" << std::endl;
-    }
-    else {
-        std::cout << "Plug and Play is not supported" << std::endl;
+        std::cout << "\t\tPlug and Play" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics, 10, 8)) {
-        std::cout << "ACM is supported" << std::endl;
-    }
-    else {
-        std::cout << "ACM is not supported" << std::endl;
+        std::cout << "\t\tAPM" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics, 11, 8)) {
-        std::cout << "BIOS is upgradeable" << std::endl;
-    }
-    else {
-        std::cout << "BIOS is not upgradeable" << std::endl;
+        std::cout << "\t\tBIOS is upgradeable (flash)" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics, 12, 8)) {
-        std::cout << "BIOS shadowing is allwoed" << std::endl;
-    }
-    else {
-        std::cout << "BIOS shadowing is not allowed" << std::endl;
+        std::cout << "\t\tBIOS shadowing" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics, 13, 8)) {
-        std::cout << "VL-VESA is supported" << std::endl;
-    }
-    else {
-        std::cout << "VL-VESA is not supported" << std::endl;
+        std::cout << "\t\tVL-VESA" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics, 14, 8)) {
-        std::cout << "ESCD support is available" << std::endl;
-    }
-    else {
-        std::cout << "ESCD support is not available" << std::endl;
+        std::cout << "\t\tESCD support" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics, 15, 8)) {
-        std::cout << "Boot from CD is supported" << std::endl;
-    }
-    else {
-        std::cout << "Boot from CD is not supported" << std::endl;
+        std::cout << "\t\tBoot from CD" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics, 16, 8)) {
-        std::cout << "Selectable boot is supported" << std::endl;
-    }
-    else {
-        std::cout << "Selectable boot is not supported" << std::endl;
+        std::cout << "\t\tSelectable boot" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics, 17, 8)) {
-        std::cout << "BIOS ROM is socketed" << std::endl;
-    }
-    else {
-        std::cout << "BIOS ROM is not socketed" << std::endl;
+        std::cout << "\t\tBIOS ROM is socketed" << std::endl;
     }
     
     if (getBit(curStruct->BIOS_Characteristics, 18, 8)) {
-        std::cout << "Boot from PC card (PCMCIA) is supported" << std::endl;
-    }
-    else {
-        std::cout << "Boot from PC card (PCMCIA) is not supported" << std::endl;
+        std::cout << "\t\tBoot from PC card (PCMCIA)" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics, 19, 8)) {
-        std::cout << "EDD specification is supported" << std::endl;
-    }
-    else {
-        std::cout << "EDD specification is not supported" << std::endl;
+        std::cout << "\t\tEDD specification" << std::endl;
     }
 }
 
 void displayBIOSExtendedCharacteristics(SMBIOS_struct_type_0* curStruct) {
-    if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 7)) {
-        std::cout << "ACPI is supported" << std::endl;
-    }
-    else {
-        std::cout << "ACPI is not supported" << std::endl;
-    }
-
-    if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 6)) {
-        std::cout << "USB Legacy is supported" << std::endl;
-    }
-    else {
-        std::cout << "USB Legacy is not supported" << std::endl;
-    }
-
-    if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 5)) {
-        std::cout << "AGP is supported" << std::endl;
-    }
-    else {
-        std::cout << "AGP is not supported" << std::endl;
-    }
-
-    if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 4)) {
-        std::cout << "I2O Boot is supported" << std::endl;
-    }
-    else {
-        std::cout << "I2O Boot is not supported" << std::endl;
-    }
-
-    if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 3)) {
-        std::cout << "LS-120 SuperDisk boot is supported" << std::endl;
-    }
-    else {
-        std::cout << "LS-120 SuperDisk boot is not supported" << std::endl;
-    }
-
-    if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 2)) {
-        std::cout << "ATAPI ZIP drive boot is supported" << std::endl;
-    }
-    else {
-        std::cout << "ATAPI ZIP drive boot is not supported" << std::endl;
+    if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 0)) {
+        std::cout << "\t\tACPI" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 1)) {
-        std::cout << "1394 boot is supported" << std::endl;
-    }
-    else {
-        std::cout << "1394 boot is not supported" << std::endl;
+        std::cout << "\t\tUSB Legacy" << std::endl;
     }
 
-    if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 0)) {
-        std::cout << "Smart battery is supported" << std::endl;
+    if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 2)) {
+        std::cout << "\t\tAGP" << std::endl;
     }
-    else {
-        std::cout << "Smart battery is not supported" << std::endl;
+
+    if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 3)) {
+        std::cout << "\t\tI2O Boot" << std::endl;
+    }
+
+    if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 4)) {
+        std::cout << "\t\tLS-120 SuperDisk boot" << std::endl;
+    }
+
+    if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 5)) {
+        std::cout << "\t\tATAPI ZIP drive boot" << std::endl;
+    }
+
+    if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 6)) {
+        std::cout << "\t\t1394 boot" << std::endl;
+    }
+
+    if (getBit(curStruct->BIOS_Characteristics_Extensions[0], 7)) {
+        std::cout << "\t\tSmart battery" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics_Extensions[1], 0)) {
-        std::cout << "BIOS Boot specification is supported" << std::endl;
-    }
-    else {
-        std::cout << "BIOS Boot specification is not supported" << std::endl;
+        std::cout << "\t\tBIOS Boot specification" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics_Extensions[1], 1)) {
-        std::cout << "Function key-initiated network service is supported" << std::endl;
-    }
-    else {
-        std::cout << "Function key-initiated network service is not supported" << std::endl;
+        std::cout << "\t\tFunction key-initiated network service" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics_Extensions[1], 2)) {
-        std::cout << "Enabled targeted content distribution" << std::endl;
-    }
-    else {
-        std::cout << "Disabled targeted content distribution" << std::endl;
+        std::cout << "\t\tEnabled targeted content distribution" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics_Extensions[1], 3)) {
-        std::cout << "UEFI Specification is supported" << std::endl;
-    }
-    else {
-        std::cout << "UEFI Specification is not supported" << std::endl;
+        std::cout << "\t\tUEFI Specification" << std::endl;
     }
 
     if (getBit(curStruct->BIOS_Characteristics_Extensions[1], 4)) {
-        std::cout << "SMBIOS Table describes a virtual machine" << std::endl;
+        std::cout << "\t\tSMBIOS Table describes a virtual machine" << std::endl;
     }
 }
 
@@ -481,63 +380,33 @@ void displayInformation(SMBIOS_struct_type_1* curStruct, RawSMBIOSData* rawData)
     std::cout << "System Information (Type " << (int)curStruct->Type << ")" << std::endl;
 
     if ((int)rawData->SMBIOSMajorVersion < 2) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
-
-    if (curStruct->Manufacturer == 0) {
-        std::cout << "There is no manufacturer information" << std::endl;
-    }
-    else {
-        std::cout << "Manufacturer: " << strings[curStruct->Manufacturer] << std::endl;
-    }
-
-    if (curStruct->ProductName == 0) {
-        std::cout << "There is no product name information" << std::endl;
-    }
-    else {
-        std::cout << "Product Name: " << strings[curStruct->ProductName] << std::endl;
-    }
-
-    if (curStruct->Version == 0) {
-        std::cout << "There is no version information" << std::endl;
-    }
-    else {
-        std::cout << "Version: " << strings[curStruct->Version] << std::endl;
-    }
-
-    if (curStruct->SerialNumber == 0) {
-        std::cout << "There is no serial number information" << std::endl;
-    }
-    else {
-        std::cout << "Serial Number: " << strings[curStruct->SerialNumber] << std::endl;
-    }
+    
+    std::cout << "\tHandle: " << curStruct->Handle << std::endl;
+    std::cout << "\tManufacturer: " << strings[curStruct->Manufacturer] << std::endl;
+    std::cout << "\tProduct Name: " << strings[curStruct->ProductName] << std::endl;
+    std::cout << "\tVersion: " << strings[curStruct->Version] << std::endl;
+    std::cout << "\tSerial Number: " << strings[curStruct->SerialNumber] << std::endl;
 
     if ((int)rawData->SMBIOSMajorVersion == 2 && (int)rawData->SMBIOSMinorVersion < 1) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "UUID: " << std::hex << (int)curStruct->UUID << std::dec<< std::endl;
-    std::cout << "Wake-up Type: " << getWakeUpType(curStruct) << std::endl;
+    std::cout << "\tUUID: " << std::hex << (int)curStruct->UUID << std::dec<< std::endl;
+    std::cout << "\tWake-up Type: " << getWakeUpType(curStruct) << std::endl;
     
     if ((int)rawData->SMBIOSMajorVersion == 2 && (int)rawData->SMBIOSMinorVersion < 4) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    if (curStruct->SKUNumber == 0) {
-        std::cout << "There is no SKU Number information" << std::endl;
-    }
-    else {
-        std::cout << "SKU Number: " << strings[curStruct->SKUNumber] << std::endl;
-    }
+    std::cout << "\tSKU Number: " << strings[curStruct->SKUNumber] << std::endl;
+    std::cout << "\tFamily: " << strings[curStruct->Family] << std::endl;
 
-    if (curStruct->Family == 0) {
-        std::cout << "Family: " << strings[curStruct->Family] << std::endl;
-    }
-
-    std::cout << "--------------------------------------------------------" << std::endl;
+    std::cout << std::endl;
 }
 
 std::string getWakeUpType(SMBIOS_struct_type_1* curStruct) {
@@ -570,77 +439,48 @@ void displayInformation(SMBIOS_struct_type_3* curStruct, RawSMBIOSData* rawData)
     std::cout << "Chassis Information (Type " << (int)curStruct->Type << ")" << std::endl;
 
     if (rawData->SMBIOSMajorVersion < 2) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
-
-    if (curStruct->Manufacturer == NULL) {
-        std::cout << "There is no manufacturer information" << std::endl;
-    }
-    else {
-        std::cout << "Manufacturer: " << strings[curStruct->Manufacturer] << std::endl;
-    }
+    
+    std::cout << "\tHandle: " << curStruct->Handle << std::endl;
+    std::cout << "\tManufacturer: " << strings[curStruct->Manufacturer] << std::endl;
 
     displayChassisType(curStruct);
     
-    if (curStruct->Version == 0) {
-        std::cout << "There is no version information" << std::endl;
-    }
-    else {
-        std::cout << "Version: " << strings[curStruct->Version] << std::endl;
-    }
-
-    if (curStruct->SerialNumber == 0) {
-        std::cout << "There is no serial number information" << std::endl;
-    }
-    else {
-        std::cout << "Serial Number: " << strings[curStruct->SerialNumber] << std::endl;
-    }
-
-    if (curStruct->AssetTagNumber == 0) {
-        std::cout << "There is no asset tag number information" << std::endl;
-    }
-    else {
-        std::cout << "Asset Tag Number: " << strings[curStruct->AssetTagNumber] << std::endl;
-    }
+    std::cout << "\tVersion: " << strings[curStruct->Version] << std::endl;
+    std::cout << "\tSerial Number: " << strings[curStruct->SerialNumber] << std::endl;
+    std::cout << "\tAsset Tag Number: " << strings[curStruct->AssetTagNumber] << std::endl;
 
     if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 1) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "Boot-up State: " << getChassisState(curStruct->BootUpState) << std::endl;
-    std::cout << "Power Supply State: " << getChassisState(curStruct->PowerSupplyState) << std::endl;
-    std::cout << "Thermal State: " << getChassisState(curStruct->ThermalState) << std::endl;
+    std::cout << "\tBoot-up State: " << getChassisState(curStruct->BootUpState) << std::endl;
+    std::cout << "\tPower Supply State: " << getChassisState(curStruct->PowerSupplyState) << std::endl;
+    std::cout << "\tThermal State: " << getChassisState(curStruct->ThermalState) << std::endl;
 
-    std::cout << "Security State: " << getChassisSecurityState(curStruct->SecurityStatus) << std::endl;
+    std::cout << "\tSecurity State: " << getChassisSecurityState(curStruct->SecurityStatus) << std::endl;
 
     if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 3) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    if (curStruct->NumberOfPowerCords == 0) {
-        std::cout << "Unspecified number of power chords" << std::endl;
-    }
-    else {
-        std::cout << "Number of Power Chords: " << (int)curStruct->NumberOfPowerCords << std::endl;
-    }
+    std::cout << "\tNumber of Power Chords: " << (int)curStruct->NumberOfPowerCords << std::endl;
 
-    std::cout << "--------------------------------------------------------" << std::endl;
+    std::cout << std::endl;
 }
 
 void displayChassisType(SMBIOS_struct_type_3* curStruct) {
     BYTE characteristics = curStruct->ChassisType;
     if (getBit(characteristics, 1)) {
-        std::cout << "Chassis locked" << std::endl;
+        std::cout << "\tChassis is locked" << std::endl;
         characteristics %= 128;
     }
-    else {
-        std::cout << "Unsure whether chassis is locked" << std::endl;
-    }
 
-    std::cout << "Chassis Type: ";
+    std::cout << "\tChassis Type: ";
     switch (characteristics) {
     case 1:
         std::cout << "Other";
@@ -789,107 +629,56 @@ void displayInformation(SMBIOS_struct_type_4* curStruct, RawSMBIOSData* rawData)
         return;
     }
 
-    if (curStruct->SocketDesignation == 0) {
-        std::cout << "There is no socket designation information" << std::endl;
-    }
-    else {
-        std::cout << "Socket Designation: " << strings[curStruct->SocketDesignation] << std::endl;
-    }
+    std::cout << "\tHandle: " << curStruct->Handle << std::endl;
+    std::cout << "\tSocket Designation: " << strings[curStruct->SocketDesignation] << std::endl;
+    std::cout << "\tProcessor Type: " << getProcessorType(curStruct) << std::endl;
+    std::cout << "\tProcessor Family: " << getProcessorFamily(curStruct) << std::endl;
+    std::cout << "\tProcessor Manufacturer: " << strings[curStruct->ProcessorManufacturer] << std::endl;
+    std::cout << "\tProcessor ID: " << (int)curStruct->ProcessorID << std::endl;
+    std::cout << "\tProcessor Version: " << strings[curStruct->ProcessorVersion] << std::endl;
 
-    std::cout << "Processor Type: " << getProcessorType(curStruct) << std::endl;
-    std::cout << "Processor Family: " << getProcessorFamily(curStruct) << std::endl;
-
-    if (curStruct->ProcessorManufacturer == 0) {
-        std::cout << "There is no processor manufacturer information" << std::endl;
-    }
-    else {
-        std::cout << "Processor Manufacturer: " << strings[curStruct->ProcessorManufacturer] << std::endl;
-    }
-
-    std::cout << "Processor ID: " << (int)curStruct->ProcessorID << std::endl;
-    
-    if (curStruct->ProcessorVersion == 0) {
-        std::cout << "There is no processor version information" << std::endl;
-    } 
-    else {
-        std::cout << "Processor Version: " << strings[curStruct->ProcessorVersion] << std::endl;
-    }
-
-    std::cout << "Voltage: " << getVoltage(curStruct) << std::endl;
-    std::cout << "External Clock: " << (int)curStruct->ExternalClock << "MHz" << std::endl;
-    std::cout << "Max Processor Speed: " << (int)curStruct->MaxSpeed << "MHz" << std::endl;
-    std::cout << "Current Processor Speed: " << (int)curStruct->CurrentSpeed << "MHz" << std::endl;
-    std::cout << "Processor Status: " << getProcessorStatus(curStruct) << std::endl;
-    std::cout << "Processor Upgrade: " << getProcessorUpgrade(curStruct) << std::endl;
+    std::cout << "\tVoltage: " << getVoltage(curStruct) << std::endl;
+    std::cout << "\tExternal Clock: " << (int)curStruct->ExternalClock << "MHz" << std::endl;
+    std::cout << "\tMax Processor Speed: " << (int)curStruct->MaxSpeed << "MHz" << std::endl;
+    std::cout << "\tCurrent Processor Speed: " << (int)curStruct->CurrentSpeed << "MHz" << std::endl;
+    getProcessorStatus(curStruct);
+    std::cout << "\tProcessor Upgrade: " << getProcessorUpgrade(curStruct) << std::endl;
 
     if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 1) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "L1 Cache Handle: " << (int)curStruct->L1CacheHandle << std::endl;
-    std::cout << "L2 Cache Handle: " << (int)curStruct->L2CacheHandle << std::endl;
-    std::cout << "L3 Cache Handle: " << (int)curStruct->L3CacheHandle << std::endl;
+    std::cout << "\tL1 Cache Handle: " << (int)curStruct->L1CacheHandle << std::endl;
+    std::cout << "\tL2 Cache Handle: " << (int)curStruct->L2CacheHandle << std::endl;
+    std::cout << "\tL3 Cache Handle: " << (int)curStruct->L3CacheHandle << std::endl;
 
     if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 3) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    if (curStruct->SerialNumber == 0) {
-        std::cout << "There is no serial number information" << std::endl;
-    }
-    else {
-        std::cout << "Serial Number: " << strings[curStruct->SerialNumber] << std::endl;
-    }
+    std::cout << "\tSerial Number: " << strings[curStruct->SerialNumber] << std::endl;
+    std::cout << "\tAsset Tag: " << strings[curStruct->AssetTag] << std::endl;
 
-    if (curStruct->AssetTag == 0) {
-        std::cout << "There is no asset tag information" << std::endl;
-    }
-    else {
-        std::cout << "Asset Tag: " << strings[curStruct->AssetTag] << std::endl;
-    }
-
-    if (curStruct->PartNumber == 0) {
-        std::cout << "There is no part number information" << std::endl;
-    }
-    else {
-        std::cout << "Part Number: " << strings[curStruct->PartNumber] << std::endl;
-    }
+    std::cout << "\tPart Number: " << strings[curStruct->PartNumber] << std::endl;
 
     if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 5) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "Core Count: " << (int)curStruct->CoreCount << std::endl;
-    std::cout << "Core Enabled: " << (int)curStruct->CoreEnabled << std::endl;
-    std::cout << "Thread Count: " << (int)curStruct->ThreadCount << std::endl;
+    std::cout << "\tCore Count: " << (int)curStruct->CoreCount << std::endl;
+    std::cout << "\tCore Enabled: " << (int)curStruct->CoreEnabled << std::endl;
+    std::cout << "\tThread Count: " << (int)curStruct->ThreadCount << std::endl;
 
     displayProcessorCharacteristics(curStruct);
-    std::cout << "Processor Family 2: " << getProcessorFamily2(curStruct) << std::endl;
-    if (curStruct->CoreCount2 == 0) {
-        std::cout << "Core Count 2: Unkown" << std::endl;
-    }
-    else {
-        std::cout << "Core Count 2: " << (int)curStruct->CoreCount2 << std::endl;
-    }
+    std::cout << "\tProcessor Family 2: " << getProcessorFamily2(curStruct) << std::endl;
+    std::cout << "\tCore Count 2: " << (int)curStruct->CoreCount2 << std::endl;
+    std::cout << "\tCore Enabled 2: " << (int)curStruct->CoreEnabled2 << std::endl;
+    std::cout << "\tThread Count 2: " << (int)curStruct->ThreadCount2 << std::endl;
 
-    if (curStruct->CoreEnabled2 == 0) {
-        std::cout << "Core Enabled 2: Unknown" << std::endl;
-    }
-    else {
-        std::cout << "Core Enabled 2: " << (int)curStruct->CoreEnabled2 << std::endl;
-    }
-
-    if (curStruct->ThreadCount2 == 0) {
-        std::cout << "Thread Count 2: Unknown" << std::endl;
-    }
-    else {
-        std::cout << "Thread Count 2: " << (int)curStruct->ThreadCount2 << std::endl;
-    }
-
-    std::cout << "--------------------------------------------------------" << std::endl;
+    std::cout << std::endl;
 }
 
 std::string getProcessorType(SMBIOS_struct_type_4* curStruct) {
@@ -1006,43 +795,39 @@ std::string getVoltage(SMBIOS_struct_type_4* curStruct) {
     return "Configurable";
 }
 
-std::string getProcessorStatus(SMBIOS_struct_type_4* curStruct) {
+void getProcessorStatus(SMBIOS_struct_type_4* curStruct) {
     BYTE stats;
     stats = curStruct->Status;
     
-    std::string res = "";
+    std::cout << "\tProcessor Status: " << std::endl;
 
     if (getBit(stats, 6) == 1) {
-        res += "CPU Socket Population";
+        std::cout << "\t\tCPU Socket Population" << std::endl;
     }
     else {
-        res += "CPU Socket Unpopulated";
+        std::cout << "\t\tCPU Socket Unpopulated" << std::endl;
     }
 
-    res += ", ";
-
-    int lowerBits = curStruct->Status >> 5;
+    int lowerBits = curStruct->Status % 8;
     switch (lowerBits) {
     case 0:
-        res += "Unknown";
+        std::cout << "\t\tUnknown" << std::endl;
         break;
     case 1:
-        res += "CPU Enabled";
+        std::cout << "\t\tCPU Enabled" << std::endl;
         break;
     case 2:
-        res += "CPU Disabled by User Through BIOS Setup";
+        std::cout << "\t\tCPU Disabled by User Through BIOS Setup" << std::endl;
         break;
     case 3:
-        res += "CPU Disabled by BIOS (POST Error)";
+        std::cout << "\t\tCPU Disabled by BIOS (POST Error)" << std::endl;
         break;
     case 4:
-        res += "CPU is Idle, Waiting to be Enabled";
+        std::cout << "\t\tCPU is Idle, Waiting to be Enabled" << std::endl;
         break;
     default:
-        res += "Other";
         break;
     }
-    return res;
 }
 
 std::string getProcessorUpgrade(SMBIOS_struct_type_4* curStruct) {
@@ -1149,28 +934,26 @@ std::string getProcessorUpgrade(SMBIOS_struct_type_4* curStruct) {
 }
 
 void displayProcessorCharacteristics(SMBIOS_struct_type_4* curStruct) {
-    BYTE characteristics[100];
-    characteristics[0] = curStruct->ProcessorCharacteristics;
-    std::cout << "Capabilities: ";
-    if (getBit(characteristics, 2, 1) == 1) {
-        std::cout << "64-bit Capable ";
+    BYTE characteristics = curStruct->ProcessorCharacteristics;
+    std::cout << "\tCapabilities: " << std::endl;
+    if (getBit(characteristics, 2)) {
+        std::cout << "\t\t64-bit Capable" << std::endl;
     }
-    if (getBit(characteristics, 3, 1) == 1) {
-        std::cout << "Multi-Core ";
+    if (getBit(characteristics, 3)) {
+        std::cout << "\t\tMulti-Core" << std::endl;
     }
-    if (getBit(characteristics, 4, 1) == 1) {
-        std::cout << "Hardware Thread ";
+    if (getBit(characteristics, 4)) {
+        std::cout << "\t\tHardware Thread" << std::endl;
     }
-    if (getBit(characteristics, 5, 1) == 1) {
-        std::cout << "Execute Protection ";
+    if (getBit(characteristics, 5)) {
+        std::cout << "\t\tExecute Protection" << std::endl;
     }
-    if (getBit(characteristics, 6, 1) == 1) {
-        std::cout << "Enhanced Virtualization ";
+    if (getBit(characteristics, 6)) {
+        std::cout << "\t\tEnhanced Virtualization" << std::endl;
     }
-    if (getBit(characteristics, 7, 1) == 1) {
-        std::cout << "Power/Performance Control ";
+    if (getBit(characteristics, 7)) {
+        std::cout << "\t\tPower/Performance Control" << std::endl;
     }
-    std::cout << std::endl;
 }
 
 std::string getProcessorFamily2(SMBIOS_struct_type_4* curStruct) {
@@ -1591,43 +1374,32 @@ void displayInformation(SMBIOS_struct_type_7* curStruct, RawSMBIOSData* rawData)
     std::cout << "Cache Information (Type " << (int)curStruct->Type << ")" << std::endl;
 
     if (rawData->SMBIOSMajorVersion < 2) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "Handle: " << (int)curStruct->Handle << std::endl;
-    
-    if (curStruct->SocketDesignation == 0) {
-        std::cout << "No socket designation information" << std::endl;
-    }
-    else {
-        std::cout << "Socket Designation: " << strings[curStruct->SocketDesignation] << std::endl;
-    }
+    std::cout << "\tHandle: " << (int)curStruct->Handle << std::endl;
+    std::cout << "\tSocket Designation: " << strings[curStruct->SocketDesignation] << std::endl;
 
     displayCacheConfiguration(curStruct);
-    std::cout << "Maximum ";
+    std::cout << "\tMaximum ";
     displayCacheSize(curStruct->MaximumCacheSize);
-    std::cout << "Installed ";
+    std::cout << "\tInstalled ";
     displayCacheSize(curStruct->InstalledSize);
     displaySRAMType(curStruct);
 
     if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 1) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    if (curStruct->CacheSpeed == 0) {
-        std::cout << "Unknown Speed" << std::endl;
-    }
-    else {
-        std::cout << "Cache Module Speed: " << (int)curStruct->CacheSpeed << " ns" << std::endl;
-    }
+    std::cout << "\tCache Module Speed: " << (int)curStruct->CacheSpeed << " ns" << std::endl;
 
-    std::cout << "Error Correction Type: " << getErrorCorrectionTypeField(curStruct) << std::endl;
-    std::cout << "System Cache Type: " << getSystemCachetypeField(curStruct) << std::endl;
-    std::cout << "Associativity: " << getAssociativity(curStruct) << std::endl;
+    std::cout << "\tError Correction Type: " << getErrorCorrectionTypeField(curStruct) << std::endl;
+    std::cout << "\tSystem Cache Type: " << getSystemCachetypeField(curStruct) << std::endl;
+    std::cout << "\tAssociativity: " << getAssociativity(curStruct) << std::endl;
 
-    std::cout << "--------------------------------------------------------" << std::endl;
+    std::cout << std::endl;
 }
 
 std::string getErrorCorrectionTypeField(SMBIOS_struct_type_7* curStruct) {
@@ -1703,50 +1475,51 @@ std::string getAssociativity(SMBIOS_struct_type_7* curStruct) {
 
 void displayCacheConfiguration(SMBIOS_struct_type_7* curStruct) {
     int operationalMode = getBits(curStruct->CacheConfiguration, 9, 8);
+    std::cout << "\tCache Configuration:" << std::endl;
     switch (operationalMode) {
     case 0:
-        std::cout << "Write Through" << std::endl;
+        std::cout << "\t\tWrite Through" << std::endl;
         break;
     case 1:
-        std::cout << "Write Back" << std::endl;
+        std::cout << "\t\tWrite Back" << std::endl;
         break;
     }
 
     int enabledDisabled = getBit(curStruct->CacheConfiguration, 7);
     switch (enabledDisabled) {
     case 0:
-        std::cout << "Disabled at boot time" << std::endl;
+        std::cout << "\t\tDisabled at boot time" << std::endl;
         break;
     case 1:
-        std::cout << "Enabled at boot time" << std::endl;
+        std::cout << "\t\tEnabled at boot time" << std::endl;
         break;
     }
 
     int location = getBits(curStruct->CacheConfiguration, 6, 5);
     switch (location) {
     case 0:
-        std::cout << "Internal to the CPU Module" << std::endl;
+        std::cout << "\t\tInternal to the CPU Module" << std::endl;
         break;
     case 1:
-        std::cout << "External to the CPU Module" << std::endl;
+        std::cout << "\t\tExternal to the CPU Module" << std::endl;
         break;
     default:
-        std::cout << "Location unknown" << std::endl;
+        std::cout << "\t\tLocation unknown" << std::endl;
         break;
     }
 
     int socketed = getBit(curStruct->CacheConfiguration, 3);
     switch (socketed) {
     case 0:
-        std::cout << "Socketed" << std::endl;
+        std::cout << "\t\tSocketed" << std::endl;
         break;
     case 1:
-        std::cout << "Not Socketed" << std::endl;
+        std::cout << "\t\tNot Socketed" << std::endl;
         break;
     }
 
     int level = getBits(curStruct->CacheConfiguration, 2, 0);
-    std::cout << "Level: " << level + 1 << std::endl;
+    std::cout << "\t\tLevel: " << level + 1 << std::endl;
 }
 
 void displayCacheSize(WORD CacheSize) {
@@ -1756,23 +1529,22 @@ void displayCacheSize(WORD CacheSize) {
 }
 
 void displaySRAMType(SMBIOS_struct_type_7* curStruct) {
-    std::cout << "SRAM: ";
-    if (getBit(curStruct->CurrentSRAMType, 13)) {
-        std::cout << "Non-Burst ";
+    std::cout << "\tSRAM:" << std::endl;
+    if (getBit(curStruct->CurrentSRAMType, 2)) {
+        std::cout << "\t\tNon-Burst" << std::endl;
     }
-    if (getBit(curStruct->CurrentSRAMType, 12)) {
-        std::cout << "Burst ";
+    if (getBit(curStruct->CurrentSRAMType, 3)) {
+        std::cout << "\t\tBurst" << std::endl;
     }
-    if (getBit(curStruct->CurrentSRAMType, 11)) {
-        std::cout << "Pipeline Burst ";
+    if (getBit(curStruct->CurrentSRAMType, 4)) {
+        std::cout << "\t\tPipeline Burst" << std::endl;
     }
-    if (getBit(curStruct->CurrentSRAMType, 10)) {
-        std::cout << "Synchronous ";
+    if (getBit(curStruct->CurrentSRAMType, 5)) {
+        std::cout << "\t\tSynchronous" << std::endl;
     }
-    if (getBit(curStruct->CurrentSRAMType, 9)) {
-        std::cout << "Asynchronous ";
+    if (getBit(curStruct->CurrentSRAMType, 6)) {
+        std::cout << "\t\tAsynchronous" << std::endl;
     }
-    std::cout << std::endl;
 }
 
 void displayInformation(SMBIOS_struct_type_9* curStruct, RawSMBIOSData* rawData) {
@@ -1780,42 +1552,36 @@ void displayInformation(SMBIOS_struct_type_9* curStruct, RawSMBIOSData* rawData)
     std::cout << "System Slots Information (Type " << (int)curStruct->Type << ")" << std::endl;
 
     if (rawData->SMBIOSMajorVersion < 2) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "Handle: " << curStruct->Handle << std::endl;
-    
-    if (curStruct->SlotDesignation == 0) {
-        std::cout << "There is no slot designation information" << std::endl;
-    }
-    else {
-        std::cout << "Slot Designation: " << strings[curStruct->SlotDesignation] << std::endl;
-    }
+    std::cout << "\tHandle: " << curStruct->Handle << std::endl;
+    std::cout << "\tSlot Designation: " << strings[curStruct->SlotDesignation] << std::endl;
 
-    std::cout << "Slot Type: " << getSlotTypeField(curStruct) << std::endl;
-    std::cout << "Slot Data Bus Width: " << getSlotDataBusWidth(curStruct) << std::endl;
-    std::cout << "Current Usage: " << getCurrentUsage(curStruct) << std::endl;
-    std::cout << "Slot Length: " << getSlotLength(curStruct) << std::endl;
-    std::cout << "Slot ID: " << (int)curStruct->SlotID << std::endl;
+    std::cout << "\tSlot Type: " << getSlotTypeField(curStruct) << std::endl;
+    std::cout << "\tSlot Data Bus Width: " << getSlotDataBusWidth(curStruct) << std::endl;
+    std::cout << "\tCurrent Usage: " << getCurrentUsage(curStruct) << std::endl;
+    std::cout << "\tSlot Length: " << getSlotLength(curStruct) << std::endl;
+    std::cout << "\tSlot ID: " << (int)curStruct->SlotID << std::endl;
 
     displaySlotCharacteristics1(curStruct);
     if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 1) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
     displaySlotCharacteristics2(curStruct);
     if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 6) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "Segment Group Number: " << (int)curStruct->SegmentGroupNumber << std::endl;
-    std::cout << "Bus Number: " << (int)curStruct->BusNumber << std::endl;
-    std::cout << "Device/Function Number: " << (int)curStruct->DeviceNumber << std::endl;
+    std::cout << "\tSegment Group Number: " << (int)curStruct->SegmentGroupNumber << std::endl;
+    std::cout << "\tBus Number: " << (int)curStruct->BusNumber << std::endl;
+    std::cout << "\tDevice/Function Number: " << (int)curStruct->DeviceNumber << std::endl;
 
-    std::cout << "--------------------------------------------------------" << std::endl;
+    std::cout << std::endl;
 }
 
 std::string getSlotTypeField(SMBIOS_struct_type_9* curStruct) {
@@ -2005,43 +1771,40 @@ std::string getSlotLength(SMBIOS_struct_type_9* curStruct) {
 }
 
 void displaySlotCharacteristics1(SMBIOS_struct_type_9* curStruct) {
-    std::cout << "Slot Characteristics 1: ";
-    if (getBit(curStruct->SlotCharacteristics1, 6)) {
-        std::cout << "Provides 5.0 Volts ";
-    }
-    if (getBit(curStruct->SlotCharacteristics1, 5)) {
-        std::cout << "Provides 3.3 Volts ";
-    }
-    if (getBit(curStruct->SlotCharacteristics1, 4)) {
-        std::cout << "Slot's opening is shared with another slot ";
-    }
-    if (getBit(curStruct->SlotCharacteristics1, 3)) {
-        std::cout << "PC Card slot supports PC Card-16 ";
+    std::cout << "\tSlot Characteristics:" << std::endl;
+    if (getBit(curStruct->SlotCharacteristics1, 1)) {
+        std::cout << "\t\tProvides 5.0 Volts" << std::endl;
     }
     if (getBit(curStruct->SlotCharacteristics1, 2)) {
-        std::cout << "PC Card slot supports CardBus ";
+        std::cout << "\t\tProvides 3.3 Volts" << std::endl;
     }
-    if (getBit(curStruct->SlotCharacteristics1, 1)) {
-        std::cout << "PC Card slot supports Zoom Video ";
+    if (getBit(curStruct->SlotCharacteristics1, 3)) {
+        std::cout << "\t\tSlot's opening is shared with another slot" << std::endl;
     }
-    if (getBit(curStruct->SlotCharacteristics1, 0)) {
-        std::cout << "PC Card slot supports Modem Ring Resume ";
+    if (getBit(curStruct->SlotCharacteristics1, 4)) {
+        std::cout << "\t\tPC Card slot supports PC Card-16" << std::endl;
     }
-    std::cout << std::endl;
+    if (getBit(curStruct->SlotCharacteristics1, 5)) {
+        std::cout << "\t\tPC Card slot supports CardBus" << std::endl;
+    }
+    if (getBit(curStruct->SlotCharacteristics1, 6)) {
+        std::cout << "\t\tPC Card slot supports Zoom Video" << std::endl;
+    }
+    if (getBit(curStruct->SlotCharacteristics1, 7)) {
+        std::cout << "\t\tPC Card slot supports Modem Ring Resume" << std::endl;
+    }
 }
 
 void displaySlotCharacteristics2(SMBIOS_struct_type_9* curStruct) {
-    std::cout << "Slot Characteristics 2: ";
-    if (getBit(curStruct->SlotCharacteristics2, 7)) {
-        std::cout << "PCI Slot supports Power Management Event (PME#) Signal ";
+    if (getBit(curStruct->SlotCharacteristics2, 0)) {
+        std::cout << "\t\tPCI Slot supports Power Management Event (PME#) Signal" << std::endl;
     }
-    if (getBit(curStruct->SlotCharacteristics2, 6)) {
-        std::cout << "Slot supports hot-plug devices ";
+    if (getBit(curStruct->SlotCharacteristics2, 1)) {
+        std::cout << "\t\tSlot supports hot-plug devices" << std::endl;
     }
-    if (getBit(curStruct->SlotCharacteristics2, 5)) {
-        std::cout << "PCI slot supports SMBus Signal ";
+    if (getBit(curStruct->SlotCharacteristics2, 2)) {
+        std::cout << "\t\tPCI slot supports SMBus Signal" << std::endl;
     }
-    std::cout << std::endl;
 }
 
 void displayInformation(SMBIOS_struct_type_16* curStruct, RawSMBIOSData* rawData) {
@@ -2049,27 +1812,27 @@ void displayInformation(SMBIOS_struct_type_16* curStruct, RawSMBIOSData* rawData
     std::cout << "Physics Memory Array Information (Type " << (int)curStruct->Type << ")" << std::endl;
 
     if (rawData->SMBIOSMajorVersion < 2 || (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 1)) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "Handle: " << curStruct->Handle << std::endl;
-    std::cout << "Location: " << getLocation(curStruct) << std::endl;
-    std::cout << "USe: " << getUse(curStruct) << std::endl;
-    std::cout << "Memory Error Correction Type: " << getErrorCorrectionType(curStruct) << std::endl;
+    std::cout << "\tHandle: " << curStruct->Handle << std::endl;
+    std::cout << "\tLocation: " << getLocation(curStruct) << std::endl;
+    std::cout << "\tUse: " << getUse(curStruct) << std::endl;
+    std::cout << "\tMemory Error Correction Type: " << getErrorCorrectionType(curStruct) << std::endl;
 
-    std::cout << "Maximum Capacity: " << (int)curStruct->MaximumCapacity << "K" << std::endl;
-    std::cout << "Memory Error Information Handle: " << (int)curStruct->MemoryErrorInformationHandle << std::endl;
-    std::cout << "Number of Memory Devices: " << (int)curStruct->NumberOfMemoryDevices << std::endl;
+    std::cout << "\tMaximum Capacity: " << (int)curStruct->MaximumCapacity << "K" << std::endl;
+    std::cout << "\tMemory Error Information Handle: " << (int)curStruct->MemoryErrorInformationHandle << std::endl;
+    std::cout << "\tNumber of Memory Devices: " << (int)curStruct->NumberOfMemoryDevices << std::endl;
     
     if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 7) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "Extended Maximum Capacity: " << (int)curStruct->ExtendedMaximumCapacity << std::endl;
+    std::cout << "\tExtended Maximum Capacity: " << (int)curStruct->ExtendedMaximumCapacity << std::endl;
 
-    std::cout << "--------------------------------------------------------" << std::endl;
+    std::cout << std::endl;
 }
 
 std::string getLocation(SMBIOS_struct_type_16* curStruct) {
@@ -2158,103 +1921,70 @@ void displayInformation(SMBIOS_struct_type_17* curStruct, RawSMBIOSData* rawData
         return;
     }
 
-    std::cout << "Handle: " << curStruct->Handle << std::endl;
-    std::cout << "Physical Memory Array Handle: " << curStruct->PhysicalMemoryArrayHandle << std::endl;
+    std::cout << "\tHandle: " << curStruct->Handle << std::endl;
+    std::cout << "\tPhysical Memory Array Handle: " << curStruct->PhysicalMemoryArrayHandle << std::endl;
     
     if (curStruct->MemoryErrorInformationHandle == 0xFFFE) {
-        std::cout << "There is no memory error information handle" << std::endl;
+        std::cout << "\tThere is no memory error information handle" << std::endl;
     }
     else if (curStruct->MemoryErrorInformationHandle == 0xFFFF) {
-        std::cout << "There is no memory error found" << std::endl;
+        std::cout << "\tThere is no memory error found" << std::endl;
     }
     else {
-        std::cout << "Memory Error Information Handle: " << curStruct->MemoryErrorInformationHandle;
+        std::cout << "\tMemory Error Information Handle: " << curStruct->MemoryErrorInformationHandle;
     }
 
-    std::cout << "Total Width: " << (int)curStruct->TotalWidth << std::endl;
-    std::cout << "Data Width: " << (int)curStruct->DataWidth << std::endl;
-    std::cout << "Size: " << (int)curStruct->Size << std::endl;
-    std::cout << "Form Factor: " << getFormFactor(curStruct) << std::endl;
-    std::cout << "Device Set: " << (int)curStruct->DeviceSet << std::endl;
+    std::cout << "\tTotal Width: " << (int)curStruct->TotalWidth << std::endl;
+    std::cout << "\tData Width: " << (int)curStruct->DataWidth << std::endl;
+    std::cout << "\tSize: " << (int)curStruct->Size << std::endl;
+    std::cout << "\tForm Factor: " << getFormFactor(curStruct) << std::endl;
+    std::cout << "\tDevice Set: " << (int)curStruct->DeviceSet << std::endl;
     
-    if (curStruct->DeviceLocator == 0) {
-        std::cout << "There is no device locator information" << std::endl;
-    }
-    else {
-        std::cout << "Device Locator: " << strings[curStruct->DeviceLocator] << std::endl;
-    }
+    std::cout << "\tDevice Locator: " << strings[curStruct->DeviceLocator] << std::endl;
 
-    if (curStruct->BankLocator == 0) {
-        std::cout << "There is no bank locator information" << std::endl;
-    }
-    else {
-        std::cout << "Bank Locator: " << strings[curStruct->BankLocator] << std::endl;
-    }
+    std::cout << "\tBank Locator: " << strings[curStruct->BankLocator] << std::endl;
 
-    std::cout << "Memory Device Type: " << getMemoryDeviceType(curStruct) << std::endl;
+    std::cout << "\tMemory Device Type: " << getMemoryDeviceType(curStruct) << std::endl;
 
     displayTypeDetail(curStruct);
 
     if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 3) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "Maximum Capable Speed: " << (int)curStruct->Speed << "MHz" << std::endl;
-    
-    if (curStruct->Manufacturer == 0) {
-        std::cout << "There is no manufacturer information" << std::endl;
-    }
-    else {
-        std::cout << "Manufacturer: " << strings[curStruct->Manufacturer] << std::endl;
-    }
+    std::cout << "\tMaximum Capable Speed: " << (int)curStruct->Speed << "MHz" << std::endl;
+    std::cout << "\tManufacturer: " << strings[curStruct->Manufacturer] << std::endl;
 
-    if (curStruct->SerialNumber == 0) {
-        std::cout << "There is no serial number information" << std::endl;
-    }
-    else {
-        std::cout << "Serial Number: " << strings[curStruct->SerialNumber] << std::endl;
-    }
-
-    if (curStruct->AssetTag == 0) {
-        std::cout << "There is no asset tag information" << std::endl;
-    }
-    else {
-        std::cout << "Asset Tag: " << strings[curStruct->AssetTag] << std::endl;
-    }
-
-    if (curStruct->PartNumber == 0) {
-        std::cout << "There is no part number information" << std::endl;
-    }
-    else {
-        std::cout << "Part Number: " << strings[curStruct->PartNumber] << std::endl;
-    }
+    std::cout << "\tSerial Number: " << strings[curStruct->SerialNumber] << std::endl;
+    std::cout << "\tAsset Tag: " << strings[curStruct->AssetTag] << std::endl;
+    std::cout << "\tPart Number: " << strings[curStruct->PartNumber] << std::endl;
 
     if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 6) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "Attributes: " << curStruct->Attributes % 16 << std::endl;
+    std::cout << "\tAttributes: " << curStruct->Attributes % 16 << std::endl;
 
     if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 7) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "Extended Size: " << (int)curStruct->ExtendedSize << std::endl;
-    std::cout << "Configured Memory Clock Speed: " << (int)curStruct->ConfiguredMemoryClockSpeed << std::endl;
+    std::cout << "\tExtended Size: " << (int)curStruct->ExtendedSize << std::endl;
+    std::cout << "\tConfigured Memory Clock Speed: " << (int)curStruct->ConfiguredMemoryClockSpeed << std::endl;
 
     if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 8) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "Minimum Voltage: " << (int)curStruct->MinimumVoltage << " milliVolts" << std::endl;
-    std::cout << "MaximumVoltage: " << (int)curStruct->MaximumVoltage << " milliVolts" << std::endl;
-    std::cout << "Configured Voltage: " << (int)curStruct->ConfiguredVoltage << " milliVolts" << std::endl;
+    std::cout << "\tMinimum Voltage: " << (int)curStruct->MinimumVoltage << " milliVolts" << std::endl;
+    std::cout << "\tMaximumVoltage: " << (int)curStruct->MaximumVoltage << " milliVolts" << std::endl;
+    std::cout << "\tConfigured Voltage: " << (int)curStruct->ConfiguredVoltage << " milliVolts" << std::endl;
 
-    std::cout << "--------------------------------------------------------" << std::endl;
+    std::cout << std::endl;
 }
 
 std::string getFormFactor(SMBIOS_struct_type_17* curStruct) {
@@ -2356,47 +2086,46 @@ std::string getMemoryDeviceType(SMBIOS_struct_type_17* curStruct) {
 }
 
 void displayTypeDetail(SMBIOS_struct_type_17* curStruct) {
-    std::cout << "Type Details: ";
-    if (getBit(curStruct->TypeDetail, 12)) {
-        std::cout << "Fast-paged ";
-    }
-    if (getBit(curStruct->TypeDetail, 11)) {
-        std::cout << "Static column ";
-    }
-    if (getBit(curStruct->TypeDetail, 10)) {
-        std::cout << "Pseudo-static ";
-    }
-    if (getBit(curStruct->TypeDetail, 9)) {
-        std::cout << "RAMBUS ";
-    }
-    if (getBit(curStruct->TypeDetail, 8)) {
-        std::cout << "Synchronous ";
-    }
-    if (getBit(curStruct->TypeDetail, 7)) {
-        std::cout << "CMOS ";
-    }
-    if (getBit(curStruct->TypeDetail, 6)) {
-        std::cout << "EDO ";
-    }
-    if (getBit(curStruct->TypeDetail, 5)) {
-        std::cout << "Window DRAM ";
+    std::cout << "\tType Details:" << std::endl;
+    if (getBit(curStruct->TypeDetail, 3)) {
+        std::cout << "\t\tFast-paged" << std::endl;
     }
     if (getBit(curStruct->TypeDetail, 4)) {
-        std::cout << "Cache DRAM ";
+        std::cout << "\t\tStatic column" << std::endl;
     }
-    if (getBit(curStruct->TypeDetail, 3)) {
-        std::cout << "Non-volatile ";
+    if (getBit(curStruct->TypeDetail, 5)) {
+        std::cout << "\t\tPseudo-static" << std::endl;
     }
-    if (getBit(curStruct->TypeDetail, 2)) {
-        std::cout << "Registered (buffered) ";
+    if (getBit(curStruct->TypeDetail, 6)) {
+        std::cout << "\t\tRAMBUS" << std::endl;
     }
-    if (getBit(curStruct->TypeDetail, 1)) {
-        std::cout << "Unbuffered (unregistered) ";
+    if (getBit(curStruct->TypeDetail, 7)) {
+        std::cout << "\t\tSynchronous" << std::endl;
     }
-    if (getBit(curStruct->TypeDetail, 0)) {
-        std::cout << "LRDIMM ";
+    if (getBit(curStruct->TypeDetail, 8)) {
+        std::cout << "\t\tCMOS" << std::endl;
     }
-    std::cout << std::endl;
+    if (getBit(curStruct->TypeDetail, 9)) {
+        std::cout << "\t\tEDO" << std::endl;
+    }
+    if (getBit(curStruct->TypeDetail, 10)) {
+        std::cout << "\t\tWindow DRAM" << std::endl;
+    }
+    if (getBit(curStruct->TypeDetail, 11)) {
+        std::cout << "\t\tCache DRAM" << std::endl;
+    }
+    if (getBit(curStruct->TypeDetail, 12)) {
+        std::cout << "\t\tNon-volatile" << std::endl;
+    }
+    if (getBit(curStruct->TypeDetail, 13)) {
+        std::cout << "\t\tRegistered (buffered)" << std::endl;
+    }
+    if (getBit(curStruct->TypeDetail, 14)) {
+        std::cout << "\t\tUnbuffered (unregistered)" << std::endl;
+    }
+    if (getBit(curStruct->TypeDetail, 15)) {
+        std::cout << "\t\tLRDIMM" << std::endl;
+    }
 }
 
 void displayInformation(SMBIOS_struct_type_19* curStruct, RawSMBIOSData* rawData) {
@@ -2404,32 +2133,32 @@ void displayInformation(SMBIOS_struct_type_19* curStruct, RawSMBIOSData* rawData
     std::cout << "Memory Array Mapped Information (Type " << (int)curStruct->Type << ")" << std::endl;
 
     if (rawData->SMBIOSMajorVersion < 2 || (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 1)) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "Handle: " << (int)curStruct->Handle << std::endl;
-    std::cout << "Starting Address: " << (int)curStruct->StartingAddress << std::endl;
-    std::cout << "Ending Address: " << (int)curStruct->EndingAddress << std::endl;
-    std::cout << "Memory Array Handle: " << (int)curStruct->MemoryArrayHandle << std::endl;
-    std::cout << "Partition Width: " << (int)curStruct->PartitionWidth << std::endl;
+    std::cout << "\tHandle: " << (int)curStruct->Handle << std::endl;
+    std::cout << "\tStarting Address: " << (int)curStruct->StartingAddress << std::endl;
+    std::cout << "\tEnding Address: " << (int)curStruct->EndingAddress << std::endl;
+    std::cout << "\tMemory Array Handle: " << (int)curStruct->MemoryArrayHandle << std::endl;
+    std::cout << "\tPartition Width: " << (int)curStruct->PartitionWidth << std::endl;
 
     if (rawData->SMBIOSMajorVersion == 2 && rawData->SMBIOSMinorVersion < 7) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        std::cout << std::endl;
         return;
     }
 
-    std::cout << "Extended Starting Address: " << (int)curStruct->ExtendedStartingAddress << std::endl;
-    std::cout << "Extended Ending Address: " << (int)curStruct->ExtendedEndingAddress << std::endl;
+    std::cout << "\tExtended Starting Address: " << (int)curStruct->ExtendedStartingAddress << std::endl;
+    std::cout << "\tExtended Ending Address: " << (int)curStruct->ExtendedEndingAddress << std::endl;
 
-    std::cout << "--------------------------------------------------------" << std::endl;
+    std::cout << std::endl;
 }
 
 void displayInformation(SMBIOS_struct_type_32* curStruct, RawSMBIOSData* rawData) {
     std::cout << "System Boot Information (Type " << (int)curStruct->Type << ")" << std::endl;
-    std::cout << "Handle: " << curStruct->Handle << std::endl;
-    std::cout << "Boot Status: " << getBootStatus(curStruct) << std::endl;
-    std::cout << "--------------------------------------------------------" << std::endl;
+    std::cout << "\tHandle: " << curStruct->Handle << std::endl;
+    std::cout << "\tBoot Status: " << getBootStatus(curStruct) << std::endl;
+    std::cout << std::endl;
 }
 
 std::string getBootStatus(SMBIOS_struct_type_32* curStruct) {

@@ -3,73 +3,11 @@
 #include "Functions.h"
 
 int main() {
-    RawSMBIOSData* smBiosData = getRawData();
+    RawSMBIOSData* rawData = getRawData();
 
-    std::string input;
-    displayCommands();
-    std::cout << "> ";
-    while (std::cin >> input) {
-        if (input.compare("show") == 0) {
-            std::cin >> input;
-            if (input.compare("all") == 0) {
-                std::cout << std::endl;
-                displayAllStructures(smBiosData);
-            }
-            else if (input.compare("table") == 0) {
-                std::cout << std::endl;
-                displayStructureTable(smBiosData);
-            }
-            else if (input.compare("structure") == 0) {
-                int index;
-                std::cin >> index;
-                std::vector<SMBIOS_struct*> structureTable = getStructureTable(smBiosData);
-                if (index >= structureTable.size()) {
-                    std::cout << "structure table size is " << structureTable.size() << std::endl;
-                    error();
-                }
-                else {
-                    std::cout << std::endl;
-                    displayStructure(smBiosData, index);
-                }
-            }
-            else if (input.compare("commands") == 0) {
-                std::cout << std::endl;
-                displayCommands();
-            }
-            else {
-                error();
-            }
-        }
-        else if (input.compare("hex") == 0) {
-            std::cin >> input;
-            if (input.compare("contents") == 0) {
-                std::cout << std::endl;
-                displayHexContents(smBiosData);
-            }
-            else {
-                error();
-            }
-        }
-        else if (input.compare("quit") == 0) {
-            return 0;
-        }
-        else {
-            error();
-        }
-        std::cout << std::endl << "> ";
-    }
+    displayStructureTable(rawData);
+    std::cout << std::endl;
+    displayAllStructures(rawData);
+
     return 0;
-}
-
-void error() {
-    std::cout << "Please enter a valid command" << std::endl;
-}
-
-void displayCommands() {
-    std::cout << "show commands - display all legal commands" << std::endl;
-    std::cout << "show all - display all structures" << std::endl;
-    std::cout << "show table - display the structure table" << std::endl;
-    std::cout << "show structure <id> - display a specific structure" << std::endl;
-    std::cout << "hex contents - display raw table as hex bytes" << std::endl;
-    std::cout << "quit - exit the program" << std::endl;
 }
