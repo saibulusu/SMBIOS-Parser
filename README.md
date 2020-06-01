@@ -1,4 +1,4 @@
-# SMBIOS-Parser
+# SMBIOS Parser
 
 In order to enable the Operating System to its I/O Devices, the BIOS Firmware Code runs to connect these devices together. Information about the devices is stored in the System BIOS (SMBIOS) Table. This table can be accessed in Windows using the [GetSystemFirmwareTable()](https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemfirmwaretable) Function provided with the System Services API [sysinfoapi.h](https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/).   
 
