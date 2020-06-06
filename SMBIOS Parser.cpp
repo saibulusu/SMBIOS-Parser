@@ -14,6 +14,7 @@ void displayCommands() {
 int main() {
     RawSMBIOSData* rawData = getRawData();
 
+    displayCommands();
     std::cout << "> ";
     std::string input;
     while (std::cin >> input) {
