@@ -49,6 +49,21 @@ struct SMBIOS_struct_type_1 : SMBIOS_struct {
     BYTE    Family;
 };
 
+/** Structure of type 2 */
+struct SMBIOS_struct_type_2 : SMBIOS_struct {
+    BYTE    Manufacturer;
+    BYTE    Product;
+    BYTE    Version;
+    BYTE    SerialNumber;
+    BYTE    AssetTag;
+    BYTE    FeatureFlags;
+    BYTE    LocationInChassis;
+    WORD    ChassisHandle;
+    BYTE    BoardType;
+    BYTE    NumberOfContainedObjectHandles;
+    BYTE    ContainedObjectHandles[256];
+};
+
 /** Necessary structure of type 3 */
 struct SMBIOS_struct_type_3 : SMBIOS_struct {
     BYTE    Manufacturer;

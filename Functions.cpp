@@ -37,49 +37,52 @@ void displayHexContents(RawSMBIOSData* rawData) {
 
 std::vector<SMBIOS_struct*> getStructureTable(RawSMBIOSData* rawData) {
     std::vector<SMBIOS_struct*> structure_table;
-    SMBIOS_struct* cur_struct = (SMBIOS_struct*)rawData->SMBIOSTableData;
-    while ((char*)cur_struct < (char*)rawData + rawData->Length) {
-        structure_table.push_back(cur_struct);
-        cur_struct = getNextStruct(cur_struct);
+    SMBIOS_struct* curStruct = (SMBIOS_struct*)rawData->SMBIOSTableData;
+    while ((char*)curStruct < (char*)rawData + rawData->Length) {
+        structure_table.push_back(curStruct);
+        curStruct = getNextStruct(curStruct);
     }
     return structure_table;
 }
 
 void displayAllStructures(RawSMBIOSData* rawData) {
-    std::vector<SMBIOS_struct*> structure_table = getStructureTable(rawData);
-    for (int i = 0; i < structure_table.size(); ++i) {
-        if (structure_table[i]->Type == 0) {
-            displayInformation((SMBIOS_struct_type_0*)structure_table[i], rawData);
+    std::vector<SMBIOS_struct*> structureTable = getStructureTable(rawData);
+    for (int i = 0; i < structureTable.size(); ++i) {
+        if (structureTable[i]->Type == 0) {
+            displayInformation((SMBIOS_struct_type_0*)structureTable[i], rawData);
         }
-        else if (structure_table[i]->Type == 1) {
-            displayInformation((SMBIOS_struct_type_1*)structure_table[i], rawData);
+        else if (structureTable[i]->Type == 1) {
+            displayInformation((SMBIOS_struct_type_1*)structureTable[i], rawData);
         }
-        else if (structure_table[i]->Type == 3) {
-            displayInformation((SMBIOS_struct_type_3*)structure_table[i], rawData);
+        else if (structureTable[i]->Type == 2) {
+            displayInformation((SMBIOS_struct_type_2*)structureTable[i], rawData);
         }
-        else if (structure_table[i]->Type == 4) {
-            displayInformation((SMBIOS_struct_type_4*)structure_table[i], rawData);
+        else if (structureTable[i]->Type == 3) {
+            displayInformation((SMBIOS_struct_type_3*)structureTable[i], rawData);
         }
-        else if (structure_table[i]->Type == 7) {
-            displayInformation((SMBIOS_struct_type_7*)structure_table[i], rawData);
+        else if (structureTable[i]->Type == 4) {
+            displayInformation((SMBIOS_struct_type_4*)structureTable[i], rawData);
         }
-        else if (structure_table[i]->Type == 9) {
-            displayInformation((SMBIOS_struct_type_9*)structure_table[i], rawData);
+        else if (structureTable[i]->Type == 7) {
+            displayInformation((SMBIOS_struct_type_7*)structureTable[i], rawData);
         }
-        else if (structure_table[i]->Type == 16) {
-            displayInformation((SMBIOS_struct_type_16*)structure_table[i], rawData);
+        else if (structureTable[i]->Type == 9) {
+            displayInformation((SMBIOS_struct_type_9*)structureTable[i], rawData);
         }
-        else if (structure_table[i]->Type == 17) {
-            displayInformation((SMBIOS_struct_type_17*)structure_table[i], rawData);
+        else if (structureTable[i]->Type == 16) {
+            displayInformation((SMBIOS_struct_type_16*)structureTable[i], rawData);
         }
-        else if (structure_table[i]->Type == 19) {
-            displayInformation((SMBIOS_struct_type_19*)structure_table[i], rawData);
+        else if (structureTable[i]->Type == 17) {
+            displayInformation((SMBIOS_struct_type_17*)structureTable[i], rawData);
         }
-        else if (structure_table[i]->Type == 32) {
-            displayInformation((SMBIOS_struct_type_32*)structure_table[i], rawData);
+        else if (structureTable[i]->Type == 19) {
+            displayInformation((SMBIOS_struct_type_19*)structureTable[i], rawData);
+        }
+        else if (structureTable[i]->Type == 32) {
+            displayInformation((SMBIOS_struct_type_32*)structureTable[i], rawData);
         }
         else {
-            displayInformation((SMBIOS_struct_non_required*)structure_table[i]);
+            displayInformation((SMBIOS_struct_non_required*)structureTable[i]);
         }
     }
 }
@@ -95,6 +98,9 @@ void displayStructureTable(RawSMBIOSData* rawData) {
             break;
         case 1:
             std::cout << "System" << std::endl;
+            break;
+        case 2:
+            std::cout << "Baseboard" << std::endl;
             break;
         case 3:
             std::cout << "System Enclosure/Chassis" << std::endl;
@@ -135,6 +141,9 @@ void displayStructure(RawSMBIOSData* rawData, int id) {
         break;
     case 1:
         displayInformation((SMBIOS_struct_type_1*)structureTable[id], rawData);
+        break;
+    case 2:
+        displayInformation((SMBIOS_struct_type_2*)structureTable[id], rawData);
         break;
     case 3:
         displayInformation((SMBIOS_struct_type_3*)structureTable[id], rawData);
@@ -431,6 +440,79 @@ std::string getWakeUpType(SMBIOS_struct_type_1* curStruct) {
             return "AC Power Restored";
         default:
             return "Other";
+    }
+}
+
+void displayInformation(SMBIOS_struct_type_2* curStruct, RawSMBIOSData* rawData) {
+    std::vector<std::string> strings = getStrings(curStruct);
+    std::cout << "Baseboard Information (Type " << (int)curStruct->Type << ")" << std::endl;
+
+    std::cout << "\tHandle: " << (int)curStruct->Handle << std::endl;
+    std::cout << "\tManufacturer: " << strings[curStruct->Manufacturer] << std::endl;
+    std::cout << "\tProduct: " << strings[curStruct->Product] << std::endl;
+    std::cout << "\tVersion: " << strings[curStruct->Version] << std::endl;
+    std::cout << "\tSerial Number: " << strings[curStruct->SerialNumber] << std::endl;
+    std::cout << "\tAsset Tag: " << strings[curStruct->AssetTag] << std::endl;
+    
+    displayFeatureFlags(curStruct);
+    std::cout << "\tLocation in Chassis: " << strings[curStruct->LocationInChassis] << std::endl;
+    std::cout << "\tChassis Handle: " << (int)curStruct->ChassisHandle << std::endl;
+    std::cout << "\tBaseboard Type: " << getBaseBoardType(curStruct) << std::endl;
+
+    std::cout << std::endl;
+}
+
+void displayFeatureFlags(SMBIOS_struct_type_2* curStruct) {
+    BYTE flag = curStruct->FeatureFlags;
+    
+    std::cout << "\tFeatures: " << std::endl;
+    if (getBit(flag, 4)) {
+        std::cout << "\t\tThe board is hot swappable" << std::endl;
+    }
+    if (getBit(flag, 3)) {
+        std::cout << "\t\tThe board is replaceable" << std::endl;
+    }
+    if (getBit(flag, 2)) {
+        std::cout << "\t\tThe board is removable" << std::endl;
+    }
+    if (getBit(flag, 1)) {
+        std::cout << "\t\tThe board requires at least one daughter board" << std::endl;
+    }
+    if (getBit(flag, 0)) {
+        std::cout << "\t\tThe board is a hosting board" << std::endl;
+    }
+}
+
+std::string getBaseBoardType(SMBIOS_struct_type_2* curStruct) {
+    switch (curStruct->BoardType) {
+    case 1:
+        return "Unknown";
+    case 2:
+        return "Other";
+    case 3:
+        return "Server Blade";
+    case 4:
+        return "Connectivity Switch";
+    case 5:
+        return "System Management Module";
+    case 6:
+        return "Processor Module";
+    case 7:
+        return "I/O Module";
+    case 8:
+        return "Memory Module";
+    case 9:
+        return "Daughter Board";
+    case 10:
+        return "Motherboard";
+    case 11:
+        return "Processor/Memory Module";
+    case 12:
+        return "Processor/IO Module";
+    case 13:
+        return "Interconnect Board";
+    default:
+        return "Other";
     }
 }
 

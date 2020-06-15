@@ -71,6 +71,17 @@ std::string getWakeUpType(SMBIOS_struct_type_1* curStruct);
 
 
 
+/** Display Baseboard Information (Type 2) */
+void displayInformation(SMBIOS_struct_type_2* curStruct, RawSMBIOSData* rawData);
+
+/** Display Feature Flags for the type 2 structure */
+void displayFeatureFlags(SMBIOS_struct_type_2* curStruct);
+
+/** Determine the Baseboard type for the type 2 structure */
+std::string getBaseBoardType(SMBIOS_struct_type_2* curStruct);
+
+
+
 /** Display Chassis Information (Type 3) */
 void displayInformation(SMBIOS_struct_type_3* curStruct, RawSMBIOSData* rawData);
 
