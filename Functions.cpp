@@ -63,6 +63,9 @@ void displayAllStructures(RawSMBIOSData* rawData) {
         else if (structureTable[i]->Type == 4) {
             displayInformation((SMBIOS_struct_type_4*)structureTable[i], rawData);
         }
+        else if (structureTable[i]->Type == 5) {
+            displayInformation((SMBIOS_struct_type_5*)structureTable[i], rawData);
+        }
         else if (structureTable[i]->Type == 7) {
             displayInformation((SMBIOS_struct_type_7*)structureTable[i], rawData);
         }
@@ -108,6 +111,9 @@ void displayStructureTable(RawSMBIOSData* rawData) {
         case 4:
             std::cout << "Processor" << std::endl;
             break;
+        case 5:
+            std::cout << "Memory Controller Information" << std::endl;
+            break;
         case 7:
             std::cout << "Cache" << std::endl;
             break;
@@ -151,6 +157,8 @@ void displayStructure(RawSMBIOSData* rawData, int id) {
     case 4:
         displayInformation((SMBIOS_struct_type_4*)structureTable[id], rawData);
         break;
+    case 5:
+        displayInformation((SMBIOS_struct_type_5*)structureTable[id], rawData);
     case 7:
         displayInformation((SMBIOS_struct_type_7*)structureTable[id], rawData);
         break;
@@ -455,6 +463,7 @@ void displayInformation(SMBIOS_struct_type_2* curStruct, RawSMBIOSData* rawData)
     std::cout << "\tAsset Tag: " << strings[curStruct->AssetTag] << std::endl;
     
     displayFeatureFlags(curStruct);
+    
     std::cout << "\tLocation in Chassis: " << strings[curStruct->LocationInChassis] << std::endl;
     std::cout << "\tChassis Handle: " << (int)curStruct->ChassisHandle << std::endl;
     std::cout << "\tBaseboard Type: " << getBaseBoardType(curStruct) << std::endl;
@@ -1448,6 +1457,60 @@ std::string getProcessorFamily2(SMBIOS_struct_type_4* curStruct) {
         return "Video Processor";
     default:
         return "Other";
+    }
+}
+
+void displayInformation(SMBIOS_struct_type_5* curStruct, RawSMBIOSData* rawData) {
+    std::vector<std::string> strings = getStrings(curStruct);
+    std::cout << "Memory Controller Information (Type " << curStruct->Type << ")" << std::endl;
+
+    if (rawData->SMBIOSMajorVersion < 2) {
+        std::cout << std::endl;
+        return;
+    }
+
+    std::cout << "\tHandle: " << (int)curStruct->Handle << std::endl;
+    std::cout << "\tError Detecting Method: " << getErrorDetectingMethod(curStruct) << std::endl;
+    displayErrorCorrectingCapability(curStruct);
+
+
+    std::cout << std::endl;
+}
+
+std::string getErrorDetectingMethod(SMBIOS_struct_type_5* curStruct) {
+    switch (curStruct->ErrorDetectingMethod) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unknown";
+    case 3:
+        return "None";
+    case 4:
+        return "8-bit Parity";
+    case 5:
+        return "32-bit ECC";
+    case 6:
+        return "64-bit ECC";
+    case 7:
+        return "128-bit ECC";
+    case 8:
+        return "CRC";
+    default:
+        return "Other";
+    }
+}
+
+void displayErrorCorrectingCapability(SMBIOS_struct_type_5* curStruct) {
+    std::cout << "\tError Correcting Capabilities: " << std::endl;
+    BYTE errorCorr = curStruct->ErrorCorrectingCapability;
+    if (getBit(errorCorr, 3)) {
+        std::cout << "\t\tSingle-bit Error Correcting" << std::endl;
+    }
+    if (getBit(errorCorr, 4)) {
+        std::cout << "\t\tDouble-bit Error Correcting" << std::endl;
+    }
+    if (getBit(errorCorr, 5)) {
+        std::cout << "\t\tError Scrubbing" << std::endl;
     }
 }
 

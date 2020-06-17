@@ -80,8 +80,6 @@ void displayFeatureFlags(SMBIOS_struct_type_2* curStruct);
 /** Determine the Baseboard type for the type 2 structure */
 std::string getBaseBoardType(SMBIOS_struct_type_2* curStruct);
 
-
-
 /** Display Chassis Information (Type 3) */
 void displayInformation(SMBIOS_struct_type_3* curStruct, RawSMBIOSData* rawData);
 
@@ -119,6 +117,17 @@ std::string getProcessorUpgrade(SMBIOS_struct_type_4* curStruct);
 
 /** Get the processor's second family for the type 4 structure */
 std::string getProcessorFamily2(SMBIOS_struct_type_4* curStruct);
+
+
+
+/** Display Memory Controller Information */
+void displayInformation(SMBIOS_struct_type_5* curStruct, RawSMBIOSData* rawData);
+
+/** Get the error detecting method for the type 5 structure */
+std::string getErrorDetectingMethod(SMBIOS_struct_type_5* curStruct);
+
+/** Get the error correcting capability for the type 5 structure */ 
+void displayErrorCorrectingCapability(SMBIOS_struct_type_5* curStruct);
 
 
 

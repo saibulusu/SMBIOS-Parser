@@ -113,6 +113,19 @@ struct SMBIOS_struct_type_4 : SMBIOS_struct {
     WORD    ThreadCount2;
 };
 
+/** Structure of type 5 */
+struct SMBIOS_struct_type_5 : SMBIOS_struct {
+    BYTE    ErrorDetectingMethod;
+    BYTE    ErrorCorrectingCapability;
+    BYTE    SupportedInterleave;
+    BYTE    CurrentInterleave;
+    BYTE    MaximumMemoryModuleSize;
+    WORD    SupportedSpeeds;
+    WORD    SupportedMemoryTypes;
+    BYTE    MemoryModuleVoltage;
+    BYTE    NumberOfAssociatedMemorySlots;
+};
+
 /** Necessary structure of type 7 */
 struct SMBIOS_struct_type_7 : SMBIOS_struct {
     BYTE    SocketDesignation;
