@@ -1473,6 +1473,15 @@ void displayInformation(SMBIOS_struct_type_5* curStruct, RawSMBIOSData* rawData)
     std::cout << "\tError Detecting Method: " << getErrorDetectingMethod(curStruct) << std::endl;
     displayErrorCorrectingCapability(curStruct);
 
+    std::cout << "\tInterleave Support: " << getInterleaveSupport(curStruct->SupportedInterleave) << std::endl;
+    std::cout << "\tCurrent Interleave: " << getInterleaveSupport(curStruct->CurrentInterleave) << std::endl;
+    std::cout << "\tMaximum Memory Module Size: " << (int)curStruct->MaximumMemoryModuleSize << std::endl;
+    
+    displaySupportedSpeeds(curStruct);
+    displaySupportedMemoryTypes(curStruct);
+    displayMemoryModuleVolate(curStruct);
+    
+    std::cout << "\tNumber of Associated Memory Slots: " << (int)curStruct->NumberOfAssociatedMemorySlots << std::endl;
 
     std::cout << std::endl;
 }
@@ -1511,6 +1520,87 @@ void displayErrorCorrectingCapability(SMBIOS_struct_type_5* curStruct) {
     }
     if (getBit(errorCorr, 5)) {
         std::cout << "\t\tError Scrubbing" << std::endl;
+    }
+}
+
+std::string getInterleaveSupport(BYTE Interleave) {
+    switch (Interleave) {
+    case 1:
+        return "Other";
+    case 2:
+        return "Unknown";
+    case 3:
+        return "One-Way Interleave";
+    case 4:
+        return "Two-Way Interleave";
+    case 5:
+        return "Four-Way Interleave";
+    case 6:
+        return "Eight-Way Interleave";
+    case 7:
+        return "Sixteen-way Interleave";
+    default:
+        return "Other";
+    }
+}
+
+void displaySupportedSpeeds(SMBIOS_struct_type_5* curStruct) {
+    WORD speeds = curStruct->SupportedSpeeds;
+    std::cout << "\tSupported Speeds: " << std::endl;
+    if (getBit(speeds, 2)) {
+        std::cout << "\t\t70 ns" << std::endl;
+    }
+    if (getBit(speeds, 3)) {
+        std::cout << "\t\t60 ns" << std::endl;
+    }
+    if (getBit(speeds, 4)) {
+        std::cout << "\t\t50 ns" << std::endl;
+    }
+}
+
+void displaySupportedMemoryTypes(SMBIOS_struct_type_5* curStruct) {
+    WORD memory = curStruct->SupportedMemoryTypes;
+    std::cout << "\tSupported Memory Types: " << std::endl;
+    if (getBit(memory, 2)) {
+        std::cout << "\t\tStandard" << std::endl;
+    }
+    if (getBit(memory, 3)) {
+        std::cout << "\t\tFast Page Mode" << std::endl;
+    }
+    if (getBit(memory, 4)) {
+        std::cout << "\t\tEDO" << std::endl;
+    }
+    if (getBit(memory, 5)) {
+        std::cout << "\t\tParity" << std::endl;
+    }
+    if (getBit(memory, 6)) {
+        std::cout << "\t\tECC" << std::endl;
+    }
+    if (getBit(memory, 7)) {
+        std::cout << "\t\tSIMM" << std::endl;
+    }
+    if (getBit(memory, 8)) {
+        std::cout << "\t\tDIMM" << std::endl;
+    }
+    if (getBit(memory, 9)) {
+        std::cout << "\t\tBurst EDO" << std::endl;
+    }
+    if (getBit(memory, 10)) {
+        std::cout << "\t\tSDRAM" << std::endl;
+    }
+}
+
+void displayMemoryModuleVolate(SMBIOS_struct_type_5* curStruct) {
+    BYTE voltage = curStruct->MemoryModuleVoltage;
+    std::cout << "\tMemory Module Voltage: " << std::endl;
+    if (getBit(voltage, 2)) {
+        std::cout << "2.9V" << std::endl;
+    }
+    if (getBit(voltage, 1)) {
+        std::cout << "3.3V" << std::endl;
+    }
+    if (getBit(voltage, 0)) {
+        std::cout << "5V" << std::endl;
     }
 }
 

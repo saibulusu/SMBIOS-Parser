@@ -129,6 +129,18 @@ std::string getErrorDetectingMethod(SMBIOS_struct_type_5* curStruct);
 /** Get the error correcting capability for the type 5 structure */ 
 void displayErrorCorrectingCapability(SMBIOS_struct_type_5* curStruct);
 
+/** Get the interleave support for the type 5 structure */
+std::string getInterleaveSupport(BYTE Interleave);
+
+/** Get the supported speeds for the type 5 structure */
+void displaySupportedSpeeds(SMBIOS_struct_type_5* curStruct);
+
+/** Get the supported memory types for the type 5 structure */
+void displaySupportedMemoryTypes(SMBIOS_struct_type_5* curStruct);
+
+/** Get the required voltages for the memory module sockets */
+void displayMemoryModuleVolate(SMBIOS_struct_type_5* curStruct);
+
 
 
 /** Display Cache Information (Type 7) */
