@@ -181,6 +181,11 @@ struct SMBIOS_struct_type_10 : SMBIOS_struct {
     BYTE    DescriptionString;
 };
 
+/** Structure of type 11 */
+struct SMBIOS_struct_type_11 : SMBIOS_struct {
+    BYTE    Count;
+};
+
 /** Necessary structure of type 16 */
 struct SMBIOS_struct_type_16 : SMBIOS_struct {
     BYTE    Location;
