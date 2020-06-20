@@ -126,6 +126,17 @@ struct SMBIOS_struct_type_5 : SMBIOS_struct {
     BYTE    NumberOfAssociatedMemorySlots;
 };
 
+/** Structure of type 6 */
+struct SMBIOS_struct_type_6 : SMBIOS_struct {
+    BYTE    SocketDesignation;
+    BYTE    BankConnections;
+    BYTE    CurrentSpeed;
+    WORD    CurrentMemoryType;
+    BYTE    InstalledSize;
+    BYTE    EnabledSize;
+    BYTE    ErrorStatus;
+};
+
 /** Necessary structure of type 7 */
 struct SMBIOS_struct_type_7 : SMBIOS_struct {
     BYTE    SocketDesignation;

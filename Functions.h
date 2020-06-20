@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <math.h>
 
 /** Get the Raw SMBIOS table */
 RawSMBIOSData* getRawData();
@@ -94,7 +95,7 @@ std::string getChassisSecurityState(BYTE field);
 
 
 
-/** Display Processor Information (Type 4)*/
+/** Display Processor Information (Type 4) */
 void displayInformation(SMBIOS_struct_type_4* curStruct, RawSMBIOSData* rawData);
 
 /** Display the processor's characteristics for the type 4 structure */
@@ -120,7 +121,7 @@ std::string getProcessorFamily2(SMBIOS_struct_type_4* curStruct);
 
 
 
-/** Display Memory Controller Information */
+/** Display Memory Controller Information (Type 5) */
 void displayInformation(SMBIOS_struct_type_5* curStruct, RawSMBIOSData* rawData);
 
 /** Get the error detecting method for the type 5 structure */
@@ -141,6 +142,19 @@ void displaySupportedMemoryTypes(SMBIOS_struct_type_5* curStruct);
 /** Get the required voltages for the memory module sockets */
 void displayMemoryModuleVolate(SMBIOS_struct_type_5* curStruct);
 
+
+
+/** Display Memory Module Information (Type 6) */
+void displayInformation(SMBIOS_struct_type_6* curStruct, RawSMBIOSData* rawData);
+
+/** Get the current memory type for the type 6 structure */
+void displayCurrentMemoryType(SMBIOS_struct_type_6* curStruct);
+
+/** Get the specified size for the type 6 structure */
+void displaySize(WORD size);
+
+/** Get the error status for the type 6 structure */
+void displayErrorStatus(SMBIOS_struct_type_6* curStruct);
 
 
 /** Display Cache Information (Type 7) */

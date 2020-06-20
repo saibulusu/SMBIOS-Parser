@@ -1604,6 +1604,80 @@ void displayMemoryModuleVolate(SMBIOS_struct_type_5* curStruct) {
     }
 }
 
+void displayInformation(SMBIOS_struct_type_6* curStruct, RawSMBIOSData* rawData) {
+    std::vector<std::string> strings = getStrings(curStruct);
+    std::cout << "Memory Module (Type " << (int)curStruct->Type << ")" << std::endl;
+    
+    std::cout << "\tHandle: " << (int)curStruct->Handle << std::endl;
+    std::cout << "\tSocket Designation: " << strings[curStruct->SocketDesignation] << std::endl;
+    std::cout << "\tBank Connections: " << (int)curStruct->BankConnections << std::endl;
+    std::cout << "\tCurrent Speed: " << (int)curStruct->CurrentSpeed << " ns" << std::endl;
+    
+    displayCurrentMemoryType(curStruct);
+    
+    std::cout << "\tInstalled Size" << std::endl;
+    displaySize(curStruct->InstalledSize);
+    std::cout << "\tEnabled Size" << std::endl;
+    displaySize(curStruct->EnabledSize);
+
+    displayErrorStatus(curStruct);
+}
+
+void displaySize(WORD size) {
+    if (getBit(size, 7)) {
+        std::cout << "\t\tDouble-Bank Connection" << std::endl;
+    }
+    else {
+        std::cout << "\t\tSingle-Bank Connection" << std::endl;
+    }
+
+    int computed = pow(2, size);
+    std::cout << "\t\t" << computed << "MB" << std::endl;
+}
+
+void displayCurrentMemoryType(SMBIOS_struct_type_6* curStruct) {
+    WORD memory = curStruct->CurrentMemoryType;
+    std::cout << "\tMemory Module Information: " << std::endl;
+    if (getBit(memory, 2)) {
+        std::cout << "\t\tStandard" << std::endl;
+    }
+    if (getBit(memory, 3)) {
+        std::cout << "\t\tFast Page Mode" << std::endl;
+    }
+    if (getBit(memory, 4)) {
+        std::cout << "\t\tEDO" << std::endl;
+    }
+    if (getBit(memory, 5)) {
+        std::cout << "\t\tParity" << std::endl;
+    }
+    if (getBit(memory, 6)) {
+        std::cout << "\t\tECC" << std::endl;
+    }
+    if (getBit(memory, 7)) {
+        std::cout << "\t\tSIMM" << std::endl;
+    }
+    if (getBit(memory, 8)) {
+        std::cout << "\t\tDIMM" << std::endl;
+    }
+    if (getBit(memory, 9)) {
+        std::cout << "\t\tBurst EDO" << std::endl;
+    }
+    if (getBit(memory, 10)) {
+        std::cout << "\t\tSDRAM" << std::endl;
+    }
+}
+
+void displayErrorStatus(SMBIOS_struct_type_6* curStruct) {
+    BYTE err = curStruct->ErrorStatus;
+    std::cout << "\tError Status:" << std::endl;
+    if (getBit(err, 1)) {
+        std::cout << "\t\tCorrectable Errors Recieved" << std::endl;
+    }
+    if (getBit(err, 0)) {
+        std::cout << "\t\tUncorrectabled Errors Recieved" << std::endl;
+    }
+}
+
 void displayInformation(SMBIOS_struct_type_7* curStruct, RawSMBIOSData* rawData) {
     std::vector<std::string> strings = getStrings(curStruct);
     std::cout << "Cache Information (Type " << (int)curStruct->Type << ")" << std::endl;
