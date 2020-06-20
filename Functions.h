@@ -157,6 +157,7 @@ void displaySize(WORD size);
 void displayErrorStatus(SMBIOS_struct_type_6* curStruct);
 
 
+
 /** Display Cache Information (Type 7) */
 void displayInformation(SMBIOS_struct_type_7* curStruct, RawSMBIOSData* rawData);
 
@@ -177,6 +178,17 @@ void displayCacheSize(WORD CacheSize);
 
 /** Display the SRAM type for the type 7 structure */
 void displaySRAMType(SMBIOS_struct_type_7* curStruct);
+
+
+
+/** Display Port Connector Information (Type 8) */
+void displayInformation(SMBIOS_struct_type_8* curStruct, RawSMBIOSData* rawData);
+
+/** Display the internal connector type for the type 8 structure */
+std::string getConnectorType(BYTE connector);
+
+/** Display the port type for the type 8 structure */
+std::string getPortType(SMBIOS_struct_type_8* curStruct);
 
 
 

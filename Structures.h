@@ -151,6 +151,15 @@ struct SMBIOS_struct_type_7 : SMBIOS_struct {
     BYTE    Associativity;
 };
 
+/** Structure of type 8 */
+struct SMBIOS_struct_type_8 : SMBIOS_struct {
+    BYTE    InternalReferenceDesignator;
+    BYTE    InternalConnectorType;
+    BYTE    ExternalReferenceDesignator;
+    BYTE    ExternalConnectorType;
+    BYTE    PortType;
+};
+
 /** Necessary structure of type 9 */
 struct SMBIOS_struct_type_9 : SMBIOS_struct {
     BYTE    SlotDesignation;
