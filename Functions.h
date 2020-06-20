@@ -227,6 +227,12 @@ std::string getDeviceType(SMBIOS_struct_type_10* curStruct);
 void displayInformation(SMBIOS_struct_type_11* curStruct, RawSMBIOSData* rawData);
 
 
+
+/** Display System Configuration Options (Type 12) */
+void displayInformation(SMBIOS_struct_type_12* curStruct, RawSMBIOSData* rawData);
+
+
+
 /** Display Physical Memory Array Information (Type 16) */
 void displayInformation(SMBIOS_struct_type_16* curStruct, RawSMBIOSData* rawData);
 

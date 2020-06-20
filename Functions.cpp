@@ -84,6 +84,9 @@ void displayAllStructures(RawSMBIOSData* rawData) {
         else if (structureTable[i]->Type == 11) {
             displayInformation((SMBIOS_struct_type_11*)structureTable[i], rawData);
         }
+        else if (structureTable[i]->Type == 12) {
+            displayInformation((SMBIOS_struct_type_12*)structureTable[i], rawData);
+        }
         else if (structureTable[i]->Type == 16) {
             displayInformation((SMBIOS_struct_type_16*)structureTable[i], rawData);
         }
@@ -144,6 +147,9 @@ void displayStructureTable(RawSMBIOSData* rawData) {
         case 11:
             std::cout << "OEM Strings" << std::endl;
             break;
+        case 12:
+            std::cout << "System Configuration Options" << std::endl;
+            break;
         case 16:
             std::cout << "Physical Memory Array" << std::endl;
             break;
@@ -201,6 +207,10 @@ void displayStructure(RawSMBIOSData* rawData, int id) {
         break;
     case 11:
         displayInformation((SMBIOS_struct_type_11*)structureTable[id], rawData);
+        break;
+    case 12:
+        displayInformation((SMBIOS_struct_type_12*)structureTable[id], rawData);
+        break;
     case 16:
         displayInformation((SMBIOS_struct_type_16*)structureTable[id], rawData);
         break;
@@ -2389,6 +2399,12 @@ std::string getDeviceType(SMBIOS_struct_type_10* curStruct) {
 
 void displayInformation(SMBIOS_struct_type_11* curStruct, RawSMBIOSData* rawData) {
     std::cout << "OEM Strings (Type " << (int)curStruct->Type << ")" << std::endl;
+    std::cout << "\tHandle: " << (int)curStruct->Handle << std::endl;
+    std::cout << "\tCount: " << (int)curStruct->Count << std::endl;
+}
+
+void displayInformation(SMBIOS_struct_type_12* curStruct, RawSMBIOSData* rawData) {
+    std::cout << "System Configuration Options (Type" << (int)curStruct->Type << ")" << std::endl;
     std::cout << "\tHandle: " << (int)curStruct->Handle << std::endl;
     std::cout << "\tCount: " << (int)curStruct->Count << std::endl;
 }
