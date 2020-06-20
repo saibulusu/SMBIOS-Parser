@@ -215,6 +215,14 @@ std::string getSlotLength(SMBIOS_struct_type_9* curStruct);
 
 
 
+/** Display On Board Devices Information (Type 10) */
+void displayInformation(SMBIOS_struct_type_10* curStruct, RawSMBIOSData* rawData);
+
+/** Display the device type for the type 10 structure */
+std::string getDeviceType(SMBIOS_struct_type_10* curStruct);
+
+
+
 /** Display Physical Memory Array Information (Type 16) */
 void displayInformation(SMBIOS_struct_type_16* curStruct, RawSMBIOSData* rawData);
 

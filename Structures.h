@@ -175,6 +175,12 @@ struct SMBIOS_struct_type_9 : SMBIOS_struct {
     BYTE    DeviceNumber;
 };
 
+/** Structure of type 10 */
+struct SMBIOS_struct_type_10 : SMBIOS_struct {
+    BYTE    DeviceType;
+    BYTE    DescriptionString;
+};
+
 /** Necessary structure of type 16 */
 struct SMBIOS_struct_type_16 : SMBIOS_struct {
     BYTE    Location;

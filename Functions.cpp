@@ -78,6 +78,9 @@ void displayAllStructures(RawSMBIOSData* rawData) {
         else if (structureTable[i]->Type == 9) {
             displayInformation((SMBIOS_struct_type_9*)structureTable[i], rawData);
         }
+        else if (structureTable[i]->Type == 10) {
+            displayInformation((SMBIOS_struct_type_10*)structureTable[i], rawData);
+        }
         else if (structureTable[i]->Type == 16) {
             displayInformation((SMBIOS_struct_type_16*)structureTable[i], rawData);
         }
@@ -118,19 +121,22 @@ void displayStructureTable(RawSMBIOSData* rawData) {
             std::cout << "Processor" << std::endl;
             break;
         case 5:
-            std::cout << "Memory Controller Information" << std::endl;
+            std::cout << "Memory Controller" << std::endl;
             break;
         case 6:
-            std::cout << "Memory Module Information" << std::endl;
+            std::cout << "Memory Module" << std::endl;
             break;
         case 7:
             std::cout << "Cache" << std::endl;
             break;
         case 8:
-            std::cout << "Port Connector Information" << std::endl;
+            std::cout << "Port Connector" << std::endl;
             break;
         case 9:
             std::cout << "System Slots" << std::endl;
+            break;
+        case 10:
+            std::cout << "On Board Devices" << std::endl;
             break;
         case 16:
             std::cout << "Physical Memory Array" << std::endl;
@@ -183,6 +189,9 @@ void displayStructure(RawSMBIOSData* rawData, int id) {
         break;
     case 9:
         displayInformation((SMBIOS_struct_type_9*)structureTable[id], rawData);
+        break;
+    case 10:
+        displayInformation((SMBIOS_struct_type_10*)structureTable[id], rawData);
         break;
     case 16:
         displayInformation((SMBIOS_struct_type_16*)structureTable[id], rawData);
@@ -2311,6 +2320,63 @@ void displaySlotCharacteristics2(SMBIOS_struct_type_9* curStruct) {
     if (getBit(curStruct->SlotCharacteristics2, 2)) {
         std::cout << "\t\tPCI slot supports SMBus Signal" << std::endl;
     }
+}
+
+void displayInformation(SMBIOS_struct_type_10* curStruct, RawSMBIOSData* rawData) {
+    std::vector<std::string> strings = getStrings(curStruct);
+    std::cout << "On Board Devices Information (Type " << (int)curStruct->Type << ")" << std::endl;
+
+    std::cout << "\tHandle: " << (int)curStruct->Handle << std::endl;
+    std::cout << "\tDevice Type: " << getDeviceType(curStruct) << std::endl;
+}
+
+std::string getDeviceType(SMBIOS_struct_type_10* curStruct) {
+    std::string res = "";
+
+    if (getBit(curStruct->DeviceType, 7)) {
+        res += "Enabled ";
+    }
+    else {
+        res += "Disabled ";
+    }
+
+    switch (getBits(curStruct->DeviceType, 6, 0)) {
+    case 1:
+        res += "Other";
+        break;
+    case 2:
+        res += "Unknown";
+        break;
+    case 3:
+        res += "Video";
+        break;
+    case 4:
+        res += "SCSI Controller";
+        break;
+    case 5:
+        res += "Ethernet";
+        break;
+    case 6:
+        res += "Token Ring";
+        break;
+    case 7:
+        res += "Sound";
+        break;
+    case 8:
+        res += "PATA Controler";
+        break;
+    case 9:
+        res += "SATA Controller";
+        break;
+    case 10:
+        res += "SAS Controler";
+        break;
+    default:
+        res += "Other";
+        break;
+    }
+
+    return res;
 }
 
 void displayInformation(SMBIOS_struct_type_16* curStruct, RawSMBIOSData* rawData) {
