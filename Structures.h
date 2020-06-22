@@ -199,6 +199,13 @@ struct SMBIOS_struct_type_13 : SMBIOS_struct {
     BYTE    CurrentLanguage;
 };
 
+/** Structure of type 14 */
+struct SMBIOS_struct_type_14 : SMBIOS_struct {
+    BYTE    GroupName;
+    BYTE    ItemType;
+    WORD    ItemHandle;
+};
+
 /** Necessary structure of type 16 */
 struct SMBIOS_struct_type_16 : SMBIOS_struct {
     BYTE    Location;

@@ -238,6 +238,11 @@ void displayInformation(SMBIOS_struct_type_13* curStruct, RawSMBIOSData* rawData
 
 
 
+/** Display Group Associations Information (Type 14) */
+void displayInformation(SMBIOS_struct_type_14* curStruct, RawSMBIOSData* rawData);
+
+
+
 /** Display Physical Memory Array Information (Type 16) */
 void displayInformation(SMBIOS_struct_type_16* curStruct, RawSMBIOSData* rawData);
 
