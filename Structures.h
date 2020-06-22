@@ -186,8 +186,17 @@ struct SMBIOS_struct_type_11 : SMBIOS_struct {
     BYTE    Count;
 };
 
+/** Structure of type 12 */
 struct SMBIOS_struct_type_12 : SMBIOS_struct {
     BYTE    Count;
+};
+
+/** Structure of type 13 */
+struct SMBIOS_struct_type_13 : SMBIOS_struct {
+    BYTE    InstalledLanguages;
+    BYTE    Flags;
+    BYTE    Reserved[15];
+    BYTE    CurrentLanguage;
 };
 
 /** Necessary structure of type 16 */

@@ -228,8 +228,13 @@ void displayInformation(SMBIOS_struct_type_11* curStruct, RawSMBIOSData* rawData
 
 
 
-/** Display System Configuration Options (Type 12) */
+/** Display System Configuration Options Information (Type 12) */
 void displayInformation(SMBIOS_struct_type_12* curStruct, RawSMBIOSData* rawData);
+
+
+
+/** Dispay BIOS Language Information (Type 13) */
+void displayInformation(SMBIOS_struct_type_13* curStruct, RawSMBIOSData* rawData);
 
 
 

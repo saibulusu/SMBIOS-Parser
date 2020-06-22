@@ -87,6 +87,9 @@ void displayAllStructures(RawSMBIOSData* rawData) {
         else if (structureTable[i]->Type == 12) {
             displayInformation((SMBIOS_struct_type_12*)structureTable[i], rawData);
         }
+        else if (structureTable[i]->Type == 13) {
+            displayInformation((SMBIOS_struct_type_13*)structureTable[i], rawData);
+        }
         else if (structureTable[i]->Type == 16) {
             displayInformation((SMBIOS_struct_type_16*)structureTable[i], rawData);
         }
@@ -150,6 +153,9 @@ void displayStructureTable(RawSMBIOSData* rawData) {
         case 12:
             std::cout << "System Configuration Options" << std::endl;
             break;
+        case 13:
+            std::cout << "BIOS Language" << std::endl;
+            break;
         case 16:
             std::cout << "Physical Memory Array" << std::endl;
             break;
@@ -210,6 +216,9 @@ void displayStructure(RawSMBIOSData* rawData, int id) {
         break;
     case 12:
         displayInformation((SMBIOS_struct_type_12*)structureTable[id], rawData);
+        break;
+    case 13:
+        displayInformation((SMBIOS_struct_type_13*)structureTable[id], rawData);
         break;
     case 16:
         displayInformation((SMBIOS_struct_type_16*)structureTable[id], rawData);
@@ -2407,6 +2416,14 @@ void displayInformation(SMBIOS_struct_type_12* curStruct, RawSMBIOSData* rawData
     std::cout << "System Configuration Options (Type" << (int)curStruct->Type << ")" << std::endl;
     std::cout << "\tHandle: " << (int)curStruct->Handle << std::endl;
     std::cout << "\tCount: " << (int)curStruct->Count << std::endl;
+}
+
+void displayInformation(SMBIOS_struct_type_13* curStruct, RawSMBIOSData* rawData) {
+    std::vector<std::string> strings = getStrings(curStruct);
+    std::cout << "BIOS Language (Type " << (int)curStruct->Type << ")" << std::endl;
+    std::cout << "\tHandle: " << (int)curStruct->Handle << std::endl;
+    std::cout << "\tNumber of Installed Languages: " << (int)curStruct->InstalledLanguages << std::endl;
+    std::cout << "\tCurrent Language: " << strings[curStruct->CurrentLanguage] << std::endl;
 }
 
 void displayInformation(SMBIOS_struct_type_16* curStruct, RawSMBIOSData* rawData) {
