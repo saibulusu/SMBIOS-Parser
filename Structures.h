@@ -206,6 +206,20 @@ struct SMBIOS_struct_type_14 : SMBIOS_struct {
     WORD    ItemHandle;
 };
 
+/** Structure of type 15 */
+struct SMBIOS_struct_type_15 : SMBIOS_struct {
+    WORD    LogAreaLength;
+    WORD    LogHeaderStartOffset;
+    WORD    LogDataStartOffset;
+    BYTE    AccessMethod;
+    BYTE    LogStatus;
+    WORD    LogChangeToken[2];
+    WORD    AccessMethodAddress[2];
+    BYTE    LogHeaderFormat;
+    BYTE    NumberOfSupportedLogTypeDescriptors;
+    BYTE    LengthOfEachLogTypeDescriptor;
+};
+
 /** Necessary structure of type 16 */
 struct SMBIOS_struct_type_16 : SMBIOS_struct {
     BYTE    Location;

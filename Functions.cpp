@@ -48,66 +48,7 @@ std::vector<SMBIOS_struct*> getStructureTable(RawSMBIOSData* rawData) {
 void displayAllStructures(RawSMBIOSData* rawData) {
     std::vector<SMBIOS_struct*> structureTable = getStructureTable(rawData);
     for (int i = 0; i < structureTable.size(); ++i) {
-        if (structureTable[i]->Type == 0) {
-            displayInformation((SMBIOS_struct_type_0*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 1) {
-            displayInformation((SMBIOS_struct_type_1*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 2) {
-            displayInformation((SMBIOS_struct_type_2*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 3) {
-            displayInformation((SMBIOS_struct_type_3*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 4) {
-            displayInformation((SMBIOS_struct_type_4*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 5) {
-            displayInformation((SMBIOS_struct_type_5*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 6) {
-            displayInformation((SMBIOS_struct_type_6*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 7) {
-            displayInformation((SMBIOS_struct_type_7*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 8) {
-            displayInformation((SMBIOS_struct_type_8*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 9) {
-            displayInformation((SMBIOS_struct_type_9*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 10) {
-            displayInformation((SMBIOS_struct_type_10*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 11) {
-            displayInformation((SMBIOS_struct_type_11*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 12) {
-            displayInformation((SMBIOS_struct_type_12*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 13) {
-            displayInformation((SMBIOS_struct_type_13*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 14) {
-            displayInformation((SMBIOS_struct_type_14*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 16) {
-            displayInformation((SMBIOS_struct_type_16*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 17) {
-            displayInformation((SMBIOS_struct_type_17*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 19) {
-            displayInformation((SMBIOS_struct_type_19*)structureTable[i], rawData);
-        }
-        else if (structureTable[i]->Type == 32) {
-            displayInformation((SMBIOS_struct_type_32*)structureTable[i], rawData);
-        }
-        else {
-            displayInformation((SMBIOS_struct_non_required*)structureTable[i]);
-        }
+        displayStructure(rawData, i);
     }
 }
 
@@ -161,6 +102,9 @@ void displayStructureTable(RawSMBIOSData* rawData) {
             break;
         case 14:
             std::cout << "Group Associations" << std::endl;
+            break;
+        case 15:
+            std::cout << "System Event Log" << std::endl;
             break;
         case 16:
             std::cout << "Physical Memory Array" << std::endl;
@@ -228,6 +172,9 @@ void displayStructure(RawSMBIOSData* rawData, int id) {
         break;
     case 14:
         displayInformation((SMBIOS_struct_type_14*)structureTable[id], rawData);
+        break;
+    case 15:
+        displayInformation((SMBIOS_struct_type_15*)structureTable[id], rawData);
         break;
     case 16:
         displayInformation((SMBIOS_struct_type_16*)structureTable[id], rawData);
@@ -2442,6 +2389,12 @@ void displayInformation(SMBIOS_struct_type_14* curStruct, RawSMBIOSData* rawData
     std::cout << "\tGroup Name: " << strings[curStruct->GroupName] << std::endl;
     std::cout << "\tItem (Structure) Type: " << (int)curStruct->ItemType << std::endl;
     std::cout << "\tItem (Structure) Handle: " << (int)curStruct->Handle << std::endl;
+}
+
+void displayInformation(SMBIOS_struct_type_15* curStruct, RawSMBIOSData* rawData) {
+    std::vector<std::string> strings = getStrings(curStruct);
+    std::cout << "System Events Log (Type " << (int)curStruct->Type << ")" << std::endl;
+    std::cout << "\tHandle: " << (int)curStruct->Handle << std::endl;
 }
 
 void displayInformation(SMBIOS_struct_type_16* curStruct, RawSMBIOSData* rawData) {
