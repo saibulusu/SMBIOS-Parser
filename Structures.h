@@ -11,34 +11,34 @@ struct RawSMBIOSData {
 };
 
 /** Generic structure */
-struct SMBIOS_struct {
+struct SMBIOSStruct {
     BYTE    Type;
     BYTE    Length;
     WORD    Handle;
 };
 
 /** Non-necessary structure */
-struct SMBIOS_struct_non_required : SMBIOS_struct {
+struct SMBIOSStructNonRequired : SMBIOSStruct {
 
 };
 
 /** Necessary structure of type 0 */
-struct SMBIOS_struct_type_0 : SMBIOS_struct {
+struct SMBIOSStructType0 : SMBIOSStruct {
     BYTE    Vendor;
-    BYTE    BIOS_Version;
-    WORD    BIOS_Starting_Address_Segment;
-    BYTE    Bios_Release_Date;
-    BYTE    BIOS_ROM_Size;
-    BYTE    BIOS_Characteristics[8];
-    BYTE    BIOS_Characteristics_Extensions[2];
-    BYTE    System_BIOS_Major_Release;
-    BYTE    System_BIOS_Minor_Release;
-    BYTE    EC_Firmware_Major_Release;
-    BYTE    EC_Firmware_Minor_Release;
+    BYTE    BIOSVersion;
+    WORD    BIOSStartingAddressSegment;
+    BYTE    BIOSReleaseDate;
+    BYTE    BIOSROMSize;
+    BYTE    BIOSCharacteristics[8];
+    BYTE    BIOSCharacteristicsExtensions[2];
+    BYTE    SystemBIOSMajorRelease;
+    BYTE    SystemBIOSMinorRelease;
+    BYTE    ECFirmwareMajorRelease;
+    BYTE    ECFirmwareMinorRelease;
 };
 
 /** Necessary structure of type 1 */
-struct SMBIOS_struct_type_1 : SMBIOS_struct {
+struct SMBIOSStructType1 : SMBIOSStruct {
     BYTE    Manufacturer;
     BYTE    ProductName;
     BYTE    Version;
@@ -50,7 +50,7 @@ struct SMBIOS_struct_type_1 : SMBIOS_struct {
 };
 
 /** Structure of type 2 */
-struct SMBIOS_struct_type_2 : SMBIOS_struct {
+struct SMBIOSStructType2 : SMBIOSStruct {
     BYTE    Manufacturer;
     BYTE    Product;
     BYTE    Version;
@@ -65,7 +65,7 @@ struct SMBIOS_struct_type_2 : SMBIOS_struct {
 };
 
 /** Necessary structure of type 3 */
-struct SMBIOS_struct_type_3 : SMBIOS_struct {
+struct SMBIOSStructType3 : SMBIOSStruct {
     BYTE    Manufacturer;
     BYTE    ChassisType;
     BYTE    Version;
@@ -84,7 +84,7 @@ struct SMBIOS_struct_type_3 : SMBIOS_struct {
 };
 
 /** Necessary structure of type 4 */
-struct SMBIOS_struct_type_4 : SMBIOS_struct {
+struct SMBIOSStructType4 : SMBIOSStruct {
     BYTE    SocketDesignation;
     BYTE    ProcessorType;
     BYTE    ProcessorFamily;
@@ -114,7 +114,7 @@ struct SMBIOS_struct_type_4 : SMBIOS_struct {
 };
 
 /** Structure of type 5 */
-struct SMBIOS_struct_type_5 : SMBIOS_struct {
+struct SMBIOSStructType5 : SMBIOSStruct {
     BYTE    ErrorDetectingMethod;
     BYTE    ErrorCorrectingCapability;
     BYTE    SupportedInterleave;
@@ -127,7 +127,7 @@ struct SMBIOS_struct_type_5 : SMBIOS_struct {
 };
 
 /** Structure of type 6 */
-struct SMBIOS_struct_type_6 : SMBIOS_struct {
+struct SMBIOSStructType6 : SMBIOSStruct {
     BYTE    SocketDesignation;
     BYTE    BankConnections;
     BYTE    CurrentSpeed;
@@ -138,7 +138,7 @@ struct SMBIOS_struct_type_6 : SMBIOS_struct {
 };
 
 /** Necessary structure of type 7 */
-struct SMBIOS_struct_type_7 : SMBIOS_struct {
+struct SMBIOSStructType7 : SMBIOSStruct {
     BYTE    SocketDesignation;
     WORD    CacheConfiguration;
     WORD    MaximumCacheSize;
@@ -152,7 +152,7 @@ struct SMBIOS_struct_type_7 : SMBIOS_struct {
 };
 
 /** Structure of type 8 */
-struct SMBIOS_struct_type_8 : SMBIOS_struct {
+struct SMBIOSStructType8 : SMBIOSStruct {
     BYTE    InternalReferenceDesignator;
     BYTE    InternalConnectorType;
     BYTE    ExternalReferenceDesignator;
@@ -161,7 +161,7 @@ struct SMBIOS_struct_type_8 : SMBIOS_struct {
 };
 
 /** Necessary structure of type 9 */
-struct SMBIOS_struct_type_9 : SMBIOS_struct {
+struct SMBIOSStructType9 : SMBIOSStruct {
     BYTE    SlotDesignation;
     BYTE    SlotType;
     BYTE    SlotDataBusWidth;
@@ -176,23 +176,23 @@ struct SMBIOS_struct_type_9 : SMBIOS_struct {
 };
 
 /** Structure of type 10 */
-struct SMBIOS_struct_type_10 : SMBIOS_struct {
+struct SMBIOSStructType10 : SMBIOSStruct {
     BYTE    DeviceType;
     BYTE    DescriptionString;
 };
 
 /** Structure of type 11 */
-struct SMBIOS_struct_type_11 : SMBIOS_struct {
+struct SMBIOSStructType11 : SMBIOSStruct {
     BYTE    Count;
 };
 
 /** Structure of type 12 */
-struct SMBIOS_struct_type_12 : SMBIOS_struct {
+struct SMBIOSStructType12 : SMBIOSStruct {
     BYTE    Count;
 };
 
 /** Structure of type 13 */
-struct SMBIOS_struct_type_13 : SMBIOS_struct {
+struct SMBIOSStructType13 : SMBIOSStruct {
     BYTE    InstalledLanguages;
     BYTE    Flags;
     BYTE    Reserved[15];
@@ -200,14 +200,14 @@ struct SMBIOS_struct_type_13 : SMBIOS_struct {
 };
 
 /** Structure of type 14 */
-struct SMBIOS_struct_type_14 : SMBIOS_struct {
+struct SMBIOSStructType14 : SMBIOSStruct {
     BYTE    GroupName;
     BYTE    ItemType;
     WORD    ItemHandle;
 };
 
 /** Structure of type 15 */
-struct SMBIOS_struct_type_15 : SMBIOS_struct {
+struct SMBIOSStructType15 : SMBIOSStruct {
     WORD    LogAreaLength;
     WORD    LogHeaderStartOffset;
     WORD    LogDataStartOffset;
@@ -221,7 +221,7 @@ struct SMBIOS_struct_type_15 : SMBIOS_struct {
 };
 
 /** Necessary structure of type 16 */
-struct SMBIOS_struct_type_16 : SMBIOS_struct {
+struct SMBIOSStructType16 : SMBIOSStruct {
     BYTE    Location;
     BYTE    Use;
     BYTE    MemoryErrorCorrection;
@@ -232,7 +232,7 @@ struct SMBIOS_struct_type_16 : SMBIOS_struct {
 };
 
 /** Necessary structure of type 17 */
-struct SMBIOS_struct_type_17 : SMBIOS_struct {
+struct SMBIOSStructType17 : SMBIOSStruct {
     WORD    PhysicalMemoryArrayHandle;
     WORD    MemoryErrorInformationHandle;
     WORD    TotalWidth;
@@ -258,7 +258,7 @@ struct SMBIOS_struct_type_17 : SMBIOS_struct {
 };
 
 /** Necessary structure of type 19 */
-struct SMBIOS_struct_type_19 : SMBIOS_struct {
+struct SMBIOSStructType19 : SMBIOSStruct {
     BYTE    StartingAddress[4];
     BYTE    EndingAddress[4];
     WORD    MemoryArrayHandle;
@@ -268,7 +268,7 @@ struct SMBIOS_struct_type_19 : SMBIOS_struct {
 };
 
 /** Necessary structure of type 32 */
-struct SMBIOS_struct_type_32 : SMBIOS_struct {
+struct SMBIOSStructType32 : SMBIOSStruct {
     BYTE    Reserved[6];
     BYTE    BootStatus[10];
 };
