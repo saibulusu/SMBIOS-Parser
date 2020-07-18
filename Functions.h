@@ -243,7 +243,12 @@ void displayInformation(SMBIOSStructType14* curStruct, RawSMBIOSData* rawData);
 
 
 
+/** Display System Event Log Information (Type 15) */
 void displayInformation(SMBIOSStructType15* curStruct, RawSMBIOSData* rawData);
+
+/** Get the access method for the type 15 structure */
+std::string getAccessMethod(BYTE accessMethod);
+
 
 
 /** Display Physical Memory Array Information (Type 16) */

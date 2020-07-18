@@ -2395,6 +2395,41 @@ void displayInformation(SMBIOSStructType15* curStruct, RawSMBIOSData* rawData) {
     std::vector<std::string> strings = getStrings(curStruct);
     std::cout << "System Events Log (Type " << (int)curStruct->Type << ")" << std::endl;
     std::cout << "\tHandle: " << (int)curStruct->Handle << std::endl;
+
+    if (rawData->SMBIOSMajorVersion < 2) {
+        std::cout << std::endl;
+        return;
+    }
+
+    std::cout << "\tAccess Method: " << getAccessMethod(curStruct->AccessMethod) << std::endl;
+
+    if (getBit(curStruct->LogStatus, 1)) {
+        std::cout << "\tLog area full" << std::endl;
+    }
+    if (getBit(curStruct->LogStatus, 0)) {
+        std::cout << "\tLog area valid" << std::endl;
+    }
+
+    std::cout << "\tLog Change Token: " << curStruct->LogChangeToken << std::endl;
+
+    std::cout << std::endl;
+}
+
+std::string getAccessMethod(BYTE accessMethod) {
+    switch (accessMethod) {
+    case 0:
+        return "Indexed I/O: 1 8-bit index port, 1 8-bit data port";
+    case 1:
+        return "Indexed I/O: 2 8-bit index ports, 1 8-bit data port";
+    case 2:
+        return "Indexed I/O: 1 16-bit index port, 1 8-bit data port";
+    case 3:
+        return "Memory-mapped physical 32-bit address";
+    case 4:
+        return "Available through general purpose non-volatile data functions";
+    default:
+        return "Other";
+    }
 }
 
 void displayInformation(SMBIOSStructType16* curStruct, RawSMBIOSData* rawData) {
