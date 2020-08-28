@@ -12,9 +12,3 @@ table: View the SMBIOS structure table.
 all: View all structures.  
 [id]: View the structure with the given ID.  
 quit: Exit the program.  
-
-### Links:  
-<https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.0.0.pdf>  
-<https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemfirmwaretable>  
-https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/  
-
