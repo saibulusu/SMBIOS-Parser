@@ -572,6 +572,14 @@ void displayInformation(SMBIOSStructType3* curStruct, RawSMBIOSData* rawData) {
 
     std::cout << "\tNumber of Power Chords: " << (int)curStruct->NumberOfPowerCords << std::endl;
 
+    if (curStruct->SkuNumber > 0 && curStruct->SkuNumber < strings.size()) {
+        std::cout << "\tSKU Number: "
+            << strings[curStruct->SkuNumber] << std::endl;
+    }
+    else {
+        std::cout << "\tSKU Number: Not specified" << std::endl;
+    }
+
     std::cout << std::endl;
 }
 
