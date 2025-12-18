@@ -80,7 +80,8 @@ struct SMBIOSStructType3 : SMBIOSStruct {
     BYTE    NumberOfPowerCords;
     BYTE    ContainedElementCount;
     BYTE    ContainedElementRecordLength;
-    BYTE    ContainedElements[65537];
+    BYTE    SkuNumber;
+    //BYTE    ContainedElements[65537];
 };
 
 /** Necessary structure of type 4 */
