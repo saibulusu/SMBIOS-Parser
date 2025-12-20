@@ -1,13 +1,5 @@
-#include "Structures.h"
-#include <vector>
-#include <string>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <math.h>
-
-/** Get the Raw SMBIOS table */
-RawSMBIOSData* getRawData();
+#include "RawSMBIOSData.cpp"
+#include <bits/stdc++.h>
 
 /** Display available user commands */
 void displayCommands();

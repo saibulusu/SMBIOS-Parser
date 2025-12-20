@@ -1,6 +1,6 @@
-// SMBIOS Parser.cpp : This file contains the 'main' function. Program execution begins and ends there.
-#include <string>
-#include "Functions.h"
+// main.cpp : This file contains the 'main' function. Program execution begins and ends here.
+#include <bits/stdc++.h>
+#include "RawSMBIOSData.cpp"
 
 void displayCommands() {
     std::cout << "cmds: Display available commands" << std::endl;
@@ -12,36 +12,38 @@ void displayCommands() {
 }
 
 int main() {
-    RawSMBIOSData* rawData = getRawData();
+    RawSMBIOSData* rawData = new RawSMBIOSData();
 
-    displayCommands();
+    //rawData.displayCommands();
     std::cout << "> ";
     std::string input;
     while (std::cin >> input) {
         if (input.compare("quit") == 0) {
-            return 0;
+            break;
         }
         else if (input.compare("hex") == 0) {
-            displayHexContents(rawData);
+            //displayHexContents(rawData);
         }
         else if (input.compare("all") == 0) {
-            displayAllStructures(rawData);
+            //displayAllStructures(rawData);
         }
         else if (input.compare("table") == 0) {
-            displayStructureTable(rawData);
+            // displayStructureTable(rawData);
         }
         else if (input.compare("cmds") == 0) {
-            displayCommands();
+            //displayCommands();
         }
         else {
             try {
                 int index = std::stoi(input);
+                /*
                 if (index < 0 || index >= getStructureTable(rawData).size()) {
                     std::cout << "ERROR: Out of bounds" << std::endl;
                 }
                 else {
-                    displayStructure(rawData, index);
+                    //rawData.displayStructure(rawData, index);
                 }
+                */
             }
             catch (std::exception& e) {
                 std::cout << "ERROR: Invalid command" << std::endl;
