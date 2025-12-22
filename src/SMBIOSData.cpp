@@ -21,6 +21,7 @@ std::vector<const SMBIOSStruct*> SMBIOSData::getStructureTable() const {
   const uint8_t* ptr = rawData->SMBIOSTableData;
   const uint8_t* end = ptr + rawData->Length;
   
+/*
   const SMBIOSStruct* first = reinterpret_cast<const SMBIOSStruct*>(ptr);
   std::cout << "first type: " << (int)first->Type << std::endl;
   std::cout << "first length: " << (int)first->Length << std::endl;
@@ -32,16 +33,19 @@ std::vector<const SMBIOSStruct*> SMBIOSData::getStructureTable() const {
   std::cout << "second length: " << (int)second->Length << std::endl;
   std::cout << "second handle: " << (int)second->Handle << std::endl;
   structureTable.push_back(second);
-
-/*
-  while (ptr < end) {
-    const SMBIOSStruct* cur = reinterpret_cast<const SMBIOSStruct*>(ptr);
-    structureTable.push_back(cur);
-
-    ptr += cur->Length;
-  }
 */
-  
+  const SMBIOSStruct* cur = (const SMBIOSStruct*)ptr;
+  int count = 0;
+  while ((char*)cur < (char*)end) {
+    structureTable.push_back(cur);
+    std::cout << count << " type: " << (int)cur->Type << std::endl;
+    std::cout << count << " length: " << (int)cur->Length << std::endl;
+    std::cout << count << " handle: " << (int)cur->Handle << std::endl;
+    std::cout << std::endl;
+    ++count;
+    cur = getNextStruct(cur);
+  }
+
   return structureTable;
 }
 

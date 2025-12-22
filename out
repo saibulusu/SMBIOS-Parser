@@ -1,0 +1,310 @@
+SMBIOS table length: 3330
+0 type: 0
+0 length: 26
+0 handle: 0
+
+1 type: 1
+1 length: 27
+1 handle: 1
+
+2 type: 2
+2 length: 15
+2 handle: 2
+
+3 type: 3
+3 length: 22
+3 handle: 3
+
+4 type: 10
+4 length: 6
+4 handle: 4
+
+5 type: 11
+5 length: 5
+5 handle: 5
+
+6 type: 12
+6 length: 5
+6 handle: 6
+
+7 type: 32
+7 length: 20
+7 handle: 7
+
+8 type: 34
+8 length: 11
+8 handle: 8
+
+9 type: 40
+9 length: 59
+9 handle: 9
+
+10 type: 44
+10 length: 9
+10 handle: 10
+
+11 type: 43
+11 length: 31
+11 handle: 11
+
+12 type: 7
+12 length: 27
+12 handle: 12
+
+13 type: 7
+13 length: 27
+13 handle: 13
+
+14 type: 7
+14 length: 27
+14 handle: 14
+
+15 type: 4
+15 length: 48
+15 handle: 15
+
+16 type: 44
+16 length: 9
+16 handle: 16
+
+17 type: 18
+17 length: 23
+17 handle: 17
+
+18 type: 16
+18 length: 23
+18 handle: 18
+
+19 type: 19
+19 length: 31
+19 handle: 19
+
+20 type: 18
+20 length: 23
+20 handle: 20
+
+21 type: 17
+21 length: 92
+21 handle: 21
+
+22 type: 18
+22 length: 23
+22 handle: 22
+
+23 type: 17
+23 length: 92
+23 handle: 23
+
+24 type: 20
+24 length: 35
+24 handle: 24
+
+25 type: 18
+25 length: 23
+25 handle: 25
+
+26 type: 17
+26 length: 92
+26 handle: 26
+
+27 type: 18
+27 length: 23
+27 handle: 27
+
+28 type: 17
+28 length: 92
+28 handle: 28
+
+29 type: 20
+29 length: 35
+29 handle: 29
+
+30 type: 40
+30 length: 14
+30 handle: 30
+
+31 type: 60
+31 length: 165
+31 handle: 31
+
+32 type: 8
+32 length: 9
+32 handle: 32
+
+33 type: 8
+33 length: 9
+33 handle: 33
+
+34 type: 8
+34 length: 9
+34 handle: 34
+
+35 type: 8
+35 length: 9
+35 handle: 35
+
+36 type: 8
+36 length: 9
+36 handle: 36
+
+37 type: 8
+37 length: 9
+37 handle: 37
+
+38 type: 8
+38 length: 9
+38 handle: 38
+
+39 type: 8
+39 length: 9
+39 handle: 39
+
+40 type: 8
+40 length: 9
+40 handle: 40
+
+41 type: 8
+41 length: 9
+41 handle: 41
+
+42 type: 8
+42 length: 9
+42 handle: 42
+
+43 type: 8
+43 length: 9
+43 handle: 43
+
+44 type: 8
+44 length: 9
+44 handle: 44
+
+45 type: 8
+45 length: 9
+45 handle: 45
+
+46 type: 8
+46 length: 9
+46 handle: 46
+
+47 type: 8
+47 length: 9
+47 handle: 47
+
+48 type: 8
+48 length: 9
+48 handle: 48
+
+49 type: 8
+49 length: 9
+49 handle: 49
+
+50 type: 8
+50 length: 9
+50 handle: 50
+
+51 type: 8
+51 length: 9
+51 handle: 51
+
+52 type: 8
+52 length: 9
+52 handle: 52
+
+53 type: 8
+53 length: 9
+53 handle: 53
+
+54 type: 8
+54 length: 9
+54 handle: 54
+
+55 type: 8
+55 length: 9
+55 handle: 55
+
+56 type: 8
+56 length: 9
+56 handle: 56
+
+57 type: 8
+57 length: 9
+57 handle: 57
+
+58 type: 8
+58 length: 9
+58 handle: 58
+
+59 type: 8
+59 length: 9
+59 handle: 59
+
+60 type: 8
+60 length: 9
+60 handle: 60
+
+61 type: 8
+61 length: 9
+61 handle: 61
+
+62 type: 8
+62 length: 9
+62 handle: 62
+
+63 type: 8
+63 length: 9
+63 handle: 63
+
+64 type: 8
+64 length: 9
+64 handle: 64
+
+65 type: 9
+65 length: 17
+65 handle: 65
+
+66 type: 9
+66 length: 17
+66 handle: 66
+
+67 type: 9
+67 length: 17
+67 handle: 67
+
+68 type: 9
+68 length: 17
+68 handle: 68
+
+69 type: 9
+69 length: 17
+69 handle: 69
+
+70 type: 9
+70 length: 17
+70 handle: 70
+
+71 type: 9
+71 length: 17
+71 handle: 71
+
+72 type: 9
+72 length: 17
+72 handle: 72
+
+73 type: 41
+73 length: 11
+73 handle: 73
+
+74 type: 41
+74 length: 11
+74 handle: 74
+
+75 type: 13
+75 length: 22
+75 handle: 75
+
+76 type: 127
+76 length: 4
+76 handle: 76
+
+First structure type: 0
