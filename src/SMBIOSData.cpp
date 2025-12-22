@@ -35,7 +35,7 @@ const SMBIOSStruct* SMBIOSData::getNextStruct(const SMBIOSStruct* curStruct) con
   char* next_strings  = strings_begin + 1;
 
   // Walk until you find a double null (end of string-set)
-  while (*strings_begin != NULL || *next_strings != NULL) {
+  while (*strings_begin != '\0' || *next_strings != '\0') {
     ++strings_begin;
     ++next_strings;
   }

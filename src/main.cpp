@@ -22,7 +22,7 @@ int main() {
     } else if (!input.compare("all")) {
 
     } else if (!input.compare("table")) {
-
+      parser.displayStructureTable();
     } else if (!input.compare("cmds")) {
       parser.displayCommands();
     } else {
