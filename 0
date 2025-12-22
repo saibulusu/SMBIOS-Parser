@@ -1,7 +1,6 @@
 #pragma once
-#include "SMBIOSData.h"
+#include "SMBIOSStructure.h"
 #include <cstdint>
-#include <string>
 
 class SMBIOSStructure {
 public:
@@ -12,9 +11,6 @@ public:
   uint8_t  type()   const { return header->Type; }
   uint8_t  length()   const { return header->Length; }
   uint16_t handle() const { return header->Handle; }
-
-  virtual std::string description();
-  virtual std::string toString();
 
 protected:
   const SMBIOSStruct* header;

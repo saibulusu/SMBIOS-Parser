@@ -8,15 +8,31 @@
 int main() {
   SMBIOSData* data = loadSMBIOSFromLinux();
   SMBIOSParser parser(*data);
-  
-  std::cout << "SMBIOS table length: " << data->raw()->Length << std::endl;
   parser.parse();
-  auto& structs = parser.structures();
-  if (!structs.empty()) {
-    std::cout << "First structure type: "
-              << (int)structs[0]->type() << std::endl;
-  }
-  delete data;
 
+  std::cout << "> ";
+  std::string input;
+  while (std::cin >> input) {
+    if (!input.compare("quit")) {
+      break;
+    } else if (!input.compare("version")) {
+      parser.displayVersion();
+    } else if (!input.compare("hex")) {
+
+    } else if (!input.compare("all")) {
+
+    } else if (!input.compare("table")) {
+
+    } else if (!input.compare("cmds")) {
+      parser.displayCommands();
+    } else {
+      
+    }
+
+    std::cout << "> ";
+  }
+
+  delete data;
+  
   return 0;
 }

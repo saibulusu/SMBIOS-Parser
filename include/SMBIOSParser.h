@@ -2,20 +2,28 @@
 
 #include <vector>
 #include <memory>
+#include <iostream>
 
 class SMBIOSData;
 class SMBIOSStructure;
 
 class SMBIOSParser {
 public:
-  explicit SMBIOSParser(SMBIOSData& data); // constructor
+  explicit SMBIOSParser(SMBIOSData& data);
 
-  void parse(); // read raw table & build structures
+  void parse();
 
   const std::vector<std::unique_ptr<SMBIOSStructure>>&
-  structures() const; // read-only view of parsed results
+  structures() const;
+
+  void displayVersion();
+  void displayHexContents();
+  void displayAllStructures();
+  void displayStructureTable();
+  void displayCommands();
+  void displayStructure(int handle);
 
 private:
-  SMBIOSData& data; // raw data (wrapper via SMBIOSData)
-  std::vector<std::unique_ptr<SMBIOSStructure>> parsedStructures; // list of structures
+  SMBIOSData& data;
+  std::vector<std::unique_ptr<SMBIOSStructure>> parsedStructures;
 };

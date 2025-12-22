@@ -342,3 +342,6 @@ healthchecksdb
 # vim temporary files
 *.swp
 *.swo
+
+# Executable
+SMBIOS-Parser
