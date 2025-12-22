@@ -18,9 +18,9 @@ int main() {
     } else if (!input.compare("version")) {
       parser.displayVersion();
     } else if (!input.compare("hex")) {
-
+      parser.displayHexContents();
     } else if (!input.compare("all")) {
-
+      parser.displayAllStructures();
     } else if (!input.compare("table")) {
       parser.displayStructureTable();
     } else if (!input.compare("cmds")) {

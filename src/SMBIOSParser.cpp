@@ -28,6 +28,8 @@ void SMBIOSParser::displayVersion() {
 void SMBIOSParser::displayHexContents() {
 }
 
+void SMBIOSParser::displayAllStructures() {}
+
 void SMBIOSParser::displayStructureTable() {
   std::vector<const SMBIOSStruct*> structureTable = data.getStructureTable();
   std::cout << "ID\t" << "Type\t" << "Description" << std::endl;
