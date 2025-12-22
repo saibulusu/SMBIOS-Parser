@@ -7,7 +7,6 @@ SMBIOSParser::SMBIOSParser(SMBIOSData& d)
 
 void SMBIOSParser::parse() {
   parsedStructures.clear();
-/*
   auto table = data.getStructureTable();
   if (!table.empty()) {
     // wrap first structure in SMBIOSStructure
@@ -15,7 +14,6 @@ void SMBIOSParser::parse() {
       std::make_unique<SMBIOSStructure>(table[0])
     );
   }
-*/
 }
 
 const std::vector<std::unique_ptr<SMBIOSStructure>>&

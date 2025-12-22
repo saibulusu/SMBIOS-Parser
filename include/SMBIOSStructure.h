@@ -1,11 +1,6 @@
 #pragma once
+#include "SMBIOSStructure.h"
 #include <cstdint>
-
-struct SMBIOSStruct {
-  uint8_t Type;
-  uint8_t Length;
-  uint16_t Handle;
-};
 
 class SMBIOSStructure {
 public:
