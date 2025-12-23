@@ -19,7 +19,7 @@ void SMBIOSParser::displayAllStructures() {
   for (long unsigned int i = 0; i < structureTable.size(); ++i) {
     displayStructure(i);
     if (i < structureTable.size() - 1) {
-      std::cout << std::endl;
+      //std::cout << std::endl;
     }
   }
 }
@@ -192,9 +192,4 @@ void SMBIOSParser::displayStructure(int handle) {
   default:
     break;
   }
-}
-
-void SMBIOSParser::displayType0Structure(const SMBIOSStruct* curStruct) {
-  std::vector<std::string> strings = getStrings(curStruct);
-  std::cout << "SMBIOS Information (Type " << (int)curStruct->Type << ")" << std::endl;
 }

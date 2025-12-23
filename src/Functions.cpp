@@ -31,3 +31,25 @@ const SMBIOSStruct* getNextStruct(const SMBIOSStruct* curStruct) {
   // The structure after the double null
   return (const SMBIOSStruct*)(next_strings + 1);
 }
+
+int getBit(uint8_t bytes[], int bitNum, int numBytes) {
+  int whichBit = numBytes - 1 - bitNum / 8;
+  bitNum %= 8;
+  return getBit(bytes[whichBit], bitNum);
+}
+
+int getBit(uint8_t byte, int bitNum) {
+  return (byte >> bitNum) % 2;
+}
+
+int getBit(uint16_t word, int bitNum) {
+  return (word >> bitNum) % 2;
+}
+
+int getBits(uint8_t byte, int startBit, int endBit) {
+  return (byte >> endBit) % (1 << (startBit - endBit));
+}
+
+int getBits(uint16_t word, int startBit, int endBit) {
+  return (word >> endBit) % (1 << (startBit - endBit));
+}
