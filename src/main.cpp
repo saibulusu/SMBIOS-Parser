@@ -1,6 +1,5 @@
 #include "SMBIOSPlatform.h"
 #include "SMBIOSData.h"
-#include "SMBIOSStructure.h"
 #include "SMBIOSParser.h"
 #include <string>
 #include <iostream>
@@ -8,7 +7,6 @@
 int main() {
   SMBIOSData* data = loadSMBIOSFromLinux();
   SMBIOSParser parser(*data);
-  parser.parse();
 
   std::cout << "> ";
   std::string input;

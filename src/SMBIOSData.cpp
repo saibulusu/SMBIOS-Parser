@@ -1,8 +1,19 @@
-#include "SMBIOSData.h"
-#include <iostream>
+#include "Functions.h"
 
 SMBIOSData::SMBIOSData(RawSMBIOSData* raw)
   : rawData(raw) {
+  std::vector<const SMBIOSStruct*> structureTable;
+  
+  const uint8_t* ptr = rawData->SMBIOSTableData;
+  const uint8_t* end = ptr + rawData->Length;
+  
+  const SMBIOSStruct* cur = (const SMBIOSStruct*)ptr;
+  while ((char*)cur < (char*)end) {
+    structureTable.push_back(cur);
+    cur = getNextStruct(cur);
+  }
+  
+  this->structureTable = structureTable;
 }
 
 SMBIOSData::~SMBIOSData() {
@@ -16,30 +27,6 @@ const RawSMBIOSData* SMBIOSData::raw() const {
 }
 
 std::vector<const SMBIOSStruct*> SMBIOSData::getStructureTable() const {
-  std::vector<const SMBIOSStruct*> structureTable;
-  
-  const uint8_t* ptr = rawData->SMBIOSTableData;
-  const uint8_t* end = ptr + rawData->Length;
-  
-  const SMBIOSStruct* cur = (const SMBIOSStruct*)ptr;
-  while ((char*)cur < (char*)end) {
-    structureTable.push_back(cur);
-    cur = getNextStruct(cur);
-  }
-
   return structureTable;
 }
 
-const SMBIOSStruct* SMBIOSData::getNextStruct(const SMBIOSStruct* curStruct) const {
-  char* strings_begin = (char*)curStruct + curStruct->Length;
-  char* next_strings  = strings_begin + 1;
-
-  // Walk until you find a double null (end of string-set)
-  while (*strings_begin != '\0' || *next_strings != '\0') {
-    ++strings_begin;
-    ++next_strings;
-  }
-
-  // The structure after the double null
-  return (const SMBIOSStruct*)(next_strings + 1);
-}

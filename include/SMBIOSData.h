@@ -3,6 +3,8 @@
 #include <vector>
 #include <cstdint>
 #include <cstdlib>
+#include <iostream>
+#include <string>
 
 #pragma pack(push, 1)
 struct RawSMBIOSData {
@@ -33,6 +35,6 @@ public:
   const RawSMBIOSData* raw() const; // read-only access to firmware data
 
 private:
-  const SMBIOSStruct* getNextStruct(const SMBIOSStruct* curStruct) const;
   RawSMBIOSData* rawData; // raw data
+  std::vector<const SMBIOSStruct*> structureTable; // table of pointers
 };

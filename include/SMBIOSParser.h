@@ -1,20 +1,16 @@
 #pragma once
 
+#include "SMBIOSData.h"
+#include "SMBIOSPlatform.h"
 #include <vector>
 #include <memory>
 #include <iostream>
 
 class SMBIOSData;
-class SMBIOSStructure;
 
 class SMBIOSParser {
 public:
   explicit SMBIOSParser(SMBIOSData& data);
-
-  void parse();
-
-  const std::vector<std::unique_ptr<SMBIOSStructure>>&
-  structures() const;
 
   void displayVersion();
   void displayHexContents();
@@ -25,5 +21,5 @@ public:
 
 private:
   SMBIOSData& data;
-  std::vector<std::unique_ptr<SMBIOSStructure>> parsedStructures;
+  void displayType0Structure(const SMBIOSStruct* curStruct);
 };

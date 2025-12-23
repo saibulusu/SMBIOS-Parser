@@ -1,0 +1,33 @@
+#include "Functions.h"
+
+std::vector<std::string> getStrings(const SMBIOSStruct* curStruct) {
+  std::vector<std::string> strings;
+  std::string res = "";
+  strings.push_back(res);
+  char* curChar = (char*)curStruct + curStruct->Length;
+  const SMBIOSStruct* next_struct = getNextStruct(curStruct);
+
+  while (curChar < (char*)next_struct) {
+    res.push_back(*curChar);
+    if (*curChar == '\0') {
+      strings.push_back(res);
+      res = "";
+    }
+    ++curChar;
+  }
+  return strings;
+}
+
+const SMBIOSStruct* getNextStruct(const SMBIOSStruct* curStruct) {
+  char* strings_begin = (char*)curStruct + curStruct->Length;
+  char* next_strings  = strings_begin + 1;
+
+  // Walk until you find a double null (end of string-set)
+  while (*strings_begin != '\0' || *next_strings != '\0') {
+    ++strings_begin;
+    ++next_strings;
+  }
+
+  // The structure after the double null
+  return (const SMBIOSStruct*)(next_strings + 1);
+}

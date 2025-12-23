@@ -1,25 +1,11 @@
 #include "SMBIOSParser.h"
+#include "SMBIOSPlatform.h"
 #include "SMBIOSData.h"
-#include "SMBIOSStructure.h"
+#include "Functions.h"
 #include <iomanip>
 
 SMBIOSParser::SMBIOSParser(SMBIOSData& d)
   : data(d) {}
-
-void SMBIOSParser::parse() {
-  parsedStructures.clear();
-  auto table = data.getStructureTable();
-  if (!table.empty()) {
-    parsedStructures.push_back(
-      std::make_unique<SMBIOSStructure>(table[0])
-    );
-  }
-}
-
-const std::vector<std::unique_ptr<SMBIOSStructure>>&
-SMBIOSParser::structures() const {
-  return parsedStructures;
-}
 
 void SMBIOSParser::displayVersion() {
   std::cout << "v2.0" << std::endl;
@@ -28,7 +14,15 @@ void SMBIOSParser::displayVersion() {
 void SMBIOSParser::displayHexContents() {
 }
 
-void SMBIOSParser::displayAllStructures() {}
+void SMBIOSParser::displayAllStructures() {
+  std::vector<const SMBIOSStruct*> structureTable = data.getStructureTable();
+  for (long unsigned int i = 0; i < structureTable.size(); ++i) {
+    displayStructure(i);
+    if (i < structureTable.size() - 1) {
+      std::cout << std::endl;
+    }
+  }
+}
 
 void SMBIOSParser::displayStructureTable() {
   std::vector<const SMBIOSStruct*> structureTable = data.getStructureTable();
@@ -185,4 +179,22 @@ void SMBIOSParser::displayCommands() {
   std::cout << "hex: Display the SMBIOS table bytes in hex" << std::endl;
   std::cout << "<id>: Display the structure with the given ID" << std::endl;
   std::cout << "quit: Exit the program" << std::endl;
+}
+
+void SMBIOSParser::displayStructure(int handle) {
+  std::vector<const SMBIOSStruct*> structureTable = data.getStructureTable();
+  const SMBIOSStruct* curStruct = structureTable[handle];
+
+  switch (curStruct->Handle) {
+  case 0:
+    this->displayType0Structure(curStruct);
+    break;
+  default:
+    break;
+  }
+}
+
+void SMBIOSParser::displayType0Structure(const SMBIOSStruct* curStruct) {
+  std::vector<std::string> strings = getStrings(curStruct);
+  std::cout << "SMBIOS Information (Type " << (int)curStruct->Type << ")" << std::endl;
 }
