@@ -24,7 +24,18 @@ int main() {
     } else if (!input.compare("cmds")) {
       parser.displayCommands();
     } else {
-      
+      try {
+        int index = std::stoi(input);
+        if (index < 0 || index >= parser.getStructuresCount()){
+          std::cout << "ERROR: Out of bounds" << std::endl;
+        }
+        else {
+          parser.displayStructure(index);
+        }
+      }
+      catch (std::exception& e) {
+        std::cout << "ERROR: Invalid command" << std::endl;
+      }      
     }
 
     std::cout << "> ";

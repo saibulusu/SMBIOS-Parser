@@ -19,6 +19,8 @@ public:
   void displayCommands();
   void displayStructure(int handle);
 
+  int getStructuresCount();
+
 private:
   SMBIOSData& data;
   

@@ -206,3 +206,7 @@ void SMBIOSParser::displayStructure(int handle) {
     break;
   }
 }
+
+int SMBIOSParser::getStructuresCount() {
+  return data.getStructureTable().size();
+}
