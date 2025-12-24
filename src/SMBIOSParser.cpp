@@ -12,6 +12,13 @@ void SMBIOSParser::displayVersion() {
 }
 
 void SMBIOSParser::displayHexContents() {
+  for (uint32_t i = 0; i < data.raw()->Length; ++i) {
+    std::cout << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)data.raw()->SMBIOSTableData[i] << " ";
+    if (i % 32 == 31) {
+      std::cout << std::endl;
+    }
+  }
+  std::cout << std::dec << std::endl;
 }
 
 void SMBIOSParser::displayAllStructures() {
