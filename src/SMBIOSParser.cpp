@@ -18,9 +18,6 @@ void SMBIOSParser::displayAllStructures() {
   std::vector<const SMBIOSStruct*> structureTable = data.getStructureTable();
   for (long unsigned int i = 0; i < structureTable.size(); ++i) {
     displayStructure(i);
-    if (i < structureTable.size() - 1) {
-      //std::cout << std::endl;
-    }
   }
 }
 
@@ -194,6 +191,9 @@ void SMBIOSParser::displayStructure(int handle) {
     break;
   case 2:
     displayBaseboardInformation(curStruct);
+    break;
+  case 3:
+    displayChassisInformation(curStruct);
     break;
   default:
     break;

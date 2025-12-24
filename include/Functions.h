@@ -28,4 +28,6 @@ void displayFeatureFlags(uint8_t FeatureFlags);
 std::string getBaseBoardType(uint8_t BoardType);
 
 // type 3
-
+void displayChassisType(uint8_t ChassisType);
+std::string getChassisState(uint8_t field);
+std::string getChassisSecurityState(uint8_t field);
