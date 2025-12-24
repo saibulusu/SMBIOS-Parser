@@ -24,10 +24,10 @@ public:
 private:
   SMBIOSData& data;
   
-  void displayBIOSInformation(const SMBIOSStruct* curStruct);
-  void displaySystemInformation(const SMBIOSStruct* curStruct);
-  void displayBaseboardInformation(const SMBIOSStruct* curStruct);
-  void displayChassisInformation(const SMBIOSStruct* curStruct);
+  void displayBIOSInformation(const SMBIOSStruct* curStruct); // type 0
+  void displaySystemInformation(const SMBIOSStruct* curStruct); // type 1
+  void displayBaseboardInformation(const SMBIOSStruct* curStruct); // type 2
+  void displayChassisInformation(const SMBIOSStruct* curStruct); // type 3
 
   void displayVendorSpecificInformation(const SMBIOSStruct* curStruct);
 };

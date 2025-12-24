@@ -33,6 +33,19 @@ void SMBIOSParser::displayChassisInformation(const SMBIOSStruct* curStruct) {
   std::cout << "\tSecurity State: " << getChassisSecurityState(SecurityStatus) << std::endl;
 
   if (curStruct->Length < 0x15) return;
+
+  uint8_t ContainedElementCount = bytes[0x13];
+  uint8_t ContainedElementRecordLength = bytes[0x14];
+  size_t ContainedElementsSize = size_t(ContainedElementCount) * ContainedElementRecordLength;
+  uint8_t* ContainedElements = (uint8_t*)bytes + 0x15; 
+
+  std::memcpy(&ContainedElements, bytes + 0x15, ContainedElementsSize);
+
+  if (curStruct->Length < 0x15 + ContainedElementCount * ContainedElementRecordLength) return;
+  
+  uint8_t SKUNumber = bytes[0x15 + ContainedElementsSize];
+  if (SKUNumber >= 0) std::cout << "\tSKU Number: " << strings[SKUNumber] << std::endl;
+  else std::cout << "\tSKU Number not specified" << std::endl;
 }
 
 void displayChassisType(uint8_t ChassisType) {
