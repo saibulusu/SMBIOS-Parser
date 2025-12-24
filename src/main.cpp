@@ -5,7 +5,7 @@
 #include <iostream>
 
 int main() {
-  SMBIOSData* data = loadSMBIOSFromLinux();
+  SMBIOSData* data = loadSMBIOS();
   SMBIOSParser parser(*data);
 
   std::cout << "> ";

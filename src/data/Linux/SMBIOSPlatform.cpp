@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <cstring>
 
-SMBIOSData* loadSMBIOSFromLinux() {
+SMBIOSData* loadSMBIOS() {
   const char* path = "/sys/firmware/dmi/tables/DMI";
 
   int fd = open(path, O_RDONLY);

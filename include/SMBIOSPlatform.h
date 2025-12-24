@@ -2,4 +2,4 @@
 
 #include "SMBIOSData.h"
 
-SMBIOSData* loadSMBIOSFromLinux();
+SMBIOSData* loadSMBIOS();
