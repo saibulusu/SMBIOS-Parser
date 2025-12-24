@@ -192,6 +192,9 @@ void SMBIOSParser::displayStructure(int handle) {
   case 1:
     displaySystemInformation(curStruct);
     break;
+  case 2:
+    displayBaseboardInformation(curStruct);
+    break;
   default:
     break;
   }

@@ -3,6 +3,7 @@
 #include "SMBIOSParser.h"
 #include <cstring>
 #include <iomanip>
+#include <string>
 
 // constructing structs
 std::vector<std::string> getStrings(const SMBIOSStruct* curStruct);
@@ -21,3 +22,10 @@ void displayBIOSExtendedCharacteristics(uint8_t* BIOSCharacteristicsExtensions);
 
 // type 1
 std::string getWakeUpType(uint8_t WakeUpType);
+
+// type 2
+void displayFeatureFlags(uint8_t FeatureFlags);
+std::string getBaseBoardType(uint8_t BoardType);
+
+// type 3
+
