@@ -187,7 +187,7 @@ void SMBIOSParser::displayStructure(int handle) {
 
   switch (curStruct->Handle) {
   case 0:
-    this->displayType0Structure(curStruct);
+    displayBIOSInformation(curStruct);
     break;
   default:
     break;
