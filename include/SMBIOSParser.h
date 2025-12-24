@@ -22,5 +22,6 @@ public:
 private:
   SMBIOSData& data;
   void displayBIOSInformation(const SMBIOSStruct* curStruct);
+  void displaySystemInformation(const SMBIOSStruct* curStruct);
   void displayVendorSpecificInformation(const SMBIOSStruct* curStruct);
 };

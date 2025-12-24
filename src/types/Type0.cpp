@@ -1,37 +1,35 @@
 #include "Functions.h"
-#include <cstring>
 
 // Type 0 - BIOS
 void SMBIOSParser::displayBIOSInformation(const SMBIOSStruct* curStruct) {
-  std::vector<std::string> strings = getStrings(curStruct);
-  std::cout << "SMBIOS Information (Type " << (int)curStruct->Type << ")" << std::endl;
+  std::cout << "BIOS Information (Type " << (int)curStruct->Type << ")" << std::endl;
   std::cout << "\tHandle: " << curStruct->Handle << std::endl;
   
+  std::vector<std::string> strings = getStrings(curStruct);
   const uint8_t* bytes = reinterpret_cast<const uint8_t*>(curStruct);
 
   uint8_t Vendor = bytes[0x04];
-  std::cout << "\tVendor: " << strings[Vendor] << std::endl;
-  
   uint8_t BIOSVersion = bytes[0x05];
-  std::cout << "\tBIOS Version: " << strings[BIOSVersion] << std::endl;
-  
   uint8_t BIOSReleaseDate = bytes[0x08];
-  std::cout << "\tBIOS release Date: " << strings[BIOSReleaseDate] << std::endl;
-  
   uint8_t BIOSROMSize = bytes[0x09];
+  uint64_t BIOSCharacteristics = 0;
+  uint8_t BIOSCharacteristicsExtensions[2];
+  
+  std::cout << "\tVendor: " << strings[Vendor] << std::endl;
+  std::cout << "\tBIOS Version: " << strings[BIOSVersion] << std::endl;
+  std::cout << "\tBIOS release Date: " << strings[BIOSReleaseDate] << std::endl;
   std::cout << "\tBIOS Rom Size: " << 64 + 64 * (int)BIOSROMSize << "K" << std::endl;
   
-  if (curStruct->Length <= 0x0A) return;
-  uint64_t BIOSCharacteristics = 0;
   std::memcpy(&BIOSCharacteristics, bytes + 0x0A, sizeof(uint64_t));
   displayBIOSCharacteristics(reinterpret_cast<uint8_t*>(&BIOSCharacteristics));
 
   if (curStruct->Length <= 0x12) return;
-  uint8_t BIOSCharacteristicsExtensions[2];
+  
   std::memcpy(&BIOSCharacteristicsExtensions, bytes + 0x12, sizeof(uint16_t));
   displayBIOSExtendedCharacteristics(BIOSCharacteristicsExtensions);
 
   if (curStruct->Length < 0x18) return;
+  
   uint8_t ECFirmwareMajorRelease = bytes[0x16];
   uint8_t ECFirmwareMinorRelease = bytes[0x17];
 
