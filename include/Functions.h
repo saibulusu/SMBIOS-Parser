@@ -31,3 +31,12 @@ std::string getBaseBoardType(uint8_t BoardType);
 void displayChassisType(uint8_t ChassisType);
 std::string getChassisState(uint8_t field);
 std::string getChassisSecurityState(uint8_t field);
+
+// type 4
+std::string getProcessorType(uint8_t ProcessorType);
+std::string getProcessorFamily(uint8_t ProcessorFamily);
+std::string getVoltage(uint8_t Voltage);
+void getProcessorStatus(uint8_t Status);
+std::string getProcessorUpgrade(uint8_t ProcessorUpgrade);
+void displayProcessorCharacteristics(uint16_t ProcessorCharacteristics);
+std::string getProcessorFamily2(uint16_t ProcessorFamily2);

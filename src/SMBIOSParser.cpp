@@ -30,7 +30,7 @@ void SMBIOSParser::displayAllStructures() {
 
 void SMBIOSParser::displayStructureTable() {
   std::vector<const SMBIOSStruct*> structureTable = data.getStructureTable();
-  std::cout << "ID\t" << "Type\t" << "Description" << std::endl;
+  std::cout << "Handle\t" << "Type\t" << "Description" << std::endl;
   for (long unsigned int i = 0; i < structureTable.size(); ++i) {
     std::cout << i << "\t" << (int)structureTable[i]->Type << "\t";
     switch (structureTable[i]->Type) {
@@ -186,10 +186,10 @@ void SMBIOSParser::displayCommands() {
 }
 
 void SMBIOSParser::displayStructure(int handle) {
-  std::vector<const SMBIOSStruct*> structureTable = data.getStructureTable();
+  auto structureTable = data.getStructureTable();
   const SMBIOSStruct* curStruct = structureTable[handle];
 
-  switch (curStruct->Handle) {
+  switch (curStruct->Type) {
   case 0:
     displayBIOSInformation(curStruct);
     break;
@@ -201,6 +201,9 @@ void SMBIOSParser::displayStructure(int handle) {
     break;
   case 3:
     displayChassisInformation(curStruct);
+    break;
+  case 4:
+    displayProcessorInformation(curStruct);
     break;
   default:
     break;

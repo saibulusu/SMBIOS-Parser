@@ -4,7 +4,7 @@
 void SMBIOSParser::displayBaseboardInformation(const SMBIOSStruct* curStruct) {
   std::cout << "Baseboard Information (Type " << (int)curStruct->Type << ")" << std::endl;
   std::cout << "\tHandle: " << curStruct->Handle << std::endl;
-  
+
   std::vector<std::string> strings = getStrings(curStruct);
   const uint8_t* bytes = reinterpret_cast<const uint8_t*>(curStruct);
 
@@ -17,6 +17,7 @@ void SMBIOSParser::displayBaseboardInformation(const SMBIOSStruct* curStruct) {
   uint8_t LocationInChassis = bytes[0x0A];
   uint16_t ChassisHandle;
   uint8_t BoardType = bytes[0x0D];
+  uint8_t NumberOfContainedObjectHandles = bytes[0x0E];
 
   std::memcpy(&ChassisHandle, bytes + 0x0B, sizeof(uint16_t));
 
@@ -31,6 +32,16 @@ void SMBIOSParser::displayBaseboardInformation(const SMBIOSStruct* curStruct) {
   std::cout << "\tLocation in Chassis: " << strings[LocationInChassis] << std::endl;
   std::cout << "\tChassis Handle: " << (int)ChassisHandle << std::endl;
   std::cout << "\tBaseboard Type: " << getBaseBoardType(BoardType) << std::endl;
+
+  if (NumberOfContainedObjectHandles > 0) {
+    std::cout << "\tContained Object Handles:" << std::endl;
+    for (int i = 0; i < NumberOfContainedObjectHandles; ++i) {
+      uint8_t ContainedObjectHandle = bytes[0x0F + i];
+      std::cout << "\t\t" << (int)ContainedObjectHandle << std::endl;
+    }
+  } else {
+    std::cout << "\tNo Contained Objects" << std::endl;
+  }
 }
 
 void displayFeatureFlags(uint8_t FeatureFlags) {
@@ -54,33 +65,33 @@ void displayFeatureFlags(uint8_t FeatureFlags) {
 
 std::string getBaseBoardType(uint8_t BoardType) {
   switch (BoardType) {
-  case 1:
-    return "Unknown";
-  case 2:
-    return "Other";
-  case 3:
-    return "Server Blade";
-  case 4:
-    return "Connectivity Switch";
-  case 5:
-    return "System Management Module";
-  case 6:
-    return "Processor Module";
-  case 7:
-    return "I/O Module";
-  case 8:
-    return "Memory Module";
-  case 9:
-    return "Daughter Board";
-  case 10:
-    return "Motherboard";
-  case 11:
-    return "Processor/Memory Module";
-  case 12:
-    return "Processor/IO Module";
-  case 13:
-    return "Interconnect Board";
-  default:
-    return "Other";
+    case 1:
+      return "Unknown";
+    case 2:
+      return "Other";
+    case 3:
+      return "Server Blade";
+    case 4:
+      return "Connectivity Switch";
+    case 5:
+      return "System Management Module";
+    case 6:
+      return "Processor Module";
+    case 7:
+      return "I/O Module";
+    case 8:
+      return "Memory Module";
+    case 9:
+      return "Daughter Board";
+    case 10:
+      return "Motherboard";
+    case 11:
+      return "Processor/Memory Module";
+    case 12:
+      return "Processor/IO Module";
+    case 13:
+      return "Interconnect Board";
+    default:
+      return "Other";
   }
 }

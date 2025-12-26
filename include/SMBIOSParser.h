@@ -28,6 +28,7 @@ private:
   void displaySystemInformation(const SMBIOSStruct* curStruct); // type 1
   void displayBaseboardInformation(const SMBIOSStruct* curStruct); // type 2
   void displayChassisInformation(const SMBIOSStruct* curStruct); // type 3
+  void displayProcessorInformation(const SMBIOSStruct* curStruct); // type 4
 
   void displayVendorSpecificInformation(const SMBIOSStruct* curStruct);
 };
