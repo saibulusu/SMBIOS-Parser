@@ -202,7 +202,7 @@ std::string getProcessorFamily(uint8_t ProcessorFamily) {
     case 86: return "UltraSPARC Iii";
     case 87: return "UltraSPARC III";
     case 88: return "UltraSPARC IIIi";
-    case 96: return "68040 Family"
+    case 96: return "68040 Family";
     case 97: return "68xxx";
     case 98: return "68000";
     case 99: return "68010";
