@@ -32,6 +32,7 @@ private:
   void displayProcessorInformation(const SMBIOSStruct* curStruct); // type 4
   void displayMemoryControllerInformation(const SMBIOSStruct* curStruct); // type 5
   void displayMemoryModuleInformation(const SMBIOSStruct* curStruct); // type 6
+  void displayCacheInformation(const SMBIOSStruct* curStruct); // type 7
 
   void displayVendorSpecificInformation(const SMBIOSStruct* curStruct);
 };

@@ -56,3 +56,11 @@ void displayMemoryModuleVolate(uint8_t MemoryModuleVoltage);
 void displayCurrentMemoryType(uint16_t CurrentMemoryType);
 void displaySize(uint16_t size);
 void displayErrorStatus(uint8_t ErrorStatus);
+
+// type 7
+std::string getErrorCorrectionTypeField(uint8_t ErrorCorrectionType);
+std::string getSystemCacheTypeField(uint8_t SystemCacheType);
+std::string getAssociativity(uint8_t Associativity);
+void displayCacheConfiguration(uint16_t CacheConfiguration);
+void displayCacheSize(uint16_t CacheSize);
+void displaySRAMType(uint16_t CurrentSRAMType);
