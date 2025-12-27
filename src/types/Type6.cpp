@@ -1,7 +1,7 @@
 #include "Functions.h"
 
 // Type 6 - Memory Module
-void SMBIOSParser::displayMemoryModuleInformation(const SMBIOSStruct* curStruct) {
+void displayMemoryModuleInformation(const SMBIOSStruct* curStruct) {
   std::cout << getTypeName(curStruct->Type) << " Information (Type " << (int)curStruct->Type << ")" << std::endl;
   std::cout << "\tHandle: " << curStruct->Handle << std::endl;
 

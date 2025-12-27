@@ -1,7 +1,7 @@
 #include "Functions.h"
 
 // Type 4 - Processor
-void SMBIOSParser::displayProcessorInformation(const SMBIOSStruct* curStruct) {
+void displayProcessorInformation(const SMBIOSStruct* curStruct) {
   std::cout << getTypeName(curStruct->Type) << " Information (Type " << (int)curStruct->Type << ")" << std::endl;
   std::cout << "\tHandle: " << curStruct->Handle << std::endl;
 

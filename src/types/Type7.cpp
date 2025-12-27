@@ -1,7 +1,7 @@
 #include "Functions.h"
 
 // Type 7 - Cache
-void SMBIOSParser::displayCacheInformation(const SMBIOSStruct* curStruct) {
+void displayCacheInformation(const SMBIOSStruct* curStruct) {
   std::cout << getTypeName(curStruct->Type) << " Information (Type " << (int)curStruct->Type << ")" << std::endl;
   std::cout << "\tHandle: " << curStruct->Handle << std::endl;
 

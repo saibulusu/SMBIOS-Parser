@@ -1,7 +1,7 @@
 #include "Functions.h"
 
 // Type 0 - BIOS
-void SMBIOSParser::displayBIOSInformation(const SMBIOSStruct* curStruct) {
+void displayBIOSInformation(const SMBIOSStruct* curStruct) {
   std::cout << getTypeName(curStruct->Type) << " Information (Type " << (int)curStruct->Type << ")" << std::endl;
   std::cout << "\tHandle: " << curStruct->Handle << std::endl;
   

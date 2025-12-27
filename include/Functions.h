@@ -20,22 +20,27 @@ int getBits(uint16_t word, int startBit, int endBit);
 std::string getTypeName(uint8_t type);
 
 // type 0
+void displayBIOSInformation(const SMBIOSStruct* curStruct);
 void displayBIOSCharacteristics(uint8_t* BIOSCharacteristics);
 void displayBIOSExtendedCharacteristics(uint8_t* BIOSCharacteristicsExtensions);
 
 // type 1
+void displaySystemInformation(const SMBIOSStruct* curStruct);
 std::string getWakeUpType(uint8_t WakeUpType);
 
 // type 2
+void displayBaseboardInformation(const SMBIOSStruct* curStruct);
 void displayFeatureFlags(uint8_t FeatureFlags);
 std::string getBaseBoardType(uint8_t BoardType);
 
 // type 3
+void displayChassisInformation(const SMBIOSStruct* curStruct);
 void displayChassisType(uint8_t ChassisType);
 std::string getChassisState(uint8_t field);
 std::string getChassisSecurityState(uint8_t field);
 
 // type 4
+void displayProcessorInformation(const SMBIOSStruct* curStruct);
 std::string getProcessorType(uint8_t ProcessorType);
 std::string getProcessorFamily(uint8_t ProcessorFamily);
 std::string getVoltage(uint8_t Voltage);
@@ -45,6 +50,7 @@ void displayProcessorCharacteristics(uint16_t ProcessorCharacteristics);
 std::string getProcessorFamily2(uint16_t ProcessorFamily2);
 
 // type 5
+void displayMemoryControllerInformation(const SMBIOSStruct* curStruct);
 std::string getErrorDetectingMethod(uint8_t ErrorDetectingMethod);
 void displayErrorCorrectingCapability(uint8_t ErrorCorrectingCapability);
 std::string getInterleaveSupport(uint8_t Interleave);
@@ -53,14 +59,24 @@ void displaySupportedMemoryTypes(uint16_t SupportedMemoryTypes);
 void displayMemoryModuleVolate(uint8_t MemoryModuleVoltage);
 
 // type 6
+void displayMemoryModuleInformation(const SMBIOSStruct* curStruct);
 void displayCurrentMemoryType(uint16_t CurrentMemoryType);
 void displaySize(uint16_t size);
 void displayErrorStatus(uint8_t ErrorStatus);
 
 // type 7
+void displayCacheInformation(const SMBIOSStruct* curStruct);
 std::string getErrorCorrectionTypeField(uint8_t ErrorCorrectionType);
 std::string getSystemCacheTypeField(uint8_t SystemCacheType);
 std::string getAssociativity(uint8_t Associativity);
 void displayCacheConfiguration(uint16_t CacheConfiguration);
 void displayCacheSize(uint16_t CacheSize);
 void displaySRAMType(uint16_t CurrentSRAMType);
+
+// type 8
+void displayPortConnectorInformation(const SMBIOSStruct* curStruct);
+std::string getConnectorType(uint8_t connector);
+std::string getPortType(uint8_t PortType);
+
+// type vendor specific
+void displayVendorSpecificInformation(const SMBIOSStruct* curStruct);

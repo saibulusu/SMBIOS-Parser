@@ -1,7 +1,7 @@
 #include "Functions.h"
 
 // Type 2 - Baseboard
-void SMBIOSParser::displayBaseboardInformation(const SMBIOSStruct* curStruct) {
+void displayBaseboardInformation(const SMBIOSStruct* curStruct) {
   std::cout << getTypeName(curStruct->Type) << " Information (Type " << (int)curStruct->Type << ")" << std::endl;
   std::cout << "\tHandle: " << curStruct->Handle << std::endl;
 
