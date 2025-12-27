@@ -8,30 +8,41 @@ void SMBIOSParser::displayBIOSInformation(const SMBIOSStruct* curStruct) {
   std::vector<std::string> strings = getStrings(curStruct);
   const uint8_t* bytes = reinterpret_cast<const uint8_t*>(curStruct);
 
-  uint8_t Vendor = bytes[0x04];
-  uint8_t BIOSVersion = bytes[0x05];
-  uint8_t BIOSReleaseDate = bytes[0x08];
-  uint8_t BIOSROMSize = bytes[0x09];
-  uint64_t BIOSCharacteristics = 0;
-  uint8_t BIOSCharacteristicsExtensions[2];
+  uint8_t Vendor;
+  uint8_t BIOSVersion;
+  uint16_t BIOSStartingAddressSegment;
+  uint8_t BIOSReleaseDate;
+  uint8_t BIOSROMSize;
+  uint64_t BIOSCharacteristics;
+
+  std::memcpy(&Vendor, bytes + 0x04, sizeof(Vendor));
+  std::memcpy(&BIOSVersion, bytes + 0x05, sizeof(BIOSVersion));
+  std::memcpy(&BIOSStartingAddressSegment, bytes + 0x06, sizeof(BIOSStartingAddressSegment));
+  std::memcpy(&BIOSReleaseDate, bytes + 0x08, sizeof(BIOSReleaseDate));
+  std::memcpy(&BIOSROMSize, bytes + 0x09, sizeof(BIOSROMSize));
+  std::memcpy(&BIOSCharacteristics, bytes + 0x0A, sizeof(BIOSCharacteristics));
   
   std::cout << "\tVendor: " << strings[Vendor] << std::endl;
   std::cout << "\tBIOS Version: " << strings[BIOSVersion] << std::endl;
   std::cout << "\tBIOS release Date: " << strings[BIOSReleaseDate] << std::endl;
   std::cout << "\tBIOS Rom Size: " << 64 + 64 * (int)BIOSROMSize << "K" << std::endl;
   
-  std::memcpy(&BIOSCharacteristics, bytes + 0x0A, sizeof(uint64_t));
   displayBIOSCharacteristics(reinterpret_cast<uint8_t*>(&BIOSCharacteristics));
 
   if (curStruct->Length <= 0x12) return;
+  
+  uint8_t BIOSCharacteristicsExtensions[2];
   
   std::memcpy(&BIOSCharacteristicsExtensions, bytes + 0x12, sizeof(uint16_t));
   displayBIOSExtendedCharacteristics(BIOSCharacteristicsExtensions);
 
   if (curStruct->Length < 0x18) return;
   
-  uint8_t ECFirmwareMajorRelease = bytes[0x16];
-  uint8_t ECFirmwareMinorRelease = bytes[0x17];
+  uint8_t ECFirmwareMajorRelease;
+  uint8_t ECFirmwareMinorRelease;
+
+  std::memcpy(&ECFirmwareMajorRelease, bytes + 0x16, sizeof(ECFirmwareMajorRelease));
+  std::memcpy(&ECFirmwareMinorRelease, bytes + 0x17, sizeof(ECFirmwareMinorRelease));
 
   if (ECFirmwareMajorRelease == 0xFF && ECFirmwareMinorRelease == 0xFF) {
     std::cout << "\tEmbedded Controller Firmware: Not field-upgradable\n";

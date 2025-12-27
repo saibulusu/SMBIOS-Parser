@@ -8,11 +8,17 @@ void SMBIOSParser::displayChassisInformation(const SMBIOSStruct* curStruct) {
   std::vector<std::string> strings = getStrings(curStruct);
   const uint8_t* bytes = reinterpret_cast<const uint8_t*>(curStruct);
 
-  uint8_t Manufacturer = bytes[0x04];
-  uint8_t Type = bytes[0x05];
-  uint8_t Version = bytes[0x06];
-  uint8_t SerialNumber = bytes[0x07];
-  uint8_t AssetTagNumber = bytes[0x08];
+  uint8_t Manufacturer;
+  uint8_t Type;
+  uint8_t Version;
+  uint8_t SerialNumber;
+  uint8_t AssetTagNumber;
+
+  std::memcpy(&Manufacturer, bytes + 0x04, sizeof(Manufacturer));
+  std::memcpy(&Type, bytes + 0x05, sizeof(Type));
+  std::memcpy(&Version, bytes + 0x06, sizeof(Version));
+  std::memcpy(&SerialNumber, bytes + 0x07, sizeof(SerialNumber));
+  std::memcpy(&AssetTagNumber, bytes + 0x08, sizeof(AssetTagNumber));
 
   std::cout << "\tManufacturer: " << strings[Manufacturer] << std::endl;
   displayChassisType(Type);
@@ -22,10 +28,15 @@ void SMBIOSParser::displayChassisInformation(const SMBIOSStruct* curStruct) {
 
   if (curStruct->Length < 0x0D) return;
 
-  uint8_t BootUpState = bytes[0x09];
-  uint8_t PowerSupplyState = bytes[0x0A];
-  uint8_t ThermalState = bytes[0x0B];
-  uint8_t SecurityStatus = bytes[0x0C];
+  uint8_t BootUpState;
+  uint8_t PowerSupplyState;
+  uint8_t ThermalState;
+  uint8_t SecurityStatus;
+
+  std::memcpy(&BootUpState, bytes + 0x09, sizeof(BootUpState));
+  std::memcpy(&PowerSupplyState, bytes + 0x0A, sizeof(PowerSupplyState));
+  std::memcpy(&ThermalState, bytes + 0x0B, sizeof(ThermalState));
+  std::memcpy(&SecurityStatus, bytes + 0x0C, sizeof(SecurityStatus));
 
   std::cout << "\tBoot-up State: " << getChassisState(BootUpState) << std::endl;
   std::cout << "\tPower Supply State: " << getChassisState(PowerSupplyState) << std::endl;
@@ -34,10 +45,15 @@ void SMBIOSParser::displayChassisInformation(const SMBIOSStruct* curStruct) {
 
   if (curStruct->Length < 0x16) return;
 
-  uint8_t Height = bytes[0x11];
-  uint8_t NumberOfPowerCords = bytes[0x12];
-  uint8_t ContainedElementsCount = bytes[0x13];
-  uint8_t ConatinedElementRecordLength = bytes[0x14];
+  uint8_t Height;
+  uint8_t NumberOfPowerCords;
+  uint8_t ContainedElementsCount;
+  uint8_t ContainedElementRecordLength;
+
+  std::memcpy(&Height, bytes + 0x11, sizeof(Height));
+  std::memcpy(&NumberOfPowerCords, bytes + 0x12, sizeof(NumberOfPowerCords));
+  std::memcpy(&ContainedElementsCount, bytes + 0x13, sizeof(ContainedElementsCount));
+  std::memcpy(&ContainedElementRecordLength, bytes + 0x14, sizeof(ContainedElementRecordLength));
 
   if (Height > 0x00) {
     std::cout << "\tHeight: " << (int)Height << std::endl;
@@ -46,9 +62,9 @@ void SMBIOSParser::displayChassisInformation(const SMBIOSStruct* curStruct) {
   }
   std::cout << "\tNumber of Power Cords: " << (int)NumberOfPowerCords << std::endl;
 
-  if (curStruct->Length < 0x15 + ContainedElementsCount * ConatinedElementRecordLength + 1) return;
+  if (curStruct->Length < 0x15 + ContainedElementsCount * ContainedElementRecordLength + 1) return;
 
-  uint8_t SKUNumber = bytes[0x15 + ContainedElementsCount * ConatinedElementRecordLength];
+  uint8_t SKUNumber = bytes[0x15 + ContainedElementsCount * ContainedElementRecordLength];
   std::cout << "\tSKU Number: " << strings[SKUNumber] << std::endl;
 }
 

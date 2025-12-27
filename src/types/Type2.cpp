@@ -8,18 +8,27 @@ void SMBIOSParser::displayBaseboardInformation(const SMBIOSStruct* curStruct) {
   std::vector<std::string> strings = getStrings(curStruct);
   const uint8_t* bytes = reinterpret_cast<const uint8_t*>(curStruct);
 
-  uint8_t Manufacturer = bytes[0x04];
-  uint8_t Product = bytes[0x05];
-  uint8_t Version = bytes[0x06];
-  uint8_t SerialNumber = bytes[0x07];
-  uint8_t AssetTag = bytes[0x08];
-  uint8_t FeatureFlags = bytes[0x09];
-  uint8_t LocationInChassis = bytes[0x0A];
+  uint8_t Manufacturer;
+  uint8_t Product;
+  uint8_t Version;
+  uint8_t SerialNumber;
+  uint8_t AssetTag;
+  uint8_t FeatureFlags;
+  uint8_t LocationInChassis;
   uint16_t ChassisHandle;
-  uint8_t BoardType = bytes[0x0D];
-  uint8_t NumberOfContainedObjectHandles = bytes[0x0E];
+  uint8_t BoardType;
+  uint8_t NumberOfContainedObjectHandles;
 
-  std::memcpy(&ChassisHandle, bytes + 0x0B, sizeof(uint16_t));
+  std::memcpy(&Manufacturer, bytes + 0x04, sizeof(Manufacturer));
+  std::memcpy(&Product, bytes + 0x05, sizeof(Product));
+  std::memcpy(&Version, bytes + 0x06, sizeof(Version));
+  std::memcpy(&SerialNumber, bytes + 0x07, sizeof(SerialNumber));
+  std::memcpy(&AssetTag, bytes + 0x08, sizeof(AssetTag));
+  std::memcpy(&FeatureFlags, bytes + 0x09, sizeof(FeatureFlags));
+  std::memcpy(&LocationInChassis, bytes + 0x0A, sizeof(LocationInChassis));
+  std::memcpy(&ChassisHandle, bytes + 0x0B, sizeof(ChassisHandle));
+  std::memcpy(&BoardType, bytes + 0x0D, sizeof(BoardType));
+  std::memcpy(&NumberOfContainedObjectHandles, bytes + 0x0E, sizeof(NumberOfContainedObjectHandles));
 
   std::cout << "\tManufacturer: " << strings[Manufacturer] << std::endl;
   std::cout << "\tProduct: " << strings[Product] << std::endl;

@@ -8,23 +8,31 @@ void SMBIOSParser::displayProcessorInformation(const SMBIOSStruct* curStruct) {
   std::vector<std::string> strings = getStrings(curStruct);
   const uint8_t* bytes = reinterpret_cast<const uint8_t*>(curStruct);
 
-  uint8_t SocketDesignation = bytes[0x04];
-  uint8_t ProcessorType = bytes[0x05];
-  uint8_t ProcessorFamily = bytes[0x06];
-  uint8_t ProcessorManufacturer = bytes[0x07];
+  uint8_t SocketDesignation;
+  uint8_t ProcessorType;
+  uint8_t ProcessorFamily;
+  uint8_t ProcessorManufacturer;
   uint64_t ProcessorID;
-  uint8_t ProcessorVersion = bytes[0x10];
-  uint8_t Voltage = bytes[0x11];
+  uint8_t ProcessorVersion;
+  uint8_t Voltage;
   uint16_t ExternalClock;
   uint16_t MaxSpeed;
   uint16_t CurrentSpeed;
-  uint8_t Status = bytes[0x18];
-  uint8_t ProcessorUpgrade = bytes[0x19];
+  uint8_t Status;
+  uint8_t ProcessorUpgrade;
 
+  std::memcpy(&SocketDesignation, bytes + 0x04, sizeof(SocketDesignation));
+  std::memcpy(&ProcessorType, bytes + 0x05, sizeof(ProcessorType));
+  std::memcpy(&ProcessorFamily, bytes + 0x06, sizeof(ProcessorFamily));
+  std::memcpy(&ProcessorManufacturer, bytes + 0x07, sizeof(ProcessorManufacturer));
   std::memcpy(&ProcessorID, bytes + 0x08, sizeof(ProcessorID));
+  std::memcpy(&ProcessorVersion, bytes + 0x10, sizeof(ProcessorVersion));
+  std::memcpy(&Voltage, bytes + 0x11, sizeof(Voltage));
   std::memcpy(&ExternalClock, bytes + 0x12, sizeof(ExternalClock));
   std::memcpy(&MaxSpeed, bytes + 0x14, sizeof(ExternalClock));
-  std::memcpy(&CurrentSpeed, bytes + 0x15, sizeof(ExternalClock));
+  std::memcpy(&CurrentSpeed, bytes + 0x16, sizeof(ExternalClock));
+  std::memcpy(&Status, bytes + 0x18, sizeof(Status));
+  std::memcpy(&ProcessorUpgrade, bytes + 0x19, sizeof(ProcessorUpgrade));
 
   std::cout << "\tSocket Designation: " << strings[SocketDesignation] << std::endl;
   std::cout << "\tProcessor Type: " << getProcessorType(ProcessorType) << std::endl;
@@ -34,11 +42,15 @@ void SMBIOSParser::displayProcessorInformation(const SMBIOSStruct* curStruct) {
   std::cout << "\tProcessor Version: " << strings[ProcessorVersion] << std::endl;
   std::cout << "\tVoltage: " << getVoltage(Voltage) << std::endl;
   std::cout << "\tExternal Clock: " << (int)ExternalClock << "MHz" << std::endl;
+
   if (MaxSpeed > 0) std::cout << "\tMax Processor Speed: " << (int)MaxSpeed << "MHz" << std::endl;
   else std::cout << "\tMax Processor Speed unknown" << std::endl;
+  
   if (CurrentSpeed > 0) std::cout << "\tCurrent Processor Speed: " << (int)CurrentSpeed << "MHz" << std::endl;
   else std::cout << "\tCurrent Processor Speed unknown" << std::endl;
+  
   getProcessorStatus(Status);
+  
   std::cout << "\tProcessor Upgrade: " << getProcessorUpgrade(ProcessorUpgrade) << std::endl;
 
   if (curStruct->Length < 0x20) return;
