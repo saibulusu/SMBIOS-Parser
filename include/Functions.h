@@ -16,6 +16,9 @@ int getBit(uint16_t word, int bitNum);
 int getBits(uint8_t byte, int startBit, int endBit);
 int getBits(uint16_t word, int startBit, int endBit);
 
+// type -> name (BIOS, Processor, etc.)
+std::string getTypeName(uint8_t type);
+
 // type 0
 void displayBIOSCharacteristics(uint8_t* BIOSCharacteristics);
 void displayBIOSExtendedCharacteristics(uint8_t* BIOSCharacteristicsExtensions);
@@ -40,3 +43,11 @@ void getProcessorStatus(uint8_t Status);
 std::string getProcessorUpgrade(uint8_t ProcessorUpgrade);
 void displayProcessorCharacteristics(uint16_t ProcessorCharacteristics);
 std::string getProcessorFamily2(uint16_t ProcessorFamily2);
+
+// type 5
+std::string getErrorDetectingMethod(uint8_t ErrorDetectingMethod);
+void displayErrorCorrectingCapability(uint8_t ErrorCorrectingCapability);
+std::string getInterleaveSupport(uint8_t Interleave);
+void displaySupportedSpeeds(uint16_t SupportedSpeeds);
+void displaySupportedMemoryTypes(uint16_t SupportedMemoryTypes);
+void displayMemoryModuleVolate(uint8_t MemoryModuleVoltage);

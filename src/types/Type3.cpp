@@ -2,7 +2,7 @@
 
 // Type 3 - Chassis
 void SMBIOSParser::displayChassisInformation(const SMBIOSStruct* curStruct) {
-  std::cout << "Chassis Information (Type " << (int)curStruct->Type << ")" << std::endl;
+  std::cout << getTypeName(curStruct->Type) << " Information (Type " << (int)curStruct->Type << ")" << std::endl;
   std::cout << "\tHandle: " << curStruct->Handle << std::endl;
 
   std::vector<std::string> strings = getStrings(curStruct);

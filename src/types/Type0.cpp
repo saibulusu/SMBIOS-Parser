@@ -2,7 +2,7 @@
 
 // Type 0 - BIOS
 void SMBIOSParser::displayBIOSInformation(const SMBIOSStruct* curStruct) {
-  std::cout << "BIOS Information (Type " << (int)curStruct->Type << ")" << std::endl;
+  std::cout << getTypeName(curStruct->Type) << " Information (Type " << (int)curStruct->Type << ")" << std::endl;
   std::cout << "\tHandle: " << curStruct->Handle << std::endl;
   
   std::vector<std::string> strings = getStrings(curStruct);

@@ -53,3 +53,54 @@ int getBits(uint8_t byte, int startBit, int endBit) {
 int getBits(uint16_t word, int startBit, int endBit) {
   return (word >> endBit) % (1 << (startBit - endBit));
 }
+
+std::string getTypeName(uint8_t type) {
+  switch (type) {
+    case 0: return "BIOS";
+    case 1: return "System";
+    case 2: return "Baseboard";
+    case 3: return "System Enclosure/Chassis";
+    case 4: return "Processor";
+    case 5: return "Memory Controller";
+    case 6: return "Memory Module";
+    case 7: return "Cache";
+    case 8: return "Port Connector";
+    case 9: return "System Slots";
+    case 10: return "On Board Devices";
+    case 11: return "OEM Strings";
+    case 12: return "System Configuration Options";
+    case 13: return "BIOS Language";
+    case 14: return "Group Associations";
+    case 15: return "System Event Log";
+    case 16: return "Physical Memory Array";
+    case 17: return "Memory Device";
+    case 18: return "32-Bit Memory Error";
+    case 19: return "Memory Array Mapped Address";
+    case 20: return "Memory Device Mapped Address";
+    case 21: return "Built-in Pointing Device";
+    case 22: return "Portable Battery";
+    case 23: return "System Reset";
+    case 24: return "Hardware Security";
+    case 25: return "System Power Controls";
+    case 26: return "Voltage Probe";
+    case 27: return "Cooling Device";
+    case 28: return "Temperature Probe";
+    case 29: return "Electrical Current Probe";
+    case 30: return "Out of Band Remote Access";
+    case 31: return "Boot Integrity Services Entry Point";
+    case 32: return "System Boot";
+    case 33: return "64-Bit Memory Error";
+    case 34: return "Management Device";
+    case 35: return "Management Device Component";
+    case 36: return "Management Device Threshold Data";
+    case 37: return "Memory Channel";
+    case 38: return "IPMI Device Information";
+    case 39: return "System Power Supply";
+    case 40: return "Additional";
+    case 41: return "Onboard Devices";
+    case 42: return "Management Controller Host Interface";
+    case 126: return "Inactive";
+    case 127: return "End-of-Table";
+    default: return "Vendor-Specific Structure";
+  }
+}
