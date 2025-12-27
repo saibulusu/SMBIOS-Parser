@@ -55,6 +55,7 @@ void SMBIOSParser::displayStructure(int handle) {
   else if (curStruct->Type == 3) displayChassisInformation(curStruct);
   else if (curStruct->Type == 4) displayProcessorInformation(curStruct);
   else if (curStruct->Type == 5) displayMemoryControllerInformation(curStruct);
+  else if (curStruct->Type == 6) displayMemoryModuleInformation(curStruct);
 }
 
 int SMBIOSParser::getStructuresCount() {

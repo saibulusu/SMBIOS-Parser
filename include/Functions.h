@@ -51,3 +51,8 @@ std::string getInterleaveSupport(uint8_t Interleave);
 void displaySupportedSpeeds(uint16_t SupportedSpeeds);
 void displaySupportedMemoryTypes(uint16_t SupportedMemoryTypes);
 void displayMemoryModuleVolate(uint8_t MemoryModuleVoltage);
+
+// type 6
+void displayCurrentMemoryType(uint16_t CurrentMemoryType);
+void displaySize(uint16_t size);
+void displayErrorStatus(uint8_t ErrorStatus);
