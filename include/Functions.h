@@ -78,5 +78,14 @@ void displayPortConnectorInformation(const SMBIOSStruct* curStruct);
 std::string getConnectorType(uint8_t connector);
 std::string getPortType(uint8_t PortType);
 
+// type 9
+void displaySystemSlotsInformation(const SMBIOSStruct* curStruct);
+std::string getSlotTypeField(uint8_t SlotType);
+std::string getSlotDataBusWidth(uint8_t SlotDataBusWidth);
+std::string getCurrentUsage(uint8_t CurrentUsage);
+std::string getSlotLength(uint8_t SlotLength);
+void displaySlotCharacteristics1(uint8_t SlotCharacteristics1);
+void displaySlotCharacteristics2(uint8_t SlotCharacteristics2);
+
 // type vendor specific
 void displayVendorSpecificInformation(const SMBIOSStruct* curStruct);
