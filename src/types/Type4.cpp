@@ -1,0 +1,442 @@
+#include "Functions.h"
+
+// Type 4 - Processor
+void displayProcessorInformation(const SMBIOSStruct* curStruct) {
+  std::cout << getTypeName(curStruct->Type) << " Information (Type " << (int)curStruct->Type << ")" << std::endl;
+  std::cout << "\tHandle: " << curStruct->Handle << std::endl;
+
+  std::vector<std::string> strings = getStrings(curStruct);
+  const uint8_t* bytes = reinterpret_cast<const uint8_t*>(curStruct);
+
+  uint8_t SocketDesignation;
+  uint8_t ProcessorType;
+  uint8_t ProcessorFamily;
+  uint8_t ProcessorManufacturer;
+  uint64_t ProcessorID;
+  uint8_t ProcessorVersion;
+  uint8_t Voltage;
+  uint16_t ExternalClock;
+  uint16_t MaxSpeed;
+  uint16_t CurrentSpeed;
+  uint8_t Status;
+  uint8_t ProcessorUpgrade;
+
+  std::memcpy(&SocketDesignation, bytes + 0x04, sizeof(SocketDesignation));
+  std::memcpy(&ProcessorType, bytes + 0x05, sizeof(ProcessorType));
+  std::memcpy(&ProcessorFamily, bytes + 0x06, sizeof(ProcessorFamily));
+  std::memcpy(&ProcessorManufacturer, bytes + 0x07, sizeof(ProcessorManufacturer));
+  std::memcpy(&ProcessorID, bytes + 0x08, sizeof(ProcessorID));
+  std::memcpy(&ProcessorVersion, bytes + 0x10, sizeof(ProcessorVersion));
+  std::memcpy(&Voltage, bytes + 0x11, sizeof(Voltage));
+  std::memcpy(&ExternalClock, bytes + 0x12, sizeof(ExternalClock));
+  std::memcpy(&MaxSpeed, bytes + 0x14, sizeof(ExternalClock));
+  std::memcpy(&CurrentSpeed, bytes + 0x16, sizeof(ExternalClock));
+  std::memcpy(&Status, bytes + 0x18, sizeof(Status));
+  std::memcpy(&ProcessorUpgrade, bytes + 0x19, sizeof(ProcessorUpgrade));
+
+  std::cout << "\tSocket Designation: " << strings[SocketDesignation] << std::endl;
+  std::cout << "\tProcessor Type: " << getProcessorType(ProcessorType) << std::endl;
+  std::cout << "\tProcessor Family: " << getProcessorFamily((uint16_t)ProcessorFamily) << std::endl;
+  std::cout << "\tProcessor Manufacturer: " << strings[ProcessorManufacturer] << std::endl;
+  std::cout << "\tProcessor ID: " << ProcessorID << std::endl;
+  std::cout << "\tProcessor Version: " << strings[ProcessorVersion] << std::endl;
+  std::cout << "\tVoltage: " << getVoltage(Voltage) << std::endl;
+  std::cout << "\tExternal Clock: " << (int)ExternalClock << "MHz" << std::endl;
+
+  if (MaxSpeed > 0) std::cout << "\tMax Processor Speed: " << (int)MaxSpeed << "MHz" << std::endl;
+  else std::cout << "\tMax Processor Speed unknown" << std::endl;
+
+  if (CurrentSpeed > 0) std::cout << "\tCurrent Processor Speed: " << (int)CurrentSpeed << "MHz" << std::endl;
+  else std::cout << "\tCurrent Processor Speed unknown" << std::endl;
+
+  getProcessorStatus(Status);
+
+  std::cout << "\tProcessor Upgrade: " << getProcessorUpgrade(ProcessorUpgrade) << std::endl;
+
+  if (curStruct->Length < 0x20) return;
+
+  uint16_t L1CacheHandle;
+  uint16_t L2CacheHandle;
+  uint16_t L3CacheHandle;
+
+  std::memcpy(&L1CacheHandle, bytes + 0x1A, sizeof(L1CacheHandle));
+  std::memcpy(&L2CacheHandle, bytes + 0x1C, sizeof(L2CacheHandle));
+  std::memcpy(&L3CacheHandle, bytes + 0x1E, sizeof(L3CacheHandle));
+
+  if (L1CacheHandle < 0x0FFFF) std::cout << "\tL1 Cache Structure Information not provided" << std::endl;
+  else std::cout << "\tL1 Cache Handle:" << (int)L1CacheHandle << std::endl;
+  if (L2CacheHandle < 0x0FFFF) std::cout << "\tL2 Cache Structure Information not provided" << std::endl;
+  else std::cout << "\tL2 Cache Handle:" << (int)L2CacheHandle << std::endl;
+  if (L3CacheHandle < 0x0FFFF) std::cout << "\tL3 Cache Structure Information not provided" << std::endl;
+  else std::cout << "\tL3 Cache Handle:" << (int)L3CacheHandle << std::endl;
+
+  if (curStruct->Length < 0x23) return;
+
+  uint8_t SerialNumber = bytes[0x20];
+  uint8_t AssetTag = bytes[0x21];
+  uint8_t PartNumber = bytes[0x22];
+
+  std::cout << "\tSerial Number: " << strings[SerialNumber] << std::endl;
+  std::cout << "\tAsset Tag: " << strings[AssetTag] << std::endl;
+  std::cout << "\tPart Number: " << strings[PartNumber] << std::endl;
+
+  if (curStruct->Length < 0x28) return;
+
+  uint8_t CoreCount = bytes[0x23];
+  uint8_t CoreEnabled = bytes[0x24];
+  uint8_t ThreadCount = bytes[0x25];
+  uint16_t ProcessorCharacteristics;
+
+  std::memcpy(&ProcessorCharacteristics, bytes + 0x26, sizeof(ProcessorCharacteristics));
+
+  std::cout << "\tCore Count: " << (int)CoreCount << std::endl;
+  std::cout << "\tEnabled Core Count: " << (int)CoreEnabled << std::endl;
+  std::cout << "\tThread Count: " << (int)ThreadCount << std::endl;
+  displayProcessorCharacteristics(ProcessorCharacteristics);
+
+  if (curStruct->Length < 0x2A) return;
+
+  uint16_t ProcessorFamily2;
+
+  std::memcpy(&ProcessorFamily2, bytes + 0x28, sizeof(ProcessorFamily2));
+
+  std::cout << "\tProcessor Family 2: " << getProcessorFamily(ProcessorFamily2) << std::endl;
+
+  if (curStruct->Length < 0x30) return;
+
+  uint8_t CoreCount2 = bytes[0x2A];
+  uint8_t CoreEnabled2 = bytes[0x2C];
+  uint8_t ThreadCount2 = bytes[0x2E];
+
+  std::memcpy(&CoreCount2, bytes + 0x2A, sizeof(CoreCount2));
+  std::memcpy(&CoreEnabled2, bytes + 0x2C, sizeof(CoreEnabled2));
+  std::memcpy(&ThreadCount2, bytes + 0x2E, sizeof(ThreadCount2));
+
+  std::cout << "\tCore Count 2: " << (int)CoreCount2 << std::endl;
+  std::cout << "\tEnabled Core Count 2: " << (int)CoreEnabled2 << std::endl;
+  std::cout << "\tThread Count 2: " << (int)ThreadCount2 << std::endl;
+}
+
+std::string getProcessorType(uint8_t ProcessorType) {
+  switch (ProcessorType) {
+    case 1: return "Other";
+    case 2: return "Unknown";
+    case 3: return "Central Processor";
+    case 4: return "Math Processor";
+    case 5: return "DSP Proceessor";
+    case 6: return "Video Processor";
+    default: return "Other";
+  }
+}
+
+std::string getProcessorFamily(uint16_t ProcessorFamily) {
+  switch (ProcessorFamily) {
+    case 1: return "Other";
+    case 2: return "Unknown";
+    case 3: return "8086";
+    case 4: return "80286";
+    case 5: return "Intel386 Processor";
+    case 6: return "Intel486 Processor";
+    case 7: return "8087";
+    case 8: return "80287";
+    case 9: return "80387";
+    case 10: return "80487";
+    case 11: return "Intel Pentium Processor";
+    case 12: return "Pentium Pro Processsor";
+    case 13: return "Pentium II Processor";
+    case 14: return "Pentium Processor with MMX Technology";
+    case 15: return "Intel Celeron Processor";
+    case 16: return "Pentium II Xeon Processor";
+    case 17: return "Pentium III Processor";
+    case 18: return "M1 Family";
+    case 19: return "M2 Family";
+    case 20: return "Intel Celeron M Processor";
+    case 21: return "Intel Pentium 4 HT Processor";
+    case 24: return "AMD Duron Processor Family";
+    case 25: return "K5 Family";
+    case 26: return "K6 Family";
+    case 27: return "K6-2";
+    case 28: return "K6-3";
+    case 29: return "AMD Athlon Processor Family";
+    case 30: return "AMD29000 Family";
+    case 31: return "K6-2+";
+    case 32: return "Power PC Family";
+    case 33: return "Power PC 601";
+    case 34: return "Power PC 603";
+    case 35: return "Power PC 603+";
+    case 36: return "Power PC 604";
+    case 37: return "Power PC 620";
+    case 38: return "Power PC x704";
+    case 39: return "Power PC 750";
+    case 40: return "Intel® Core™ Duo processor";
+    case 41: return "Intel® Core™ Duo mobile processor";
+    case 42: return "Intel® Core™ Solo mobile processor";
+    case 43: return "Intel® Atom™ processor";
+    case 44: return "Intel® Core™ M processor";
+    case 48: return "Alpha Family";
+    case 49: return "Alpha 21064";
+    case 50: return "Alpha 21066";
+    case 51: return "Alpha 21164";
+    case 52: return "Alpha 21164PC";
+    case 53: return "Alpha 21164a";
+    case 54: return "Alpha 21264";
+    case 55: return "Alpha 21364";
+    case 56: return "AMD Turion™ II Ultra Dual-Core Mobile M Processor Family";
+    case 57: return "AMD Turion™ II Dual-Core Mobile M Processor Family";
+    case 58: return "AMD Athlon™ II Dual-Core M Processor Family";
+    case 59: return "AMD Opteron™ 6100 Series Processor";
+    case 60: return "AMD Opteron™ 4100 Series Processor";
+    case 61: return "AMD Opteron™ 6200 Series Processor";
+    case 62: return "AMD Opteron™ 4200 Series Processor";
+    case 63: return "AMD FX™ Series Processor";
+    case 64: return "MIPS Family";
+    case 65: return "MIPS R4000";
+    case 66: return "MIPS R4200";
+    case 67: return "MIPS R4400";
+    case 68: return "MIPS R4600";
+    case 69: return "MIPS R10000";
+    case 70: return "AMD C-Series Processor";
+    case 71: return "AMD E-Series Processor";
+    case 72: return "AMD A-Series Processor";
+    case 73: return "AMD G-Series Processor";
+    case 74: return "AMD Z-Series Processor";
+    case 75: return "AMD R-Series Processor";
+    case 76: return "AMD Opteron™ 4300 Series Processor";
+    case 77: return "AMD Opteron™ 6300 Series Processor";
+    case 78: return "AMD Opteron™ 3300 Series Processor";
+    case 79: return "AMD FirePro™ Series Processor";
+    case 80: return "SPARC Family";
+    case 81: return "SuperSPARC";
+    case 82: return "microSPARC II";
+    case 83: return "microSPARC IIep";
+    case 84: return "UltraSPARC";
+    case 85: return "UltraSPARC II";
+    case 86: return "UltraSPARC Iii";
+    case 87: return "UltraSPARC III";
+    case 88: return "UltraSPARC IIIi";
+    case 96: return "68040 Family";
+    case 97: return "68xxx";
+    case 98: return "68000";
+    case 99: return "68010";
+    case 100: return "68020";
+    case 101: return "68030";
+    case 102: return "AMD Athlon(TM) X4 Quad-Core Processor Family";
+    case 103: return "AMD Opteron(TM) X1000 Series Processor";
+    case 104: return "AMD Opteron(TM) X2000 Series APU";
+    case 112: return "Hobbit Family";
+    case 120: return "Crusoe™ TM5000 Family";
+    case 121: return "Crusoe™ TM3000 Family";
+    case 122: return "Efficeon™ TM8000 Family";
+    case 128: return "Weitek";
+    case 130: return "Itanium™ processor";
+    case 131: return "AMD Athlon™ 64 Processor Family";
+    case 132: return "AMD Opteron™ Processor Family";
+    case 133: return "AMD Sempron™ Processor Family";
+    case 134: return "AMD Turion™ 64 Mobile Technology";
+    case 135: return "Dual-Core AMD Opteron™ Processor Family";
+    case 136: return "AMD Athlon™ 64 X2 Dual-Core Processor Family";
+    case 137: return "AMD Turion™ 64 X2 Mobile Technology";
+    case 138: return "Quad-Core AMD Opteron™ Processor Family";
+    case 139: return "Third-Generation AMD Opteron™ Processor Family";
+    case 140: return "AMD Phenom™ FX Quad-Core Processor Family";
+    case 141: return "AMD Phenom™ X4 Quad-Core Processor Family";
+    case 142: return "AMD Phenom™ X2 Dual-Core Processor Family";
+    case 143: return "AMD Athlon™ X2 Dual-Core Processor Family";
+    case 144: return "PA-RISC Family";
+    case 145: return "PA-RISC 8500";
+    case 146: return "PA-RISC 8000";
+    case 147: return "PA-RISC 7300LC";
+    case 148: return "PA-RISC 7200";
+    case 149: return "PA-RISC 7100LC";
+    case 150: return "PA-RISC 7100";
+    case 160: return "V30 Family";
+    case 161: return "Quad-Core Intel® Xeon® processor 3200 Series";
+    case 162: return "Dual-Core Intel® Xeon® processor 3000 Series";
+    case 163: return "Quad-Core Intel® Xeon® processor 5300 Series";
+    case 164: return "Dual-Core Intel® Xeon® processor 5100 Series";
+    case 165: return "Dual-Core Intel® Xeon® processor 5000 Series";
+    case 166: return "Dual-Core Intel® Xeon® processor LV";
+    case 167: return "Dual-Core Intel® Xeon® processor ULV";
+    case 168: return "Dual-Core Intel® Xeon® processor 7100 Series";
+    case 169: return "Quad-Core Intel® Xeon® processor 5400 Series";
+    case 170: return "Quad-Core Intel® Xeon® processor";
+    case 171: return "Dual-Core Intel® Xeon® processor 5200 Series";
+    case 172: return "Dual-Core Intel® Xeon® processor 7200 Series";
+    case 173: return "Quad-Core Intel® Xeon® processor 7300 Series";
+    case 174: return "Quad-Core Intel® Xeon® processor 7400 Series";
+    case 175: return "Multi-Core Intel® Xeon® processor 7400 Series";
+    case 176: return "Pentium® III Xeon™ processor";
+    case 177: return "Pentium® III Processor with Intel® SpeedStep™ Technology";
+    case 178: return "Pentium® 4 Processor";
+    case 179: return "Intel® Xeon® processor";
+    case 180: return "AS400 Family";
+    case 181: return "Intel® Xeon™ processor MP";
+    case 182: return "AMD Athlon™ XP Processor Family";
+    case 183: return "AMD Athlon™ MP Processor Family";
+    case 184: return "Intel® Itanium® 2 processor";
+    case 185: return "Intel® Pentium® M processor";
+    case 186: return "Intel® Celeron® D processor";
+    case 187: return "Intel® Pentium® D processor";
+    case 188: return "Intel® Pentium® Processor Extreme Edition";
+    case 189: return "Intel® Core™ Solo Processor";
+    case 191: return "Intel® Core™ 2 Duo Processor";
+    case 192: return "Intel® Core™ 2 Solo processor";
+    case 193: return "Intel® Core™ 2 Extreme processor";
+    case 194: return "Intel® Core™ 2 Extreme processor";
+    case 195: return "Intel® Core™ 2 Extreme mobile processor";
+    case 196: return "Intel® Core™ 2 Duo mobile processor";
+    case 197: return "Intel® Core™ 2 Solo mobile processor";
+    case 198: return "Intel® Core™ i7 processor";
+    case 199: return "Dual-Core Intel® Celeron® processor";
+    case 200: return "IBM390 Family";
+    case 201: return "G4";
+    case 202: return "G5";
+    case 203: return "ESA/390 G6";
+    case 204: return "z/Architecture base";
+    case 205: return "Intel® Core™ i5 processor";
+    case 206: return "Intel® Core™ i3 processor";
+    case 210: return "VIA C7™-M Processor Family";
+    case 211: return "VIA C7™-D Processor Family";
+    case 212: return "VIA C7™ Processor Family";
+    case 213: return "VIA Eden™ Processor Family";
+    case 214: return "Multi-Core Intel® Xeon® processor";
+    case 215: return "Dual-Core Intel® Xeon® processor 3xxx Series";
+    case 216: return "Quad-Core Intel® Xeon® processor 3xxx Series";
+    case 217: return "VIA Nano™ Processor Family";
+    case 218: return "Dual-Core Intel® Xeon® processor 5xxx Series";
+    case 219: return "Quad-Core Intel® Xeon® processor 5xxx Series";
+    case 221: return "Dual-Core Intel® Xeon® processor 7xxx Series";
+    case 222: return "Quad-Core Intel® Xeon® processor 7xxx Series";
+    case 223: return "Multi-Core Intel® Xeon® processor 7xxx Series";
+    case 224: return "Multi-Core Intel® Xeon® processor 3400 Series";
+    case 228: return "AMD Opteron™ 3000 Series Processor";
+    case 229: return "AMD Sempron™ II Processor";
+    case 230: return "Embedded AMD Opteron™ Quad-Core Processor Family";
+    case 231: return "AMD Phenom™ Triple-Core Processor Family";
+    case 232: return "AMD Turion™ Ultra Dual-Core Mobile Processor Family";
+    case 233: return "AMD Turion™ Dual-Core Mobile Processor Family";
+    case 234: return "AMD Athlon™ Dual-Core Processor Family";
+    case 235: return "AMD Sempron™ SI Processor Family";
+    case 236: return "AMD Phenom™ II Processor Family";
+    case 237: return "AMD Athlon™ II Processor Family";
+    case 238: return "Six-Core AMD Opteron™ Processor Family";
+    case 239: return "AMD Sempron™ M Processor Family";
+    case 250: return "i860";
+    case 251: return "i960";
+    case 254: return "(Check Procesor Family 2)";
+    case 260: return "SH-3";
+    case 261: return "SH-4";
+    case 280: return "ARM";
+    case 281: return "StrongARM";
+    case 300: return "6x86";
+    case 301: return "MediaGX";
+    case 302: return "MII";
+    case 320: return "WinChip";
+    case 350: return "DSP";
+    case 500: return "Video Processor";
+    default: return "Other";
+  }
+}
+
+std::string getVoltage(uint8_t Voltage) {
+  bool five = getBit(Voltage, 0);
+  bool three = getBit(Voltage, 1);
+  bool two = getBit(Voltage, 2);
+
+  if (five && !three && !two) return "5V";
+  else if (three && !five && !two) return "3.3V";
+  else if (two && !five && !three) return "2.9V";
+  else return "Configurable";
+}
+
+void getProcessorStatus(uint8_t Status) {
+  std::cout << "\tProcessor Status:" << std::endl;
+
+  if (getBit(Status, 6) == 1) std::cout << "\t\tCPU Socket Population" << std::endl;
+  else std::cout << "\t\tCPU Socket Unpopulated" << std::endl;
+
+  int lowerBits = Status % 8;
+  switch (lowerBits) {
+    case 0:
+      std::cout << "\t\tUnknown" << std::endl;
+      break;
+    case 1:
+      std::cout << "\t\tCPU Enabled" << std::endl;
+      break;
+    case 2:
+      std::cout << "\t\tCPU Disabled by User Through BIOS Setup" << std::endl;
+      break;
+    case 3:
+      std::cout << "\t\tCPU Disabled by BIOS (POST Error)" << std::endl;
+      break;
+    case 4:
+      std::cout << "\t\tCPU is Idle, Waiting to be Enabled" << std::endl;
+      break;
+    default:
+      break;
+  }
+}
+
+std::string getProcessorUpgrade(uint8_t ProcessorUpgrade) {
+  switch (ProcessorUpgrade) {
+    case 1: return "Other";
+    case 2: return "Unknown";
+    case 3: return "Daughter Board";
+    case 4: return "ZIF Socket";
+    case 5: return "Replaceable Piggy Back";
+    case 6: return "None";
+    case 7: return "LIF Socket";
+    case 8: return "Slot 1";
+    case 9: return "Slot 2";
+    case 10: return "370-Pin Socket";
+    case 11: return "Slot A";
+    case 12: return "Slot M";
+    case 13: return "Socket 423";
+    case 14: return "Socket A (Socket 462)";
+    case 15: return "478";
+    case 16: return "754";
+    case 17: return "940";
+    case 18: return "939";
+    case 19: return "Socket mPGA604";
+    case 20: return "LGA771";
+    case 21: return "LGA775";
+    case 22: return "Socket S1";
+    case 23: return "Socket AM2";
+    case 24: return "Socket F (1207)";
+    case 25: return "Socket LGA 1366";
+    case 26: return "Socket G34";
+    case 27: return "Socket AM3";
+    case 28: return "Socket C32";
+    case 29: return "Socket LGA1156";
+    case 30: return "Socket LGA1567";
+    case 31: return "Socket PGA988A";
+    case 32: return "Sockt BGA1288";
+    case 33: return "Socket rPGA988B";
+    case 34: return "Socket BGA 1023";
+    case 35: return "Socket BGA 1224";
+    case 36: return "Socket LGA1155";
+    case 37: return "Socket LGA1356";
+    case 38: return "Socket LGA2011";
+    case 39: return "Socket FS1";
+    case 40: return "Socket FS2";
+    case 41: return "Socket FM1";
+    case 42: return "Socket FM2";
+    case 43: return "Socket LGA2011-3";
+    case 44: return "Socket LGA1356-3";
+    case 45: return "Socket LGA1150";
+    case 46: return "Socket BGA1168";
+    case 47: return "Socket BGA1234";
+    case 48: return "Socket BGA1364";
+    default: return "Other";
+  }
+}
+
+void displayProcessorCharacteristics(uint16_t ProcessorCharacteristics) {
+  std::cout << "\tCapabilities: " << std::endl;
+  if (getBit(ProcessorCharacteristics, 2)) std::cout << "\t\t64-bit Capable" << std::endl;
+  if (getBit(ProcessorCharacteristics, 3)) std::cout << "\t\tMulti-Core" << std::endl;
+  if (getBit(ProcessorCharacteristics, 4)) std::cout << "\t\tHardware Thread" << std::endl;
+  if (getBit(ProcessorCharacteristics, 5)) std::cout << "\t\tExecute Protection" << std::endl;
+  if (getBit(ProcessorCharacteristics, 6)) std::cout << "\t\tEnhanced Virtualization" << std::endl;
+  if (getBit(ProcessorCharacteristics, 7)) std::cout << "\t\tPower/Performance Control" << std::endl;
+}

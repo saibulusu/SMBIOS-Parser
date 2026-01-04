@@ -338,3 +338,10 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# vim temporary files
+*.swp
+*.swo
+
+# Executable
+SMBIOS-Parser
