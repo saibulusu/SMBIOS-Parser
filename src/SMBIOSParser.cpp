@@ -59,6 +59,8 @@ void SMBIOSParser::displayStructure(int handle) {
   else if (curStruct->Type == 7) displayCacheInformation(curStruct);
   else if (curStruct->Type == 8) displayPortConnectorInformation(curStruct);
   else if (curStruct->Type == 9) displaySystemSlotsInformation(curStruct);
+  else if (curStruct->Type == 10) displayOnBoardDevicesInformation(curStruct);
+  else if (curStruct->Type == 11) displayOEMStringsInformation(curStruct);
 }
 
 int SMBIOSParser::getStructuresCount() {

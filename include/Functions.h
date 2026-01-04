@@ -1,6 +1,7 @@
 #include "SMBIOSData.h"
 #include "SMBIOSPlatform.h"
 #include "SMBIOSParser.h"
+#include <cmath>
 #include <cstring>
 #include <iomanip>
 #include <string>
@@ -18,6 +19,9 @@ int getBits(uint16_t word, int startBit, int endBit);
 
 // type -> name (BIOS, Processor, etc.)
 std::string getTypeName(uint8_t type);
+
+// type vendor specific
+void displayVendorSpecificInformation(const SMBIOSStruct* curStruct);
 
 // type 0
 void displayBIOSInformation(const SMBIOSStruct* curStruct);
@@ -42,12 +46,11 @@ std::string getChassisSecurityState(uint8_t field);
 // type 4
 void displayProcessorInformation(const SMBIOSStruct* curStruct);
 std::string getProcessorType(uint8_t ProcessorType);
-std::string getProcessorFamily(uint8_t ProcessorFamily);
+std::string getProcessorFamily(uint16_t ProcessorFamily);
 std::string getVoltage(uint8_t Voltage);
 void getProcessorStatus(uint8_t Status);
 std::string getProcessorUpgrade(uint8_t ProcessorUpgrade);
 void displayProcessorCharacteristics(uint16_t ProcessorCharacteristics);
-std::string getProcessorFamily2(uint16_t ProcessorFamily2);
 
 // type 5
 void displayMemoryControllerInformation(const SMBIOSStruct* curStruct);
@@ -87,5 +90,9 @@ std::string getSlotLength(uint8_t SlotLength);
 void displaySlotCharacteristics1(uint8_t SlotCharacteristics1);
 void displaySlotCharacteristics2(uint8_t SlotCharacteristics2);
 
-// type vendor specific
-void displayVendorSpecificInformation(const SMBIOSStruct* curStruct);
+// type 10
+void displayOnBoardDevicesInformation(const SMBIOSStruct* curStruct);
+void displayDeviceInformation(uint8_t Device);
+
+// type 11
+void displayOEMStringsInformation(const SMBIOSStruct* curStruct);
