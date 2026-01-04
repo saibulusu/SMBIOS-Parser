@@ -96,3 +96,6 @@ void displayDeviceInformation(uint8_t Device);
 
 // type 11
 void displayOEMStringsInformation(const SMBIOSStruct* curStruct);
+
+// type 12
+void displaySystemConfigurationOptionsInformation(const SMBIOSStruct* curStruct);

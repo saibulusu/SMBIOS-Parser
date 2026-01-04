@@ -3,12 +3,12 @@
 #include "SMBIOSData.h"
 #include "Functions.h"
 
-SMBIOSParser::SMBIOSParser(SMBIOSData& d)
-  : data(d) {}
+SMBIOSParser::SMBIOSParser(SMBIOSData& d) : data(d) {
+}
 
-  void SMBIOSParser::displayVersion() {
-    std::cout << "v2.0" << std::endl;
-  }
+void SMBIOSParser::displayVersion() {
+  std::cout << "v2.0" << std::endl;
+}
 
 void SMBIOSParser::displayHexContents() {
   for (uint32_t i = 0; i < data.raw()->Length; ++i) {
@@ -61,6 +61,7 @@ void SMBIOSParser::displayStructure(int handle) {
   else if (curStruct->Type == 9) displaySystemSlotsInformation(curStruct);
   else if (curStruct->Type == 10) displayOnBoardDevicesInformation(curStruct);
   else if (curStruct->Type == 11) displayOEMStringsInformation(curStruct);
+  else if (curStruct->Type == 12) displaySystemConfigurationOptionsInformation(curStruct);
 }
 
 int SMBIOSParser::getStructuresCount() {

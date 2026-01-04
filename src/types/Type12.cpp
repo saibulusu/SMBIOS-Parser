@@ -1,7 +1,7 @@
 #include "Functions.h"
 
-// Type 11 - OEM Strings
-void displayOEMStringsInformation(const SMBIOSStruct* curStruct) {
+// Type 12 - System Configuation Options 
+void displaySystemConfigurationOptionsInformation(const SMBIOSStruct* curStruct) {
   std::cout << getTypeName(curStruct->Type) << " Information (Type " << (int)curStruct->Type << ")" << std::endl;
   std::cout << "\tHandle: " << curStruct->Handle << std::endl;
 
