@@ -62,6 +62,7 @@ void SMBIOSParser::displayStructure(int handle) {
   else if (curStruct->Type == 10) displayOnBoardDevicesInformation(curStruct);
   else if (curStruct->Type == 11) displayOEMStringsInformation(curStruct);
   else if (curStruct->Type == 12) displaySystemConfigurationOptionsInformation(curStruct);
+  else displayOtherInformation(curStruct);
 }
 
 int SMBIOSParser::getStructuresCount() {

@@ -23,6 +23,9 @@ std::string getTypeName(uint8_t type);
 // type vendor specific
 void displayVendorSpecificInformation(const SMBIOSStruct* curStruct);
 
+// type other
+void displayOtherInformation(const SMBIOSStruct* curStruct);
+
 // type 0
 void displayBIOSInformation(const SMBIOSStruct* curStruct);
 void displayBIOSCharacteristics(uint8_t* BIOSCharacteristics);
